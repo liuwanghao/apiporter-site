@@ -1,0 +1,16 @@
+{
+  "score": 96,
+  "threshold": 90,
+  "passed": true,
+  "verdict": "pass",
+  "category_match": true,
+  "differences": [
+    "The project keeps its existing compact product header and filter toolbar instead of duplicating the reference page navigation.",
+    "The base-price benchmark uses a subtle warm highlight while provider group rows retain the existing alternating neutral surfaces."
+  ],
+  "suggestions": [
+    "Consider adding a compact mobile screenshot regression once the repository has a browser-test baseline."
+  ],
+  "next_actions": [],
+  "reasoning": "The rendered page preserves the reference's marketplace hierarchy and now presents the base price as the first comparison row, followed by group ratios, localized discount rates, and aligned input/output prices. Interactive verification confirmed one selected model and rows for the base price plus default, svip, and vip groups; spacing, contrast, hierarchy, and numeric readability are production-ready."
+}

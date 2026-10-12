@@ -1,0 +1,18 @@
+{
+  "Codex quick start": "Codex 快速开始",
+  "Connect Codex CLI to CBAPI on macOS, Linux, or Windows and validate a first coding request.": "在 macOS、Linux 或 Windows 上将 Codex CLI 接入 CBAPI，并验证第一条编程请求。",
+  "Claude Code quick start": "Claude Code 快速开始",
+  "Configure Claude Code with a CBAPI key, supported Claude model IDs, and the Anthropic-compatible endpoint.": "使用 CBAPI API Key、受支持的 Claude 模型名称和 Anthropic 兼容端点配置 Claude Code。",
+  "OpenCode configuration": "OpenCode 配置",
+  "Connect OpenCode to CBAPI as an OpenAI-compatible provider and switch between supported models.": "将 OpenCode 作为 OpenAI 兼容提供商连接到 CBAPI，并在支持的模型之间切换。",
+  "Grok Build configuration": "Grok Build 配置",
+  "Connect the official Grok Build CLI with a CBAPI key, grok-4.5, and the Responses API endpoint.": "使用 CBAPI API Key、grok-4.5 和 Responses API 端点连接官方 Grok Build CLI。",
+  "Gemini CLI quick start": "Gemini CLI 快速开始",
+  "Install the official Gemini CLI, configure a CBAPI key and Gemini API endpoint, then verify the connection.": "安装官方 Gemini CLI，配置 CBAPI API Key 和 Gemini API 端点，并验证连接。",
+  "Seedance Video API integration": "Seedance 视频 API 接入",
+  "Create Seedance 2.0 or 2.5 text-to-video and image-to-video jobs, poll their state, and download the result.": "使用 Seedance 2.0 或 2.5 进行文生视频和图生视频，查询异步任务状态并下载生成结果。",
+  "GPT Image 2 and Gemini image-generation APIs": "GPT Image 2 与 Gemini 图片生成 API",
+  "Use GPT Image 2 through the OpenAI-compatible Images API, or Nano Banana models through the native Gemini API.": "通过 OpenAI 兼容 Images API 使用 GPT Image 2，或通过 Gemini 原生 API 使用 Nano Banana 系列模型。",
+  "CC-Switch configuration": "CC-Switch 配置",
+  "Create and switch CBAPI profiles in CC-Switch for Codex, Claude Code, OpenCode, and other coding tools.": "在 CC-Switch 中创建并切换 CBAPI 配置，用于 Codex、Claude Code、OpenCode 等编程工具。"
+}

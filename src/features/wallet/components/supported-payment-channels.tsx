@@ -1,0 +1,84 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+import { useTranslation } from 'react-i18next'
+import {
+  SiAlipay,
+  SiAmericanexpress,
+  SiMastercard,
+  SiVisa,
+  SiWechat,
+} from 'react-icons/si'
+
+const SUPPORTED_PAYMENT_CHANNELS = [
+  { name: 'Visa', icon: SiVisa, color: '#1434CB' },
+  { name: 'Mastercard', icon: SiMastercard, color: '#EB001B' },
+  { name: 'UnionPay', icon: null, color: '#007078' },
+  { name: 'American Express', icon: SiAmericanexpress, color: '#006FCF' },
+  { name: 'Alipay', icon: SiAlipay, color: '#1677FF' },
+  { name: 'WeChat Pay', icon: SiWechat, color: '#07C160' },
+] as const
+
+export function SupportedPaymentChannels() {
+  const { t } = useTranslation()
+
+  return (
+    <section
+      data-supported-channels
+      aria-label={t('Supported Channels')}
+      className='space-y-3 border-t pt-4 sm:pt-5'
+    >
+      <div className='flex items-center justify-between gap-4'>
+        <h3 className='text-sm font-semibold'>{t('Supported Channels')}</h3>
+        <p className='text-muted-foreground hidden text-xs sm:block'>
+          {t('Availability is confirmed on the payment page')}
+        </p>
+      </div>
+      <ul className='flex flex-wrap items-center gap-x-6 gap-y-3 sm:gap-x-8'>
+        {SUPPORTED_PAYMENT_CHANNELS.map((channel) => {
+          const ChannelIcon = channel.icon
+
+          return (
+            <li
+              key={channel.name}
+              aria-label={channel.name}
+              title={channel.name}
+              className='flex h-9 min-w-12 items-center justify-center'
+            >
+              {ChannelIcon ? (
+                <ChannelIcon
+                  aria-hidden='true'
+                  className='h-7 w-auto max-w-14'
+                  style={{ color: channel.color }}
+                />
+              ) : (
+                <span
+                  aria-hidden='true'
+                  className='text-sm font-black tracking-[-0.08em] italic'
+                  style={{ color: channel.color }}
+                >
+                  UnionPay
+                </span>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
+}

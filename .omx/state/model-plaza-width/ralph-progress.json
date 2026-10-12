@@ -1,0 +1,13 @@
+{
+  "score": 96,
+  "verdict": "pass",
+  "category_match": true,
+  "differences": [
+    "页面仍保留 12px 至 32px 的响应式安全边距，没有将内容直接贴到视口边缘。"
+  ],
+  "suggestions": [
+    "继续保留当前全宽容器与 240px/210px/单列三级响应式侧栏规则。"
+  ],
+  "reasoning": "1900px 视口下内容从 1440px 扩展到全部 1889px 可用宽度，左右保留 32px 安全边距；侧栏扩展到 240px，主区仍有 1567px。1024px 使用 210px 侧栏，移动断点切为单列，均无横向溢出。",
+  "next_actions": []
+}

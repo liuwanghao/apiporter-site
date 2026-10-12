@@ -1,0 +1,13 @@
+{
+  "score": 98,
+  "verdict": "pass",
+  "category_match": true,
+  "differences": [
+    "搜索框与菜单栏之间保留 41px 的纵向工具栏分隔空间，这是现有页面节奏而非对齐偏差。"
+  ],
+  "suggestions": [
+    "继续通过 --model-sidebar-width 同步维护搜索框列和菜单栏列。"
+  ],
+  "reasoning": "1900px 下搜索框与菜单栏均为 300px，1024px 下均为 230px，移动单列下均为 465px；三种断点左右边界完全一致，页面无横向溢出。",
+  "next_actions": []
+}

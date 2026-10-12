@@ -1,0 +1,178 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+import axios, { type AxiosRequestConfig } from 'axios'
+import i18n, { t } from 'i18next'
+import { toast } from 'sonner'
+
+import { toDocumentLanguage } from '@/i18n/languages'
+import {
+  applyAuthRotation,
+  clearAuthentication,
+  refreshAuthentication,
+} from '@/lib/auth-session'
+import {
+  claimSessionExpiration,
+  isIntentionalSignOutInProgress,
+  requestErrorToastId,
+} from '@/lib/request-error-policy'
+import { getServerErrorMessageKey } from '@/lib/server-error-message'
+import { API_BASE_URL } from '@/lib/server-url'
+import { useAuthStore } from '@/stores/auth-store'
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipBusinessError?: boolean
+    skipErrorHandler?: boolean
+    disableDuplicate?: boolean
+    skipAuthRefresh?: boolean
+    authRetry?: boolean
+    acceptAuthRotation?: boolean
+  }
+}
+
+export type ApiRequestConfig = AxiosRequestConfig
+
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  headers: {
+    'Cache-Control': 'no-store',
+  },
+})
+
+const inFlightGet = new Map<string, Promise<unknown>>()
+const originalGet = api.get.bind(api)
+
+api.get = ((url: string, config: ApiRequestConfig = {}) => {
+  if (config.disableDuplicate) return originalGet(url, config)
+
+  const params = config.params ? JSON.stringify(config.params) : '{}'
+  const sessionSID = useAuthStore.getState().auth.session?.sid || 'anonymous'
+  const key = `${sessionSID}:${url}?${params}`
+  const existingRequest = inFlightGet.get(key)
+  if (existingRequest) return existingRequest
+
+  const request = originalGet(url, config).finally(() => {
+    inFlightGet.delete(key)
+  })
+  inFlightGet.set(key, request)
+  return request
+}) as typeof api.get
+
+function redirectToSignIn(): void {
+  if (
+    typeof window !== 'undefined' &&
+    window.location.pathname !== '/sign-in'
+  ) {
+    window.location.replace('/sign-in')
+  }
+}
+
+function handleSessionExpiration(
+  hadAuthenticatedSession: boolean,
+  skipErrorHandler?: boolean
+): void {
+  if (
+    !hadAuthenticatedSession ||
+    isIntentionalSignOutInProgress() ||
+    !claimSessionExpiration()
+  ) {
+    return
+  }
+
+  if (!skipErrorHandler) {
+    toast.error(t('Session expired!'), { id: 'auth-session-expired' })
+  }
+  redirectToSignIn()
+}
+
+api.interceptors.response.use(
+  (response) => {
+    if (response.config.acceptAuthRotation && response.data?.success === true) {
+      applyAuthRotation(response.data.data)
+    }
+
+    if (
+      !response.config.skipBusinessError &&
+      typeof response.data?.success === 'boolean' &&
+      !response.data.success
+    ) {
+      const messageKey = getServerErrorMessageKey(response.data)
+      const message = messageKey
+        ? t(messageKey)
+        : response.data.message || t('Request failed')
+      toast.error(message, { id: requestErrorToastId(message) })
+    }
+    return response
+  },
+  async (error) => {
+    const config = error?.config as ApiRequestConfig | undefined
+    const skipErrorHandler = config?.skipErrorHandler
+    const status = error?.response?.status
+    const hadAuthenticatedSession = Boolean(
+      useAuthStore.getState().auth.session
+    )
+
+    if (status === 401) {
+      if (config && !config.skipAuthRefresh && !config.authRetry) {
+        config.authRetry = true
+        const outcome = await refreshAuthentication()
+        if (outcome.kind === 'authenticated') {
+          const token = useAuthStore.getState().auth.accessToken
+          if (token) {
+            config.headers = {
+              ...config.headers,
+              Authorization: `Bearer ${token}`,
+            }
+          }
+          return api.request(config)
+        }
+
+        if (outcome.kind === 'anonymous' || outcome.kind === 'out_of_sync') {
+          handleSessionExpiration(hadAuthenticatedSession, skipErrorHandler)
+        }
+      } else if (config?.authRetry) {
+        clearAuthentication(false)
+        handleSessionExpiration(hadAuthenticatedSession, skipErrorHandler)
+      } else {
+        handleSessionExpiration(hadAuthenticatedSession, skipErrorHandler)
+      }
+    } else if (!skipErrorHandler) {
+      const messageKey = getServerErrorMessageKey(error)
+      const message = messageKey
+        ? t(messageKey)
+        : error?.response?.data?.message ||
+          error?.message ||
+          t('Request failed')
+      toast.error(message, { id: requestErrorToastId(message) })
+    }
+    throw error
+  }
+)
+
+api.interceptors.request.use((config) => {
+  config.headers['Accept-Language'] = toDocumentLanguage(
+    i18n.resolvedLanguage || i18n.language
+  )
+  const accessToken = useAuthStore.getState().auth.accessToken
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
+  }
+  return config
+})
