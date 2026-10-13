@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-[ "$(hostname)" = C20260914726127 ]
+# Restore the previous release on the apiporter test host.
+test_host="${APIPORTER_TEST_HOST:?APIPORTER_TEST_HOST must name the apiporter test host}"
+[ "$(hostname)" = "$test_host" ]
 backup=/opt/apiporter-site/seo-backup-20260915
 cp "$backup/apiporter.conf" /etc/nginx/conf.d/apiporter.conf
 python3 - <<'PY'

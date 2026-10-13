@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 SOURCE_DIR="${SOURCE_DIR:-/opt/apiporter-site/source}"
 REPO_URL="${REPO_URL:-git@github.com:liuwanghao/apiporter-site.git}"
-BRANCH="${BRANCH:-master}"
+BRANCH="${BRANCH:-develop}"
 SOURCE_LOCK_FILE="${SOURCE_LOCK_FILE:-/run/lock/apiporter-site-source.lock}"
 
 log() { printf '[frontend-source] %s\n' "$*"; }
@@ -31,7 +31,7 @@ else
   if git -C "$SOURCE_DIR" show-ref --verify --quiet "refs/heads/$BRANCH"; then
     git -C "$SOURCE_DIR" checkout "$BRANCH"
   else
-    git -C "$SOURCE_DIR" checkout --track -b "$BRANCH" "origin/$BRANCH"
+    git -C "$SOURCE_DIR" checkout --no-track -b "$BRANCH" "origin/$BRANCH"
   fi
   git -C "$SOURCE_DIR" merge --ff-only "origin/$BRANCH"
 fi

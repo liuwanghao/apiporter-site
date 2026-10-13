@@ -2,7 +2,7 @@ name: Frontend CI
 
 on:
   push:
-    branches: [master, main]
+    branches: [develop, master, main]
   pull_request:
 
 permissions:

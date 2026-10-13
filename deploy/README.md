@@ -20,7 +20,8 @@ sudo /opt/apiporter-site/source/deploy/install.sh
 sudo apiporter-site-deploy
 ```
 
-The entrypoint pulls the branch selected by `BRANCH` (default: `master`),
+The entrypoint uses `git@github.com:liuwanghao/apiporter-site.git` and pulls
+the branch selected by `BRANCH` (default: `develop`),
 installs locked dependencies, typechecks, builds, atomically switches the
 `current` symlink, checks Nginx, and restores the old release automatically
 when the health check fails.
@@ -32,3 +33,11 @@ sudo env BRANCH=ui/console-refresh apiporter-site-deploy
 ```
 
 Keep production values in `/etc/apiporter/site.env`; do not commit them.
+
+The Electron workflow builds the backend from the `main` branch of
+`https://github.com/liuwanghao/apiporter-backend.git`.
+
+The isolated SEO test deployment and rollback scripts require
+`APIPORTER_TEST_HOST` to match the apiporter test server's hostname. They use
+the fixed test release and backup paths declared in those scripts; prepare
+those artifacts before running them on a test server.

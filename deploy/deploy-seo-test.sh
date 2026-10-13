@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Execute on cbapi-test only, after uploading the isolated release and config.
-[ "$(hostname)" = C20260914726127 ]
+# Execute on the apiporter test host after uploading the isolated release and config.
+test_host="${APIPORTER_TEST_HOST:?APIPORTER_TEST_HOST must name the apiporter test host}"
+[ "$(hostname)" = "$test_host" ]
 release=/opt/apiporter-site/releases/seo-20260915
 backup=/opt/apiporter-site/seo-backup-20260915
 [ -f "$release/dist/seo-manifest.json" ]
