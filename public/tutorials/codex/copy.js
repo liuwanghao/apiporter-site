@@ -1,6 +1,6 @@
 export const COPY = {
   zh: {
-    ready: '我有 CBAPI 账号，也已创建 <em>API Key</em>',
+    ready: '我有 ApiPorter 账号，也已创建 <em>API Key</em>',
     not_ready: '我还没有',
     account_status: '账号准备状态',
     tutorial_label: '互动教学',
@@ -9,9 +9,9 @@ export const COPY = {
       '打开后如需登录先登录，然后点击「创建 API Key」，复制并保存，再回到这里。',
     open_keys: '打开 API Keys ↗',
     key_ready: '我已创建，继续',
-    join_title: '先加入<br /><span class="brand-name">CBAPI</span>',
-    join_copy: '打开后注册账号并登录 CBAPI，然后回到这里。',
-    go_signup: '去注册 CBAPI ↗',
+    join_title: '先加入<br /><span class="brand-name">ApiPorter</span>',
+    join_copy: '打开后注册账号并登录 ApiPorter，然后回到这里。',
+    go_signup: '去注册 ApiPorter ↗',
     signup_done: '我已注册，继续',
     back: '← 返回',
     your_computer:
@@ -38,7 +38,7 @@ export const COPY = {
     coach_win_3_title: '打开 PowerShell',
     coach_win_3_copy: 'powershell 已填入。点击确定，打开 PowerShell。',
     coach_4_title: '运行安装脚本',
-    coach_4_copy: '命令出现后，点击回车，运行 CBAPI 一键安装脚本。',
+    coach_4_copy: '命令出现后，点击回车，运行 ApiPorter 一键安装脚本。',
     coach_5_title: '选择中文',
     coach_5_copy: '脚本在问安装语言。点击 1。',
     coach_6_title: '安装 Codex',
@@ -116,7 +116,7 @@ export const COPY = {
     terminal_window: '模拟 Terminal 窗口',
     lang_prompt_tail: '请选择 1、2 或 3 [1]:',
     lang_wrong: '请先点 1，选择简体中文',
-    script_title: 'CBAPI Codex 初始化脚本',
+    script_title: 'ApiPorter Codex 初始化脚本',
     script_intro:
       '准备开始前，请确认你已经在控制台创建 API Key，并选择了可以访问 gpt-5.6-sol 的非 default 分组。',
     script_install_prompt: '未检测到 Codex CLI，是否现在安装？ [Y/n]',
@@ -124,7 +124,7 @@ export const COPY = {
     script_installing: '正在安装或更新 Codex CLI...',
     script_detected: '已检测到 Codex CLI：codex',
     script_key_prompt:
-      '请粘贴你的 CBAPI API Key（输入会显示，粘贴后按 Enter）：',
+      '请粘贴你的 ApiPorter API Key（输入会显示，粘贴后按 Enter）：',
     script_paste: '粘贴 API Key（演示）',
     script_key_received: '已收到 API Key（演示，不会保存）。',
     script_validated: 'API Key 验证通过：可以访问 gpt-5.6-sol。',
@@ -142,9 +142,9 @@ export const COPY = {
     finish_cta: '完成 →',
     finish_title: '互动排练完成。',
     finish_mac:
-      '你刚刚练习了在 macOS 中打开 Terminal，并走完 CBAPI 一键安装脚本。',
+      '你刚刚练习了在 macOS 中打开 Terminal，并走完 ApiPorter 一键安装脚本。',
     finish_win:
-      '你刚刚练习了在 Windows 中按 Windows + R 打开 PowerShell，并走完 CBAPI 一键安装脚本。',
+      '你刚刚练习了在 Windows 中按 Windows + R 打开 PowerShell，并走完 ApiPorter 一键安装脚本。',
     finish_tail:
       '这是模拟教学，不会修改你的电脑；请在真实 {app} 里运行刚才复制的命令。',
     open_docs: '继续真实配置 ↗',
@@ -153,7 +153,7 @@ export const COPY = {
     download_app: '下载 Codex App ↗',
   },
   en: {
-    ready: 'I have a CBAPI account and already created an <em>API Key</em>',
+    ready: 'I have a ApiPorter account and already created an <em>API Key</em>',
     not_ready: 'I don’t yet',
     account_status: 'Account readiness',
     tutorial_label: 'Interactive tutorial',
@@ -162,9 +162,9 @@ export const COPY = {
       'Sign in if needed, then click Create API Key, copy and save it, and come back here.',
     open_keys: 'Open API Keys ↗',
     key_ready: 'I’ve created it, continue',
-    join_title: 'Join<br /><span class="brand-name">CBAPI</span> first',
-    join_copy: 'Create an account, sign in to CBAPI, then come back here.',
-    go_signup: 'Sign up for CBAPI ↗',
+    join_title: 'Join<br /><span class="brand-name">ApiPorter</span> first',
+    join_copy: 'Create an account, sign in to ApiPorter, then come back here.',
+    go_signup: 'Sign up for ApiPorter ↗',
     signup_done: 'I’ve signed up, continue',
     back: '← Back',
     your_computer:
@@ -193,7 +193,7 @@ export const COPY = {
     coach_win_3_copy: 'powershell is filled in. Click OK to open PowerShell.',
     coach_4_title: 'Run the installer',
     coach_4_copy:
-      'When the command appears, click Enter to run the CBAPI installer.',
+      'When the command appears, click Enter to run the ApiPorter installer.',
     coach_5_title: 'Choose English',
     coach_5_copy: 'The script is asking for a language. Click 3.',
     coach_6_title: 'Install Codex',
@@ -273,7 +273,7 @@ export const COPY = {
     terminal_window: 'Simulated Terminal window',
     lang_prompt_tail: 'Choose 1, 2, or 3 [3]:',
     lang_wrong: 'Click 3 first to choose English',
-    script_title: 'CBAPI Codex setup',
+    script_title: 'ApiPorter Codex setup',
     script_intro:
       'Before continuing, create an API Key in the console and select a non-default group that can access gpt-5.6-sol.',
     script_install_prompt: 'Codex CLI was not found. Install it now? [Y/n]',
@@ -281,7 +281,7 @@ export const COPY = {
     script_installing: 'Installing or updating Codex CLI...',
     script_detected: 'Detected Codex CLI: codex',
     script_key_prompt:
-      'Paste your CBAPI API Key (input is visible; press Enter after pasting):',
+      'Paste your ApiPorter API Key (input is visible; press Enter after pasting):',
     script_paste: 'Paste API Key (demo)',
     script_key_received: 'API Key received (demo, not saved).',
     script_validated: 'API Key validation passed: gpt-5.6-sol is available.',
@@ -300,9 +300,9 @@ export const COPY = {
     finish_cta: 'Done →',
     finish_title: 'Rehearsal complete.',
     finish_mac:
-      'You just practiced opening Terminal on macOS and walking through the CBAPI installer.',
+      'You just practiced opening Terminal on macOS and walking through the ApiPorter installer.',
     finish_win:
-      'You just practiced pressing Windows + R to open PowerShell and walking through the CBAPI installer.',
+      'You just practiced pressing Windows + R to open PowerShell and walking through the ApiPorter installer.',
     finish_tail:
       'This is simulated teaching and does not change your computer. Run the copied command in the real {app}.',
     open_docs: 'Continue real setup ↗',
@@ -311,7 +311,7 @@ export const COPY = {
     download_app: 'Download Codex App ↗',
   },
   'zh-TW': {
-    ready: '我有 CBAPI 帳號，也已建立 <em>API Key</em>',
+    ready: '我有 ApiPorter 帳號，也已建立 <em>API Key</em>',
     not_ready: '我還沒有',
     account_status: '帳號準備狀態',
     tutorial_label: '互動教學',
@@ -320,9 +320,9 @@ export const COPY = {
       '開啟後，如需登入請先登入，再點選「建立 API Key」，複製並儲存後回到這裡。',
     open_keys: '開啟 API Keys ↗',
     key_ready: '我已建立，繼續',
-    join_title: '先加入<br /><span class="brand-name">CBAPI</span>',
-    join_copy: '開啟後註冊帳號並登入 CBAPI，然後回到這裡。',
-    go_signup: '前往註冊 CBAPI ↗',
+    join_title: '先加入<br /><span class="brand-name">ApiPorter</span>',
+    join_copy: '開啟後註冊帳號並登入 ApiPorter，然後回到這裡。',
+    go_signup: '前往註冊 ApiPorter ↗',
     signup_done: '我已註冊，繼續',
     back: '← 返回',
     your_computer:
@@ -350,7 +350,7 @@ export const COPY = {
     coach_win_3_title: '開啟 PowerShell',
     coach_win_3_copy: 'powershell 已填入。點選確定，開啟 PowerShell。',
     coach_4_title: '執行安裝指令碼',
-    coach_4_copy: '指令出現後，點選 Enter，執行 CBAPI 一鍵安裝指令碼。',
+    coach_4_copy: '指令出現後，點選 Enter，執行 ApiPorter 一鍵安裝指令碼。',
     coach_5_title: '選擇簡體中文',
     coach_5_copy: '指令碼正在詢問安裝語言。點選 1。',
     coach_6_title: '安裝 Codex',
@@ -429,7 +429,7 @@ export const COPY = {
     terminal_window: '模擬 Terminal 視窗',
     lang_prompt_tail: '請選擇 1、2 或 3 [1]:',
     lang_wrong: '請先點選 1，選擇簡體中文',
-    script_title: 'CBAPI Codex 初始化指令碼',
+    script_title: 'ApiPorter Codex 初始化指令碼',
     script_intro:
       '開始前，請確認你已在控制台建立 API Key，並選擇可存取 gpt-5.6-sol 的非 default 群組。',
     script_install_prompt: '未偵測到 Codex CLI，是否立即安裝？ [Y/n]',
@@ -437,7 +437,7 @@ export const COPY = {
     script_installing: '正在安裝或更新 Codex CLI...',
     script_detected: '已偵測到 Codex CLI：codex',
     script_key_prompt:
-      '請貼上你的 CBAPI API Key（輸入內容會顯示，貼上後按 Enter）：',
+      '請貼上你的 ApiPorter API Key（輸入內容會顯示，貼上後按 Enter）：',
     script_paste: '貼上 API Key（示範）',
     script_key_received: '已收到 API Key（示範，不會儲存）。',
     script_validated: 'API Key 驗證通過：可以存取 gpt-5.6-sol。',
@@ -455,9 +455,9 @@ export const COPY = {
     finish_cta: '完成 →',
     finish_title: '互動練習完成。',
     finish_mac:
-      '你剛剛練習了在 macOS 中開啟 Terminal，並完成 CBAPI 一鍵安裝指令碼的操作流程。',
+      '你剛剛練習了在 macOS 中開啟 Terminal，並完成 ApiPorter 一鍵安裝指令碼的操作流程。',
     finish_win:
-      '你剛剛練習了在 Windows 中按 Windows + R 開啟 PowerShell，並完成 CBAPI 一鍵安裝指令碼的操作流程。',
+      '你剛剛練習了在 Windows 中按 Windows + R 開啟 PowerShell，並完成 ApiPorter 一鍵安裝指令碼的操作流程。',
     finish_tail:
       '這是模擬教學，不會修改你的電腦；請在實際的 {app} 中執行剛才複製的指令。',
     open_docs: '繼續實際設定 ↗',

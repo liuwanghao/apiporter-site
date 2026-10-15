@@ -48,7 +48,7 @@ export const DOC_GUIDES: readonly DocsGuide[] = [
     title: 'Codex quick start',
     category: 'Codex / Responses API',
     description:
-      'Connect Codex CLI to CBAPI on macOS, Linux, or Windows and validate a first coding request.',
+      'Connect Codex CLI to ApiPorter on macOS, Linux, or Windows and validate a first coding request.',
     protocols: ['Chat Completions', 'Responses API'],
     endpoint: 'v1',
     exampleModel: 'gpt-5.6-sol',
@@ -60,7 +60,7 @@ export const DOC_GUIDES: readonly DocsGuide[] = [
     title: 'Claude Code quick start',
     category: 'Claude Code / Anthropic Messages',
     description:
-      'Configure Claude Code with a CBAPI key, supported Claude model IDs, and the Anthropic-compatible endpoint.',
+      'Configure Claude Code with a ApiPorter key, supported Claude model IDs, and the Anthropic-compatible endpoint.',
     protocols: ['Anthropic Messages'],
     endpoint: 'root',
     exampleModel: 'claude-opus-5',
@@ -72,7 +72,7 @@ export const DOC_GUIDES: readonly DocsGuide[] = [
     title: 'OpenCode configuration',
     category: 'OpenCode / OpenAI compatibility',
     description:
-      'Connect OpenCode to CBAPI as an OpenAI-compatible provider and switch between supported models.',
+      'Connect OpenCode to ApiPorter as an OpenAI-compatible provider and switch between supported models.',
     protocols: ['Chat Completions'],
     endpoint: 'v1',
     exampleModel: 'gpt-5.6-sol',
@@ -84,7 +84,7 @@ export const DOC_GUIDES: readonly DocsGuide[] = [
     title: 'Grok Build configuration',
     category: 'Grok Build / Responses API',
     description:
-      'Connect the official Grok Build CLI with a CBAPI key, grok-4.5, and the Responses API endpoint.',
+      'Connect the official Grok Build CLI with a ApiPorter key, grok-4.5, and the Responses API endpoint.',
     protocols: ['Responses API'],
     endpoint: 'v1',
     exampleModel: 'grok-4.5',
@@ -96,7 +96,7 @@ export const DOC_GUIDES: readonly DocsGuide[] = [
     title: 'Gemini CLI quick start',
     category: 'Gemini CLI / Gemini API',
     description:
-      'Install the official Gemini CLI, configure a CBAPI key and Gemini API endpoint, then verify the connection.',
+      'Install the official Gemini CLI, configure a ApiPorter key and Gemini API endpoint, then verify the connection.',
     protocols: ['Gemini API'],
     endpoint: 'root',
     exampleModel: 'gemini-3.6-flash',
@@ -132,7 +132,7 @@ export const DOC_GUIDES: readonly DocsGuide[] = [
     title: 'CC-Switch configuration',
     category: 'Local provider switching',
     description:
-      'Create and switch CBAPI profiles in CC-Switch for Codex, Claude Code, OpenCode, and other coding tools.',
+      'Create and switch ApiPorter profiles in CC-Switch for Codex, Claude Code, OpenCode, and other coding tools.',
     protocols: ['Responses API', 'Anthropic Messages', 'Gemini API'],
     endpoint: 'root',
     icon: 'settings',

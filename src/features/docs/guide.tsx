@@ -115,7 +115,7 @@ export function GuideDocs(props: { guide: DocsGuide }) {
             <span className='bg-primary/10 inline-flex size-6 items-center justify-center rounded-md'>
               <Braces className='size-3.5' aria-hidden='true' />
             </span>
-            {t('CBAPI API integration documentation')}
+            {t('ApiPorter API integration documentation')}
           </div>
           <h1 className='mt-5 text-4xl font-bold tracking-[-0.045em] text-balance sm:text-5xl md:text-6xl'>
             {t(props.guide.title)}

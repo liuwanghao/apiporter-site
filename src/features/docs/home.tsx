@@ -251,14 +251,14 @@ export function Docs() {
             <div className='max-w-5xl'>
               <div className='text-primary flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase'>
                 <span className='bg-primary size-2 rounded-[2px]' />
-                CBAPI API {t('Documentation')}
+                ApiPorter API {t('Documentation')}
               </div>
               <h1 className='public-page-title mt-5 max-w-5xl font-bold text-balance'>
                 {t('Build with every model through one gateway')}
               </h1>
               <p className='public-page-lead text-muted-foreground mt-6 max-w-3xl'>
                 {t(
-                  'Choose a client or API workflow, connect a CBAPI key, and move from configuration to a verified request without leaving this site.'
+                  'Choose a client or API workflow, connect a ApiPorter key, and move from configuration to a verified request without leaving this site.'
                 )}
               </p>
             </div>
@@ -296,7 +296,7 @@ export function Docs() {
             <div className='flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between'>
               <div>
                 <p className='text-primary text-xs font-bold tracking-[0.16em] uppercase'>
-                  {t('CBAPI API guides')}
+                  {t('ApiPorter API guides')}
                 </p>
                 <h2
                   id='docs-catalog-title'
@@ -306,7 +306,7 @@ export function Docs() {
                 </h2>
                 <p className='text-muted-foreground mt-2 text-sm sm:text-base'>
                   {t(
-                    '{{count}} practical guides, all maintained inside CBAPI.',
+                    '{{count}} practical guides, all maintained inside ApiPorter.',
                     {
                       count: DOC_GUIDES.length,
                     }

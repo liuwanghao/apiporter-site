@@ -1,9 +1,9 @@
 $ErrorActionPreference = "Stop"
 
-$DefaultCBAPIOrigin = if ($env:APIPORTER_DEFAULT_ORIGIN) { $env:APIPORTER_DEFAULT_ORIGIN } else { "__APIPORTER_ORIGIN__" }
-if ($DefaultCBAPIOrigin.StartsWith("__APIPORTER_")) { $DefaultCBAPIOrigin = "http://localhost:5180" }
-$Script:ApiBaseUrl = if ($env:APIPORTER_BASE_URL) { $env:APIPORTER_BASE_URL.TrimEnd("/") } else { "$DefaultCBAPIOrigin/v1" }
-$CBAPIModel = if ($env:APIPORTER_CODEX_MODEL) { $env:APIPORTER_CODEX_MODEL } else { "gpt-5.6-sol" }
+$DefaultApiPorterOrigin = if ($env:APIPORTER_DEFAULT_ORIGIN) { $env:APIPORTER_DEFAULT_ORIGIN } else { "__APIPORTER_ORIGIN__" }
+if ($DefaultApiPorterOrigin.StartsWith("__APIPORTER_")) { $DefaultApiPorterOrigin = "http://localhost:5180" }
+$Script:ApiBaseUrl = if ($env:APIPORTER_BASE_URL) { $env:APIPORTER_BASE_URL.TrimEnd("/") } else { "$DefaultApiPorterOrigin/v1" }
+$ApiPorterModel = if ($env:APIPORTER_CODEX_MODEL) { $env:APIPORTER_CODEX_MODEL } else { "gpt-5.6-sol" }
 $CodexHomeDir = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME ".codex" }
 $ConfigFile = Join-Path $CodexHomeDir "config.toml"
 $AuthFile = Join-Path $CodexHomeDir "auth.json"
@@ -223,9 +223,9 @@ function Backup-File {
 
 function Read-ApiKey {
   $prompt = Localized `
-    "请粘贴 CBAPI API Key（输入不会显示）" `
-    "CBAPI API Key を貼り付けてください（入力は表示されません）" `
-    "Paste your CBAPI API key (input is hidden)"
+    "请粘贴 ApiPorter API Key（输入不会显示）" `
+    "ApiPorter API Key を貼り付けてください（入力は表示されません）" `
+    "Paste your ApiPorter API key (input is hidden)"
   $secureKey = Read-Host $prompt -AsSecureString
   $key = [System.Net.NetworkCredential]::new("", $secureKey).Password
   if ([string]::IsNullOrWhiteSpace($key)) {
@@ -255,13 +255,13 @@ function Write-CodexFiles {
     $configToml = @"
 cli_auth_credentials_store = "file"
 model_provider = "apiporter"
-model = "$CBAPIModel"
+model = "$ApiPorterModel"
 model_reasoning_effort = "xhigh"
 disable_response_storage = true
 model_supports_reasoning_summaries = true
 
 [model_providers.apiporter]
-name = "CBAPI"
+name = "ApiPorter"
 base_url = "$escapedUrl"
 wire_api = "responses"
 requires_openai_auth = true
@@ -284,10 +284,10 @@ function Validate-ApiKey {
     $response = Invoke-WebRequest -Uri $modelsUrl `
       -Headers @{ Authorization = "Bearer $($Script:ApiKey)" } `
       -UseBasicParsing -TimeoutSec 30 -ErrorAction Stop
-    if ($response.StatusCode -eq 200 -and $response.Content -like "*$CBAPIModel*") {
-      Say ((Localized "API Key 验证通过，可访问模型：{0}" "API Key の検証に成功しました。利用可能なモデル: {0}" "API key validation passed; model available: {0}") -f $CBAPIModel)
+    if ($response.StatusCode -eq 200 -and $response.Content -like "*$ApiPorterModel*") {
+      Say ((Localized "API Key 验证通过，可访问模型：{0}" "API Key の検証に成功しました。利用可能なモデル: {0}" "API key validation passed; model available: {0}") -f $ApiPorterModel)
     } else {
-      Warn ((Localized "接口可访问，但模型列表中未找到：{0}" "API は利用できますが、モデルが見つかりません: {0}" "The API is reachable, but the model was not listed: {0}") -f $CBAPIModel)
+      Warn ((Localized "接口可访问，但模型列表中未找到：{0}" "API は利用できますが、モデルが見つかりません: {0}" "The API is reachable, but the model was not listed: {0}") -f $ApiPorterModel)
     }
   } catch {
     $statusCode = 0
@@ -300,16 +300,16 @@ function Validate-ApiKey {
       Warn ((Localized "在线验证返回 HTTP {0}" "オンライン検証の HTTP ステータス: {0}" "Online validation returned HTTP {0}") -f $statusCode)
     } else {
       Warn (Localized `
-        "暂时无法连接 CBAPI，配置已保留并跳过在线验证。" `
-        "CBAPI に接続できないため、設定を保持して検証をスキップしました。" `
-        "CBAPI could not be reached; configuration was kept and validation was skipped.")
+        "暂时无法连接 ApiPorter，配置已保留并跳过在线验证。" `
+        "ApiPorter に接続できないため、設定を保持して検証をスキップしました。" `
+        "ApiPorter could not be reached; configuration was kept and validation was skipped.")
     }
   }
 }
 
 try {
   Ensure-Environment
-  Say (Localized "CBAPI Codex 一键配置" "CBAPI Codex ワンクリック設定" "CBAPI Codex setup")
+  Say (Localized "ApiPorter Codex 一键配置" "ApiPorter Codex ワンクリック設定" "ApiPorter Codex setup")
   Say (Localized `
     "脚本会安装或更新 Codex，备份旧配置，并验证 API Key。" `
     "Codex の導入・更新、設定のバックアップ、API Key の検証を行います。" `
@@ -326,7 +326,7 @@ try {
   Say ((Localized "配置文件：{0}" "設定ファイル: {0}" "Configuration file: {0}") -f $ConfigFile)
   Say ((Localized "认证文件：{0}" "認証ファイル: {0}" "Authentication file: {0}") -f $AuthFile)
   Say (Localized "进入项目目录后运行：" "プロジェクトディレクトリで実行:" "Run this inside your project directory:")
-  Say "  codex --model $CBAPIModel"
+  Say "  codex --model $ApiPorterModel"
 } finally {
   $Script:ApiKey = ""
 }

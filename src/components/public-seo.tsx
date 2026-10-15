@@ -13,10 +13,15 @@ export function PublicSeo() {
         .querySelector('meta[name="seo-preview"]')
         ?.getAttribute('content') !== 'false'
     const template = document.createElement('template')
-    template.innerHTML = renderHead(getPage(location.pathname), preview, {}, i18n.language)
+    template.innerHTML = renderHead(
+      getPage(location.pathname),
+      preview,
+      {},
+      i18n.language
+    )
     document.head
       .querySelectorAll(
-        'title, meta[name="title"], meta[name="description"], meta[name="keywords"], meta[name="robots"], link[rel="canonical"], [data-cbapi-seo]'
+        'title, meta[name="title"], meta[name="description"], meta[name="keywords"], meta[name="robots"], link[rel="canonical"], [data-apiporter-seo]'
       )
       .forEach((node) => node.remove())
     document.head.append(template.content)

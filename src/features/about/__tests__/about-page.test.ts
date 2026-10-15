@@ -60,13 +60,13 @@ const aboutKeys = [
   'aboutPage.support.securityNotice',
 ] as const
 
-describe('Cloudbridge about page', () => {
+describe('ApiPorter about page', () => {
   test('renders the complete page through reactive translations', () => {
     assert.match(aboutPage, /useTranslation/)
     for (const key of aboutKeys) {
       assert.match(aboutPage, new RegExp(key.replaceAll('.', '\\.')))
     }
-    assert.match(aboutPage, /info@cbapi\.ai/)
+    assert.match(aboutPage, /work\.weixin\.qq\.com\/kfid\/kfc04b263b7d12b1448/)
   })
 
   test('ships complete English, Japanese, simplified and traditional Chinese copy', async () => {

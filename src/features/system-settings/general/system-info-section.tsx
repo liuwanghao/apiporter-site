@@ -192,8 +192,14 @@ export function SystemInfoSection({ defaultValues }: SystemInfoSectionProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('SEO Title')}</FormLabel>
-                    <FormControl><Input placeholder={t('CBAPI')} {...field} /></FormControl>
-                    <FormDescription>{t('Browser title and search result title for public pages')}</FormDescription>
+                    <FormControl>
+                      <Input placeholder={t('ApiPorter')} {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      {t(
+                        'Browser title and search result title for public pages'
+                      )}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -205,8 +211,20 @@ export function SystemInfoSection({ defaultValues }: SystemInfoSectionProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('SEO Description')}</FormLabel>
-                    <FormControl><Textarea rows={3} placeholder={t('Describe your service for search engines')} {...field} /></FormControl>
-                    <FormDescription>{t('Description used by search engines and social previews')}</FormDescription>
+                    <FormControl>
+                      <Textarea
+                        rows={3}
+                        placeholder={t(
+                          'Describe your service for search engines'
+                        )}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t(
+                        'Description used by search engines and social previews'
+                      )}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -218,8 +236,15 @@ export function SystemInfoSection({ defaultValues }: SystemInfoSectionProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('SEO Keywords')}</FormLabel>
-                    <FormControl><Input placeholder={t('AI API, Claude API, GPT API')} {...field} /></FormControl>
-                    <FormDescription>{t('Comma-separated keywords for public pages')}</FormDescription>
+                    <FormControl>
+                      <Input
+                        placeholder={t('AI API, Claude API, GPT API')}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Comma-separated keywords for public pages')}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -231,8 +256,15 @@ export function SystemInfoSection({ defaultValues }: SystemInfoSectionProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('SEO Social Image')}</FormLabel>
-                    <FormControl><Input placeholder='https://example.com/og-image.png' {...field} /></FormControl>
-                    <FormDescription>{t('Image URL used when sharing public pages')}</FormDescription>
+                    <FormControl>
+                      <Input
+                        placeholder='https://example.com/og-image.png'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t('Image URL used when sharing public pages')}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -246,7 +278,9 @@ export function SystemInfoSection({ defaultValues }: SystemInfoSectionProps) {
                     <FormLabel>{t('Logo URL')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={t('https://example.com/logo.png')}
+                        placeholder={t(
+                          'https://example.com/brand/apiporter-logo.png'
+                        )}
                         {...field}
                       />
                     </FormControl>

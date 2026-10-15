@@ -50,18 +50,18 @@ export function About() {
       <PageTransition className='relative mx-auto w-full max-w-[1492px] px-4 pt-28 pb-20 sm:pt-32 sm:pb-24 xl:pt-36 xl:pb-28'>
         <header className='relative overflow-hidden border-b border-[var(--console-line)] pb-16 sm:pb-20 lg:pb-24'>
           <div
-            className='pointer-events-none absolute -top-12 -right-28 size-80 rounded-full border-[44px] border-[color-mix(in_srgb,var(--console-orange)_7%,transparent)] sm:size-[430px] sm:border-[62px]'
+            className='pointer-events-none absolute -top-12 -right-28 size-80 rounded-full border-[44px] border-[color-mix(in_srgb,var(--console-brand)_7%,transparent)] sm:size-[430px] sm:border-[62px]'
             aria-hidden='true'
           />
 
           <div className='relative max-w-4xl'>
-            <p className='mb-7 inline-flex rounded-full border border-[color-mix(in_srgb,var(--console-orange)_24%,var(--console-line))] bg-[color-mix(in_srgb,var(--console-surface)_72%,transparent)] px-3.5 py-1.5 text-[11px] font-bold tracking-[0.12em] text-[var(--console-orange)] uppercase sm:mb-9'>
+            <p className='mb-7 inline-flex rounded-full border border-[color-mix(in_srgb,var(--console-brand)_24%,var(--console-line))] bg-[color-mix(in_srgb,var(--console-surface)_72%,transparent)] px-3.5 py-1.5 text-[11px] font-bold tracking-[0.12em] text-[var(--console-brand)] uppercase sm:mb-9'>
               {t('aboutPage.eyebrow')}
             </p>
             <h1 className='public-page-title max-w-3xl font-bold text-balance'>
               {t('aboutPage.hero.titleLead')}
               <br />
-              <span className='text-[var(--console-orange)]'>
+              <span className='text-[var(--console-brand)]'>
                 {t('aboutPage.hero.titleHighlight')}
               </span>
             </h1>
@@ -78,7 +78,7 @@ export function About() {
           aria-labelledby='about-company-title'
         >
           <div>
-            <p className='text-[12px] font-bold tracking-[0.12em] text-[var(--console-orange)]'>
+            <p className='text-[12px] font-bold tracking-[0.12em] text-[var(--console-brand)]'>
               {t('aboutPage.company.eyebrow')}
             </p>
             <h2
@@ -92,7 +92,7 @@ export function About() {
           <div className='public-page-lead space-y-6 text-[var(--console-muted)]'>
             <p>
               <strong className='font-bold text-[var(--console-ink)]'>
-                CloudBridge Technology AI Limited
+                ApiPorter
               </strong>{' '}
               {t('aboutPage.company.description1')}
             </p>
@@ -106,7 +106,7 @@ export function About() {
           className='border-b border-[var(--console-line)] py-16 sm:py-20 lg:py-24'
           aria-labelledby='about-values-title'
         >
-          <p className='text-[12px] font-bold tracking-[0.12em] text-[var(--console-orange)]'>
+          <p className='text-[12px] font-bold tracking-[0.12em] text-[var(--console-brand)]'>
             {t('aboutPage.values.eyebrow')}
           </p>
           <h2
@@ -120,9 +120,9 @@ export function About() {
             {principles.map((principle) => (
               <article
                 key={principle.index}
-                className='group rounded-2xl border border-[var(--console-line)] bg-[color-mix(in_srgb,var(--console-surface)_82%,transparent)] p-6 shadow-[var(--console-panel-shadow)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--console-orange)_34%,var(--console-line))] hover:shadow-[var(--console-panel-shadow-hover)] sm:p-7'
+                className='group rounded-2xl border border-[var(--console-line)] bg-[color-mix(in_srgb,var(--console-surface)_82%,transparent)] p-6 shadow-[var(--console-panel-shadow)] transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-[color-mix(in_srgb,var(--console-brand)_34%,var(--console-line))] hover:shadow-[var(--console-panel-shadow-hover)] sm:p-7'
               >
-                <p className='text-[11px] font-bold tracking-[0.1em] text-[var(--console-orange)]'>
+                <p className='text-[11px] font-bold tracking-[0.1em] text-[var(--console-brand)]'>
                   {principle.index} / {principle.eyebrow}
                 </p>
                 <h3 className='mt-10 text-xl font-bold text-[var(--console-ink)] sm:mt-12 sm:text-2xl'>
@@ -141,7 +141,7 @@ export function About() {
           aria-labelledby='about-support-title'
         >
           <div className='rounded-3xl border border-[var(--console-line)] bg-[color-mix(in_srgb,var(--console-surface)_82%,transparent)] p-6 shadow-[var(--console-panel-shadow)] sm:p-9 lg:p-12'>
-            <p className='text-[12px] font-bold tracking-[0.12em] text-[var(--console-orange)]'>
+            <p className='text-[12px] font-bold tracking-[0.12em] text-[var(--console-brand)]'>
               CUSTOMER SUPPORT
             </p>
             <h2
@@ -160,10 +160,10 @@ export function About() {
                   {t('aboutPage.support.customerService.description')}
                 </p>
                 <a
-                  href='https://csm.cbapi.ai/'
+                  href='https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='mt-6 inline-flex min-h-10 items-center font-bold text-[var(--console-orange)] transition-transform hover:translate-x-1'
+                  className='mt-6 inline-flex min-h-10 items-center font-bold text-[var(--console-brand)] transition-transform hover:translate-x-1'
                 >
                   {t('aboutPage.support.customerService.link')} →
                 </a>
@@ -177,10 +177,10 @@ export function About() {
                   {t('aboutPage.support.business.description')}
                 </p>
                 <a
-                  href='mailto:info@cbapi.ai'
-                  className='mt-6 inline-flex min-h-10 items-center font-bold text-[var(--console-orange)] transition-transform hover:translate-x-1'
+                  href='https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448'
+                  className='mt-6 inline-flex min-h-10 items-center font-bold text-[var(--console-brand)] transition-transform hover:translate-x-1'
                 >
-                  info@cbapi.ai →
+                  {t('Customer service center')} →
                 </a>
               </div>
             </div>

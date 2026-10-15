@@ -1,8 +1,8 @@
 $ErrorActionPreference = "Stop"
 
-$DefaultCBAPIOrigin = if ($env:APIPORTER_DEFAULT_ORIGIN) { $env:APIPORTER_DEFAULT_ORIGIN } else { "__APIPORTER_ORIGIN__" }
-if ($DefaultCBAPIOrigin.StartsWith("__APIPORTER_")) { $DefaultCBAPIOrigin = "http://localhost:5180" }
-$Script:ApiBaseUrl = if ($env:APIPORTER_BASE_URL) { $env:APIPORTER_BASE_URL.TrimEnd("/") } else { $DefaultCBAPIOrigin }
+$DefaultApiPorterOrigin = if ($env:APIPORTER_DEFAULT_ORIGIN) { $env:APIPORTER_DEFAULT_ORIGIN } else { "__APIPORTER_ORIGIN__" }
+if ($DefaultApiPorterOrigin.StartsWith("__APIPORTER_")) { $DefaultApiPorterOrigin = "http://localhost:5180" }
+$Script:ApiBaseUrl = if ($env:APIPORTER_BASE_URL) { $env:APIPORTER_BASE_URL.TrimEnd("/") } else { $DefaultApiPorterOrigin }
 $OpusModel = if ($env:APIPORTER_CLAUDE_OPUS_MODEL) { $env:APIPORTER_CLAUDE_OPUS_MODEL } else { "claude-opus-4-8" }
 $SonnetModel = if ($env:APIPORTER_CLAUDE_SONNET_MODEL) { $env:APIPORTER_CLAUDE_SONNET_MODEL } else { "claude-sonnet-5" }
 $ClaudeHomeDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $HOME ".claude" }
@@ -177,9 +177,9 @@ function Set-JsonProperty {
 
 function Read-ApiKey {
   $prompt = Localized `
-    "请粘贴 CBAPI API Key（输入不会显示）" `
-    "CBAPI API Key を貼り付けてください（入力は表示されません）" `
-    "Paste your CBAPI API key (input is hidden)"
+    "请粘贴 ApiPorter API Key（输入不会显示）" `
+    "ApiPorter API Key を貼り付けてください（入力は表示されません）" `
+    "Paste your ApiPorter API key (input is hidden)"
   $secureKey = Read-Host $prompt -AsSecureString
   $key = [System.Net.NetworkCredential]::new("", $secureKey).Password
   if ([string]::IsNullOrWhiteSpace($key)) {
@@ -268,16 +268,16 @@ function Validate-ApiKey {
       Warn ((Localized "在线验证返回 HTTP {0}" "オンライン検証の HTTP ステータス: {0}" "Online validation returned HTTP {0}") -f $statusCode)
     } else {
       Warn (Localized `
-        "暂时无法连接 CBAPI，配置已保留并跳过在线验证。" `
-        "CBAPI に接続できないため、設定を保持して検証をスキップしました。" `
-        "CBAPI could not be reached; configuration was kept and validation was skipped.")
+        "暂时无法连接 ApiPorter，配置已保留并跳过在线验证。" `
+        "ApiPorter に接続できないため、設定を保持して検証をスキップしました。" `
+        "ApiPorter could not be reached; configuration was kept and validation was skipped.")
     }
   }
 }
 
 try {
   Ensure-Environment
-  Say (Localized "CBAPI Claude Code 一键配置" "CBAPI Claude Code ワンクリック設定" "CBAPI Claude Code setup")
+  Say (Localized "ApiPorter Claude Code 一键配置" "ApiPorter Claude Code ワンクリック設定" "ApiPorter Claude Code setup")
   Say (Localized `
     "脚本会按需安装 Claude Code、保留并合并旧配置，然后验证两个模型。" `
     "Claude Code を必要に応じて導入し、既存設定を保持・統合して 2 モデルを検証します。" `

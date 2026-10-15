@@ -58,7 +58,7 @@ describe('model plaza layout', () => {
     )
     assert.match(
       stylesheet,
-      /\.console-model-plaza\s*{[\s\S]*?--model-accent:\s*var\(--console-orange\);/
+      /\.console-model-plaza\s*{[\s\S]*?--model-accent:\s*var\(--console-brand\);/
     )
     assert.match(
       stylesheet,

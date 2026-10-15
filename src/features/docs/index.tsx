@@ -112,14 +112,14 @@ export function CodexDocs() {
             <span className='bg-primary/10 inline-flex size-6 items-center justify-center rounded-md'>
               <Braces className='size-3.5' aria-hidden='true' />
             </span>
-            {t('CBAPI API integration documentation')}
+            {t('ApiPorter API integration documentation')}
           </div>
           <h1 className='mt-5 text-4xl font-bold tracking-[-0.045em] text-balance sm:text-5xl md:text-6xl'>
             {t('Codex quick start')}
           </h1>
           <p className='text-muted-foreground mt-5 max-w-3xl text-base leading-7 sm:text-lg'>
             {t(
-              'Install Codex on Windows, macOS, or Linux, connect it to your CBAPI API key, and verify a Responses API request.'
+              'Install Codex on Windows, macOS, or Linux, connect it to your ApiPorter API key, and verify a Responses API request.'
             )}
           </p>
           <div className='mt-8 grid gap-3 sm:grid-cols-2'>

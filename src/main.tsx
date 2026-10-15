@@ -32,6 +32,7 @@ import { CustomerSupportFallback } from '@/components/customer-support-fallback'
 import { installAnalytics } from '@/lib/analytics'
 import { getStatus } from '@/lib/api'
 import { installBuildMetadata } from '@/lib/build-metadata'
+import { DEFAULT_LOGO } from '@/lib/constants'
 import { applyFaviconToDom } from '@/lib/dom-utils'
 import '@/lib/dayjs'
 import { initializeFrontendCache } from '@/lib/frontend-cache'
@@ -125,7 +126,7 @@ if (!rootElement) {
       const saved = localStorage.getItem('status')
       if (saved) {
         const s = JSON.parse(saved)
-        if (s?.logo) applyFaviconToDom(s.logo)
+        if (s?.logo) applyFaviconToDom(DEFAULT_LOGO)
       }
     } catch {
       /* empty */
@@ -140,7 +141,7 @@ if (!rootElement) {
             /* empty */
           }
         }
-        if (s?.logo) applyFaviconToDom(s.logo as string)
+        if (s?.logo) applyFaviconToDom(DEFAULT_LOGO)
       })
       .catch(() => {
         /* empty */

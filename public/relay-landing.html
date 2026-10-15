@@ -11,20 +11,20 @@
     />
     <style>
       :root {
-        --bg: oklch(0.975 0.014 79);
+        --bg: #f5f8fc;
         --surface: oklch(1 0 0);
-        --surface-2: oklch(0.94 0.025 78);
-        --fg: oklch(0.19 0.02 54);
-        --muted: oklch(0.48 0.03 54);
-        --line: oklch(0.84 0.035 72);
-        --accent: oklch(0.68 0.205 48);
-        --accent-hi: oklch(0.75 0.17 56);
-        --accent-ink: oklch(0.18 0.045 46);
-        --accent-text: oklch(0.45 0.16 47);
-        --accent-soft: oklch(0.91 0.085 70);
+        --surface-2: #eaf1f8;
+        --fg: #14283f;
+        --muted: #5c7087;
+        --line: #dce5ef;
+        --accent: #0878bd;
+        --accent-hi: #0667a7;
+        --accent-ink: #fff;
+        --accent-text: #0667a7;
+        --accent-soft: #e1f2fe;
         --positive: oklch(0.62 0.13 145);
-        --shadow: 0 24px 70px oklch(0.25 0.06 50 / 0.12);
-        --radius: 6px;
+        --shadow: 0 24px 70px rgb(23 55 89 / 10%);
+        --radius: 16px;
         --public-page-title-size: clamp(2.25rem, 4vw, 3rem);
         --public-section-title-size: clamp(1.75rem, 3vw, 2.25rem);
         --public-body-size: 1rem;
@@ -41,17 +41,17 @@
         --mono: var(--site-font);
       }
       [data-theme='dark'] {
-        --bg: oklch(0.14 0.018 52);
-        --surface: oklch(0.205 0.02 53);
-        --surface-2: oklch(0.235 0.032 48);
-        --fg: oklch(0.94 0.018 73);
-        --muted: oklch(0.73 0.026 67);
-        --line: oklch(0.34 0.04 51);
-        --accent: oklch(0.75 0.205 55);
-        --accent-hi: oklch(0.81 0.15 66);
-        --accent-ink: oklch(0.14 0.035 50);
-        --accent-text: oklch(0.83 0.17 67);
-        --accent-soft: oklch(0.29 0.085 51);
+        --bg: #0b1625;
+        --surface: #122237;
+        --surface-2: #1b3048;
+        --fg: #e8f1fc;
+        --muted: #a1b5cc;
+        --line: #2b4059;
+        --accent: #49b6f5;
+        --accent-hi: #80d0ff;
+        --accent-ink: #0b1828;
+        --accent-text: #80d0ff;
+        --accent-soft: #163a56;
         --positive: oklch(0.72 0.13 145);
         --shadow: 0 26px 80px oklch(0.02 0 0 / 0.4);
       }
@@ -73,7 +73,7 @@
           ),
           radial-gradient(
             circle at 88% 32%,
-            color-mix(in srgb, var(--positive) 11%, transparent),
+            color-mix(in srgb, var(--accent) 7%, transparent),
             transparent 30%
           );
         background-position: top center;
@@ -213,7 +213,7 @@
         color: var(--accent-ink);
         font-size: 14px;
         font-weight: 800;
-        box-shadow: 0 9px 22px oklch(0.65 0.16 48 / 0.18);
+        box-shadow: 0 9px 22px rgb(8 120 189 / 18%);
         transition:
           transform 0.2s,
           background 0.2s,
@@ -222,7 +222,7 @@
       .primary:hover {
         transform: translateY(-2px);
         background: var(--accent-hi);
-        box-shadow: 0 14px 28px oklch(0.65 0.16 48 / 0.27);
+        box-shadow: 0 14px 28px rgb(8 120 189 / 24%);
       }
       .menu {
         display: none;
@@ -488,7 +488,7 @@
       .tab.active {
         background: var(--surface);
         color: var(--fg);
-        box-shadow: 0 1px 3px oklch(0.2 0.03 52 / 0.1);
+        box-shadow: 0 1px 3px rgb(23 55 89 / 10%);
       }
       .copy {
         margin-left: auto;
@@ -1540,18 +1540,18 @@ curl https://api.example.com/v1/chat/completions \
         <div class="footer-brand">
           <img
             class="footer-brand-mark"
-            src="/logo.png"
+            src="/brand/apiporter-logo.png"
             alt=""
             aria-hidden="true"
           />
           <div>
-            <p class="footer-company" lang="en">
-              CloudBridge Technology AI Limited
-            </p>
+            <p class="footer-company" lang="en">ApiPorter</p>
             <a
               class="footer-contact"
-              href="mailto:info@cbapi.ai"
-              aria-label="发送邮件至 info@cbapi.ai"
+              href="https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="联系 ApiPorter 客服"
               data-i18n-aria="footer.contactAria"
               data-footer-label="contact"
             >
@@ -1567,7 +1567,7 @@ curl https://api.example.com/v1/chat/completions \
                 <rect x="3" y="5" width="18" height="14" rx="2" />
                 <path d="m3 7 9 6 9-6" />
               </svg>
-              <span data-i18n="footer.contact">info@cbapi.ai</span>
+              <span data-i18n="footer.contact">ApiPorter 客服</span>
             </a>
           </div>
         </div>
@@ -1628,8 +1628,7 @@ curl https://api.example.com/v1/chat/completions \
       </div>
       <div class="footer-copyright" lang="en">
         <small class="shell">
-          Copyright © 2026 CloudBridge Technology AI Limited. All rights
-          reserved.
+          Copyright © 2026 ApiPorter. All rights reserved.
         </small>
       </div>
     </footer>
@@ -1713,8 +1712,8 @@ curl https://api.example.com/v1/chat/completions \
           "final.title": "把多模型调用，<br>变成一条清晰的路径。",
           "final.cta": "获取接入指引 ↗",
           "footer.aria": "法律与安全信息",
-          "footer.contact": "info@cbapi.ai",
-          "footer.contactAria": "发送邮件至 info@cbapi.ai",
+          "footer.contact": "ApiPorter 客服",
+          "footer.contactAria": "联系 ApiPorter 客服",
           "footer.aiUsageGuidelines": "AI服务使用规范",
           "footer.rechargeAgreement": "充值服务协议",
           "footer.thirdPartyModelNotice": "第三方模型服务说明",
@@ -1802,8 +1801,8 @@ curl https://api.example.com/v1/chat/completions \
           "final.title": "把多模型呼叫，<br>變成一條清晰的路徑。",
           "final.cta": "取得接入指引 ↗",
           "footer.aria": "法律與安全資訊",
-          "footer.contact": "info@cbapi.ai",
-          "footer.contactAria": "發送郵件至 info@cbapi.ai",
+          "footer.contact": "ApiPorter 客服",
+          "footer.contactAria": "聯絡 ApiPorter 客服",
           "footer.aiUsageGuidelines": "AI服務使用規範",
           "footer.rechargeAgreement": "充值服務協議",
           "footer.thirdPartyModelNotice": "第三方模型服務說明",
@@ -1891,8 +1890,8 @@ curl https://api.example.com/v1/chat/completions \
           "final.title": "Turn multi-model calls<br>into one clear path.",
           "final.cta": "Get the integration guide ↗",
           "footer.aria": "Legal and security information",
-          "footer.contact": "info@cbapi.ai",
-          "footer.contactAria": "Send email to info@cbapi.ai",
+          "footer.contact": "ApiPorter Support",
+          "footer.contactAria": "Contact ApiPorter support",
           "footer.aiUsageGuidelines": "AI Service Usage Guidelines",
           "footer.rechargeAgreement": "Recharge Service Agreement",
           "footer.thirdPartyModelNotice": "Third-Party Model Service Notice",
@@ -1980,8 +1979,8 @@ curl https://api.example.com/v1/chat/completions \
           "final.title": "複数モデルの呼び出しを、<br>ひとつの明確な経路へ。",
           "final.cta": "接続ガイドを見る ↗",
           "footer.aria": "法的情報とセキュリティ",
-          "footer.contact": "info@cbapi.ai",
-          "footer.contactAria": "info@cbapi.ai にメールを送信",
+          "footer.contact": "ApiPorter サポート",
+          "footer.contactAria": "ApiPorter サポートに連絡",
           "footer.aiUsageGuidelines": "AIサービス利用規約",
           "footer.rechargeAgreement": "チャージサービス契約",
           "footer.thirdPartyModelNotice": "第三者モデルサービスに関する説明",
@@ -2069,8 +2068,8 @@ curl https://api.example.com/v1/chat/completions \
           "final.title": "Transformez vos appels à plusieurs modèles<br>en un parcours clair.",
           "final.cta": "Consulter le guide d’intégration ↗",
           "footer.aria": "Informations juridiques et sécurité",
-          "footer.contact": "info@cbapi.ai",
-          "footer.contactAria": "Envoyer un e-mail à info@cbapi.ai",
+          "footer.contact": "Assistance ApiPorter",
+          "footer.contactAria": "Contacter l’assistance ApiPorter",
           "footer.aiUsageGuidelines": "Règles d’utilisation des services IA",
           "footer.rechargeAgreement": "Contrat de service de recharge",
           "footer.thirdPartyModelNotice": "Avis sur les services de modèles tiers",
@@ -2158,8 +2157,8 @@ curl https://api.example.com/v1/chat/completions \
           "final.title": "Объедините вызовы разных моделей<br>в один понятный путь.",
           "final.cta": "Руководство по интеграции ↗",
           "footer.aria": "Правовая информация и безопасность",
-          "footer.contact": "info@cbapi.ai",
-          "footer.contactAria": "Отправить письмо на info@cbapi.ai",
+          "footer.contact": "Поддержка ApiPorter",
+          "footer.contactAria": "Связаться с поддержкой ApiPorter",
           "footer.aiUsageGuidelines": "Правила использования сервисов ИИ",
           "footer.rechargeAgreement": "Соглашение об услугах пополнения",
           "footer.thirdPartyModelNotice": "Уведомление о сторонних моделях",
@@ -2247,8 +2246,8 @@ curl https://api.example.com/v1/chat/completions \
           "final.title": "Biến các lệnh gọi nhiều mô hình<br>thành một đường đi rõ ràng.",
           "final.cta": "Xem hướng dẫn tích hợp ↗",
           "footer.aria": "Thông tin pháp lý và bảo mật",
-          "footer.contact": "info@cbapi.ai",
-          "footer.contactAria": "Gửi email đến info@cbapi.ai",
+          "footer.contact": "Hỗ trợ ApiPorter",
+          "footer.contactAria": "Liên hệ bộ phận hỗ trợ ApiPorter",
           "footer.aiUsageGuidelines": "Quy định sử dụng dịch vụ AI",
           "footer.rechargeAgreement": "Thỏa thuận dịch vụ nạp tiền",
           "footer.thirdPartyModelNotice": "Thông báo dịch vụ mô hình bên thứ ba",

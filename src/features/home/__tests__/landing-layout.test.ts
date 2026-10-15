@@ -61,7 +61,8 @@ const footerTranslations = {
     agreement: '用户协议',
     privacy: '隐私政策',
     security: '数据安全承诺',
-    contactAria: '发送邮件至 info@cbapi.ai',
+    contactAria: '联系 ApiPorter 客服',
+    contactLabel: 'ApiPorter 客服',
     navigation: '法律与安全信息',
   },
   'zh-TW': {
@@ -71,7 +72,8 @@ const footerTranslations = {
     agreement: '用戶協議',
     privacy: '隱私政策',
     security: '數據安全承諾',
-    contactAria: '發送郵件至 info@cbapi.ai',
+    contactAria: '聯絡 ApiPorter 客服',
+    contactLabel: 'ApiPorter 客服',
     navigation: '法律與安全資訊',
   },
   en: {
@@ -81,7 +83,8 @@ const footerTranslations = {
     agreement: 'User Agreement',
     privacy: 'Privacy Policy',
     security: 'Data Security Commitment',
-    contactAria: 'Send email to info@cbapi.ai',
+    contactAria: 'Contact ApiPorter support',
+    contactLabel: 'ApiPorter Support',
     navigation: 'Legal and security information',
   },
   fr: {
@@ -91,7 +94,8 @@ const footerTranslations = {
     agreement: 'Conditions d’utilisation',
     privacy: 'Politique de confidentialité',
     security: 'Engagement de sécurité des données',
-    contactAria: 'Envoyer un e-mail à info@cbapi.ai',
+    contactAria: 'Contacter l’assistance ApiPorter',
+    contactLabel: 'Assistance ApiPorter',
     navigation: 'Informations juridiques et sécurité',
   },
   ru: {
@@ -101,7 +105,8 @@ const footerTranslations = {
     agreement: 'Пользовательское соглашение',
     privacy: 'Политика конфиденциальности',
     security: 'Обязательства по безопасности данных',
-    contactAria: 'Отправить письмо на info@cbapi.ai',
+    contactAria: 'Связаться с поддержкой ApiPorter',
+    contactLabel: 'Поддержка ApiPorter',
     navigation: 'Правовая информация и безопасность',
   },
   vi: {
@@ -111,7 +116,8 @@ const footerTranslations = {
     agreement: 'Thỏa thuận người dùng',
     privacy: 'Chính sách quyền riêng tư',
     security: 'Cam kết bảo mật dữ liệu',
-    contactAria: 'Gửi email đến info@cbapi.ai',
+    contactAria: 'Liên hệ bộ phận hỗ trợ ApiPorter',
+    contactLabel: 'Hỗ trợ ApiPorter',
     navigation: 'Thông tin pháp lý và bảo mật',
   },
   ja: {
@@ -121,7 +127,8 @@ const footerTranslations = {
     agreement: '利用規約',
     privacy: 'プライバシーポリシー',
     security: 'データセキュリティへの取り組み',
-    contactAria: 'info@cbapi.ai にメールを送信',
+    contactAria: 'ApiPorter サポートに連絡',
+    contactLabel: 'ApiPorter サポート',
     navigation: '法的情報とセキュリティ',
   },
 }
@@ -246,7 +253,10 @@ describe('landing page layout', () => {
       routeEffectScript,
       /this\.layoutBounds \|\| this\.stage\.getBoundingClientRect\(\)/
     )
-    assert.match(routeEffectScript, /time === this\.frameTime \? this\.frameGate/)
+    assert.match(
+      routeEffectScript,
+      /time === this\.frameTime \? this\.frameGate/
+    )
   })
 
   test('centers the guidance text inside the final call-to-action button', () => {
@@ -296,20 +306,23 @@ describe('landing page layout', () => {
         )
         assert.match(
           footer.querySelector('.footer-brand')?.textContent ?? '',
-          /CloudBridge Technology AI Limited/
+          /ApiPorter/
         )
         assert.equal(
           footer
             .querySelector('small')
             ?.textContent.replaceAll(/\s+/g, ' ')
             .trim(),
-          'Copyright © 2026 CloudBridge Technology AI Limited. All rights reserved.'
+          'Copyright © 2026 ApiPorter. All rights reserved.'
         )
 
-        const contact = footer.querySelector('a[href^="mailto:"]')
+        const contact = footer.querySelector('[data-footer-label="contact"]')
         assert.ok(contact)
-        assert.equal(contact.textContent.trim(), 'info@cbapi.ai')
-        assert.equal(contact.getAttribute('href'), 'mailto:info@cbapi.ai')
+        assert.equal(contact.textContent.trim(), labels.contactLabel)
+        assert.equal(
+          contact.getAttribute('href'),
+          'https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448'
+        )
         assert.equal(contact.getAttribute('aria-label'), labels.contactAria)
 
         const legalLinks = [...footer.querySelectorAll('.footer-legal-links a')]

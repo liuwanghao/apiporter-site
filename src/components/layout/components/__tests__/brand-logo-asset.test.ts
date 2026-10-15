@@ -20,13 +20,12 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { describe, test } from 'node:test'
 
-const logoAssetUrl = new URL('../../../../../public/logo.png', import.meta.url)
-const wordmarkAssetUrl = new URL(
-  '../../../../../public/cloudbridge-wordmark.png',
+const logoAssetUrl = new URL(
+  '../../../../../public/brand/apiporter-logo.png',
   import.meta.url
 )
 const faviconAssetUrl = new URL(
-  '../../../../../public/cloudbridge-favicon.png',
+  '../../../../../public/brand/apiporter-favicon.png',
   import.meta.url
 )
 const indexHtmlUrl = new URL('../../../../../index.html', import.meta.url)
@@ -42,33 +41,37 @@ function assertPng(asset: Buffer, expected: { width: number; height: number }) {
 }
 
 describe('brand logo asset', () => {
+  test('brand URLs avoid API proxy prefixes so the browser receives images', async () => {
+    const constants = await readFile(
+      new URL('../../../../lib/constants.ts', import.meta.url),
+      'utf8'
+    )
+    const indexHtml = await readFile(indexHtmlUrl, 'utf8')
+    assert.match(constants, /DEFAULT_LOGO = '\/brand\/apiporter-logo\.png'/)
+    assert.match(indexHtml, /href="\/brand\/apiporter-favicon\.png"/)
+  })
+
   test('provides a crisp square RGBA logo for every compact brand slot', async () => {
     const logo = await readFile(logoAssetUrl)
 
     assertPng(logo, { width: 512, height: 512 })
   })
 
-  test('ships the supplied Cloudbridge wordmark beside the compact mark', async () => {
-    const wordmark = await readFile(wordmarkAssetUrl)
-
-    assertPng(wordmark, { width: 664, height: 136 })
-  })
-
-  test('uses a dedicated cache-safe Cloudbridge favicon', async () => {
+  test('uses a dedicated cache-safe ApiPorter favicon', async () => {
     const [favicon, indexHtml] = await Promise.all([
       readFile(faviconAssetUrl),
       readFile(indexHtmlUrl, 'utf8'),
     ])
 
     assertPng(favicon, { width: 64, height: 64 })
-    assert.match(indexHtml, /href="\/cloudbridge-favicon\.png"/)
+    assert.match(indexHtml, /href="\/brand\/apiporter-favicon\.png"/)
   })
 
-  test('renders CBAPI as the initial browser tab title', async () => {
+  test('renders ApiPorter as the initial browser tab title', async () => {
     const indexHtml = await readFile(indexHtmlUrl, 'utf8')
 
-    assert.match(indexHtml, /<title>CBAPI<\/title>/)
-    assert.match(indexHtml, /<meta name="title" content="CBAPI" \/>/)
+    assert.match(indexHtml, /<title>ApiPorter<\/title>/)
+    assert.match(indexHtml, /<meta name="title" content="ApiPorter" \/>/)
     assert.doesNotMatch(indexHtml, /<title>New API<\/title>/)
   })
 })

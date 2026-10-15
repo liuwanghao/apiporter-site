@@ -98,8 +98,8 @@ export function mapStatusDataToConfig(
   }
 
   return {
-    systemName: data.system_name || DEFAULT_SYSTEM_NAME,
-    logo: data.logo || DEFAULT_LOGO,
+    systemName: DEFAULT_SYSTEM_NAME,
+    logo: DEFAULT_LOGO,
     seoTitle: data.seo_title?.trim() || undefined,
     seoDescription: data.seo_description?.trim() || undefined,
     seoKeywords: data.seo_keywords?.trim() || undefined,

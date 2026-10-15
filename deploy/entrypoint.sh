@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 SOURCE_DIR="${SOURCE_DIR:-/opt/apiporter-site/source}"
 REPO_URL="${REPO_URL:-git@github.com:liuwanghao/apiporter-site.git}"
-BRANCH="${BRANCH:-develop}"
+BRANCH="${BRANCH:-master}"
 SOURCE_LOCK_FILE="${SOURCE_LOCK_FILE:-/run/lock/apiporter-site-source.lock}"
 
 log() { printf '[frontend-source] %s\n' "$*"; }

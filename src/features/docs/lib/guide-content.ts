@@ -196,7 +196,7 @@ disable_response_storage = true
 model_supports_reasoning_summaries = true
 
 [model_providers.apiporter]
-name = "CBAPI"
+name = "ApiPorter"
 base_url = "${v1Url}"
 wire_api = "responses"
 requires_openai_auth = true`
@@ -237,8 +237,8 @@ chmod 600 auth.json`
 
   return {
     lead: text(
-      'This guide has one goal: send the first successful Codex request through CBAPI. Choose Method A for the shortest path, or use Method B to create each configuration file yourself.',
-      '这篇文档只解决一件事：让 Codex 通过 CBAPI 成功发送第一条请求。想尽快完成可以选择方式 A；希望自己检查配置时，请按方式 B 逐步执行对应系统的命令。'
+      'This guide has one goal: send the first successful Codex request through ApiPorter. Choose Method A for the shortest path, or use Method B to create each configuration file yourself.',
+      '这篇文档只解决一件事：让 Codex 通过 ApiPorter 成功发送第一条请求。想尽快完成可以选择方式 A；希望自己检查配置时，请按方式 B 逐步执行对应系统的命令。'
     ),
     toc: [
       {
@@ -280,8 +280,8 @@ chmod 600 auth.json`
         title: text('Step 1: Create an API key', '第一步：创建 API Key'),
         blocks: [
           paragraph(
-            'Sign in to CBAPI, open API Keys, and create a key assigned to any non-default group that can use gpt-5.6-sol. No single group is required or preferred.',
-            '登录 CBAPI 控制台并打开“令牌 / API Keys”，创建一个能够访问 gpt-5.6-sol 的 Key。选择任意包含该模型的非 default 分组即可，不要求使用某个特定分组。'
+            'Sign in to ApiPorter, open API Keys, and create a key assigned to any non-default group that can use gpt-5.6-sol. No single group is required or preferred.',
+            '登录 ApiPorter 控制台并打开“令牌 / API Keys”，创建一个能够访问 gpt-5.6-sol 的 Key。选择任意包含该模型的非 default 分组即可，不要求使用某个特定分组。'
           ),
           paragraph(
             'Keep the full key available. The one-click and manual paths below produce the same Codex configuration files.',
@@ -320,8 +320,8 @@ chmod 600 auth.json`
           ),
           codexCode(unixRootQuickSetup),
           paragraph(
-            'The script lets you choose a language, installs or updates Codex, backs up existing files, securely prompts for the CBAPI API key, writes the provider settings to ~/.codex, and validates gpt-5.6-sol.',
-            '脚本会让你选择语言，安装或更新 Codex，备份已有配置，安全输入 CBAPI API Key，把 provider 设置写入 ~/.codex，并验证 gpt-5.6-sol。'
+            'The script lets you choose a language, installs or updates Codex, backs up existing files, securely prompts for the ApiPorter API key, writes the provider settings to ~/.codex, and validates gpt-5.6-sol.',
+            '脚本会让你选择语言，安装或更新 Codex，备份已有配置，安全输入 ApiPorter API Key，把 provider 设置写入 ~/.codex，并验证 gpt-5.6-sol。'
           ),
           label('Windows PowerShell', 'Windows PowerShell'),
           paragraph(
@@ -340,8 +340,8 @@ chmod 600 auth.json`
             'method-b'
           ),
           paragraph(
-            'Use the steps below if you do not want to run the CBAPI one-click installer. At each step, execute only the command for your operating system.',
-            '不想运行 CBAPI 一键脚本时，请按下面的顺序操作；每一步只执行当前操作系统对应的命令。'
+            'Use the steps below if you do not want to run the ApiPorter one-click installer. At each step, execute only the command for your operating system.',
+            '不想运行 ApiPorter 一键脚本时，请按下面的顺序操作；每一步只执行当前操作系统对应的命令。'
           ),
           plainNote(
             'The user-level .codex directory contains config.toml and auth.json.',
@@ -391,8 +391,8 @@ chmod 600 auth.json`
           codexCode(unixConfig, 'Terminal'),
           heading('4. Create auth.json', '第 4 步：创建 auth.json', 4),
           paragraph(
-            'Before running the command for your system, replace YOUR_APIPORTER_API_KEY with the complete key created in CBAPI. Keep valid JSON, use the OPENAI_API_KEY field, and do not add a provider auth block. The current Codex API-key flow must keep requires_openai_auth = true.',
-            '执行当前系统的命令前，必须把 YOUR_APIPORTER_API_KEY 替换成在 CBAPI 创建的完整 Key。文件必须保持合法 JSON，并使用 OPENAI_API_KEY 字段；不要添加 provider 的 auth 命令块。当前 Codex 的 API Key 配置必须保留 requires_openai_auth = true。'
+            'Before running the command for your system, replace YOUR_APIPORTER_API_KEY with the complete key created in ApiPorter. Keep valid JSON, use the OPENAI_API_KEY field, and do not add a provider auth block. The current Codex API-key flow must keep requires_openai_auth = true.',
+            '执行当前系统的命令前，必须把 YOUR_APIPORTER_API_KEY 替换成在 ApiPorter 创建的完整 Key。文件必须保持合法 JSON，并使用 OPENAI_API_KEY 字段；不要添加 provider 的 auth 命令块。当前 Codex 的 API Key 配置必须保留 requires_openai_auth = true。'
           ),
           label('Windows PowerShell', 'Windows PowerShell'),
           codexCode(windowsAuth, 'PowerShell'),
@@ -517,8 +517,8 @@ chmod 600 settings.json`
 
   return {
     lead: text(
-      'This guide focuses on one outcome: sending the first successful Claude Code request through CBAPI. Choose the quick script in Method A, or follow every operating-system command in Method B.',
-      '这篇文档只完成一个目标：让 Claude Code 通过 CBAPI 成功发送第一条请求。想快速完成可使用方式 A；需要逐项配置则按方式 B 执行当前操作系统对应的命令。'
+      'This guide focuses on one outcome: sending the first successful Claude Code request through ApiPorter. Choose the quick script in Method A, or follow every operating-system command in Method B.',
+      '这篇文档只完成一个目标：让 Claude Code 通过 ApiPorter 成功发送第一条请求。想快速完成可使用方式 A；需要逐项配置则按方式 B 执行当前操作系统对应的命令。'
     ),
     toc: [
       {
@@ -553,8 +553,8 @@ chmod 600 settings.json`
         title: text('Step 1: Create an API key', '第一步：创建 API Key'),
         blocks: [
           paragraph(
-            'Create a non-default CBAPI API key with access to claude-opus-4-8 and claude-sonnet-5. Keep the complete key ready; the quick script asks for it only once.',
-            '在 CBAPI 创建一个可以访问 claude-opus-4-8 和 claude-sonnet-5 的非 default 分组 API Key。请先保存完整 Key，一键脚本只会要求粘贴一次。'
+            'Create a non-default ApiPorter API key with access to claude-opus-4-8 and claude-sonnet-5. Keep the complete key ready; the quick script asks for it only once.',
+            '在 ApiPorter 创建一个可以访问 claude-opus-4-8 和 claude-sonnet-5 的非 default 分组 API Key。请先保存完整 Key，一键脚本只会要求粘贴一次。'
           ),
         ],
       },
@@ -607,8 +607,8 @@ chmod 600 settings.json`
             true
           ),
           paragraph(
-            'The script lets you choose a language, installs the official Claude Code when needed, securely asks for the CBAPI API key once, backs up and merges the existing settings, and validates both Claude models. It does not start Claude Code automatically.',
-            '脚本会让你选择语言，在需要时安装官方 Claude Code，只安全输入一次 CBAPI API Key，备份并合并已有配置，然后验证两个 Claude 模型。脚本不会自动启动 Claude Code。'
+            'The script lets you choose a language, installs the official Claude Code when needed, securely asks for the ApiPorter API key once, backs up and merges the existing settings, and validates both Claude models. It does not start Claude Code automatically.',
+            '脚本会让你选择语言，在需要时安装官方 Claude Code，只安全输入一次 ApiPorter API Key，备份并合并已有配置，然后验证两个 Claude 模型。脚本不会自动启动 Claude Code。'
           ),
           heading(
             'Method B: Configure Claude Code manually',
@@ -665,8 +665,8 @@ chmod 600 settings.json`
           code('mkdir -p ~/.claude\ncd ~/.claude', undefined, true),
           heading('3. Create settings.json', '第 3 步：创建 settings.json', 4),
           paragraph(
-            'Before running the command for your system, replace YOUR_APIPORTER_API_KEY with your complete CBAPI key.',
-            '执行自己系统的命令前，必须把 YOUR_APIPORTER_API_KEY 替换成你自己的完整 CBAPI API Key。'
+            'Before running the command for your system, replace YOUR_APIPORTER_API_KEY with your complete ApiPorter key.',
+            '执行自己系统的命令前，必须把 YOUR_APIPORTER_API_KEY 替换成你自己的完整 ApiPorter API Key。'
           ),
           label('Windows PowerShell', 'Windows PowerShell'),
           code(windowsSettings, undefined, true),
@@ -726,7 +726,7 @@ function openCodeDocument(v1Url: string): GuideDocument {
   "provider": {
     "apiporter": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "CBAPI",
+      "name": "ApiPorter",
       "options": { "baseURL": "${v1Url}" },
       "models": {
         "gpt-5.6-sol": { "name": "GPT 5.6 Sol" }
@@ -779,8 +779,8 @@ EOF`
         title: text('Step 1: Create an API key', '第一步：创建 API Key'),
         blocks: [
           paragraph(
-            'Create a non-default CBAPI API key with access to gpt-5.6-sol.',
-            '在 CBAPI 创建一个可以访问 gpt-5.6-sol 的非 default 分组 API Key。'
+            'Create a non-default ApiPorter API key with access to gpt-5.6-sol.',
+            '在 ApiPorter 创建一个可以访问 gpt-5.6-sol 的非 default 分组 API Key。'
           ),
         ],
       },
@@ -834,8 +834,8 @@ EOF`
           ),
           code('opencode', undefined, true),
           plainNote(
-            'Enter /connect, choose Other, use apiporter as the provider ID, and paste your CBAPI API key.',
-            '输入 /connect，选择 Other，把 provider id 填为 apiporter，然后粘贴你的 CBAPI API Key。'
+            'Enter /connect, choose Other, use apiporter as the provider ID, and paste your ApiPorter API key.',
+            '输入 /connect，选择 Other，把 provider id 填为 apiporter，然后粘贴你的 ApiPorter API Key。'
           ),
         ],
       },
@@ -868,7 +868,7 @@ default = "apiporter-grok"
 [model.apiporter-grok]
 model = "grok-4.5"
 base_url = "${v1Url}"
-name = "CBAPI Grok 4.5"
+name = "ApiPorter Grok 4.5"
 env_key = "APIPORTER_API_KEY"
 api_backend = "responses"`
   const windowsConfig = `New-Item -ItemType Directory -Force "$HOME\\.grok" | Out-Null
@@ -918,8 +918,8 @@ chmod 600 config.toml`
         title: text('Step 1: Create an API key', '第一步：创建 API Key'),
         blocks: [
           paragraph(
-            'Create a CBAPI API key that can access grok-4.5.',
-            '在 CBAPI 创建一个可以访问 grok-4.5 的 API Key。'
+            'Create a ApiPorter API key that can access grok-4.5.',
+            '在 ApiPorter 创建一个可以访问 grok-4.5 的 API Key。'
           ),
         ],
       },
@@ -985,13 +985,13 @@ chmod 600 config.toml`
         blocks: [
           label('Windows PowerShell', 'Windows PowerShell'),
           code(
-            'Set-Location $HOME\ngrok -p "请只回复：CBAPI connected" -m apiporter-grok\ngrok',
+            'Set-Location $HOME\ngrok -p "请只回复：ApiPorter connected" -m apiporter-grok\ngrok',
             undefined,
             true
           ),
           label('Linux or macOS', 'Linux 或 macOS'),
           code(
-            'cd ~\ngrok -p "请只回复：CBAPI connected" -m apiporter-grok\ngrok',
+            'cd ~\ngrok -p "请只回复：ApiPorter connected" -m apiporter-grok\ngrok',
             undefined,
             true
           ),
@@ -1014,7 +1014,7 @@ function geminiDocument(rootUrl: string): GuideDocument {
       },
       {
         id: 'configure-gemini',
-        text: text('Step 3: Configure CBAPI', '第三步：配置 CBAPI'),
+        text: text('Step 3: Configure ApiPorter', '第三步：配置 ApiPorter'),
       },
       {
         id: 'test-gemini',
@@ -1026,7 +1026,10 @@ function geminiDocument(rootUrl: string): GuideDocument {
         id: 'create-api-key',
         title: text('Step 1: Create an API key', '第一步：创建 API Key'),
         blocks: [
-          paragraph('Create a CBAPI API key.', '在 CBAPI 创建一个 API Key。'),
+          paragraph(
+            'Create a ApiPorter API key.',
+            '在 ApiPorter 创建一个 API Key。'
+          ),
         ],
       },
       {
@@ -1042,11 +1045,11 @@ function geminiDocument(rootUrl: string): GuideDocument {
       },
       {
         id: 'configure-gemini',
-        title: text('Step 3: Configure CBAPI', '第三步：配置 CBAPI'),
+        title: text('Step 3: Configure ApiPorter', '第三步：配置 ApiPorter'),
         blocks: [
           paragraph(
-            'Replace the placeholder with your complete CBAPI API key before running the command.',
-            '执行命令前，把 YOUR_APIPORTER_API_KEY 替换成自己的完整 CBAPI API Key。'
+            'Replace the placeholder with your complete ApiPorter API key before running the command.',
+            '执行命令前，把 YOUR_APIPORTER_API_KEY 替换成自己的完整 ApiPorter API Key。'
           ),
           label('Windows PowerShell', 'Windows PowerShell'),
           code(
@@ -1116,8 +1119,8 @@ function seedanceDocument(v1Url: string): GuideDocument {
         title: text('Before you start', '开始前准备'),
         blocks: [
           paragraph(
-            `Create a CBAPI key and use ${v1Url} as the Base URL. Public model IDs are seedance-2.0 and seedance-2.5.`,
-            `创建 CBAPI API Key，并使用 ${v1Url} 作为 Base URL。公开模型名为 seedance-2.0 和 seedance-2.5。`
+            `Create a ApiPorter key and use ${v1Url} as the Base URL. Public model IDs are seedance-2.0 and seedance-2.5.`,
+            `创建 ApiPorter API Key，并使用 ${v1Url} 作为 Base URL。公开模型名为 seedance-2.0 和 seedance-2.5。`
           ),
           inlineLink(
             [
@@ -1289,8 +1292,8 @@ function seedanceDocument(v1Url: string): GuideDocument {
 function imagesDocument(rootUrl: string, v1Url: string): GuideDocument {
   return {
     lead: text(
-      'This page covers two independent image protocols. GPT Image 2 uses OpenAI-compatible Images routes, while the Gemini image models use native generateContent. They share one CBAPI key but their request and response formats cannot be mixed.',
-      '本页包含两套彼此独立的图片生成协议：GPT Image 2 使用 OpenAI 兼容 Images API，Gemini 图片模型使用原生 generateContent。两者共用 CBAPI API Key，但请求与响应格式不能混用。'
+      'This page covers two independent image protocols. GPT Image 2 uses OpenAI-compatible Images routes, while the Gemini image models use native generateContent. They share one ApiPorter key but their request and response formats cannot be mixed.',
+      '本页包含两套彼此独立的图片生成协议：GPT Image 2 使用 OpenAI 兼容 Images API，Gemini 图片模型使用原生 generateContent。两者共用 ApiPorter API Key，但请求与响应格式不能混用。'
     ),
     leadItems: [
       text(
@@ -1417,8 +1420,8 @@ function imagesDocument(rootUrl: string, v1Url: string): GuideDocument {
             true
           ),
           paragraph(
-            'A URL response contains a private signed CBAPI link that expires after one hour:',
-            'URL 响应包含一个一小时后过期的 CBAPI 私有签名链接：'
+            'A URL response contains a private signed ApiPorter link that expires after one hour:',
+            'URL 响应包含一个一小时后过期的 ApiPorter 私有签名链接：'
           ),
           code(
             '{"created":1710000000,"data":[{"url":"https://example.com/v1/images/assets/.../content?expires=...&signature=..."}]}',
@@ -1468,8 +1471,8 @@ function imagesDocument(rootUrl: string, v1Url: string): GuideDocument {
             true
           ),
           plainNote(
-            'A multipart request accepts exactly one PNG, JPEG, or WebP file and the total body must stay under 20 MiB. Reference URLs must remain available while the upstream provider reads them; CBAPI does not retain reference inputs as output assets.',
-            'multipart 请求必须且只能包含一个 PNG、JPEG 或 WebP 文件，总请求体不得超过 20 MiB。参考图 URL 在上游读取期间必须保持可访问；CBAPI 不会把参考图输入保存为输出资产。',
+            'A multipart request accepts exactly one PNG, JPEG, or WebP file and the total body must stay under 20 MiB. Reference URLs must remain available while the upstream provider reads them; ApiPorter does not retain reference inputs as output assets.',
+            'multipart 请求必须且只能包含一个 PNG、JPEG 或 WebP 文件，总请求体不得超过 20 MiB。参考图 URL 在上游读取期间必须保持可访问；ApiPorter 不会把参考图输入保存为输出资产。',
             'warning'
           ),
           heading('Streaming request', '流式请求', 3, 'gpt-stream'),
@@ -1530,8 +1533,8 @@ function imagesDocument(rootUrl: string, v1Url: string): GuideDocument {
             '图片生成请求不接受参考图。编辑接口支持公网 URL 或一个 multipart 本地文件；多个上传文件、data/base64 输入、mask、input_fidelity、变体、局部图及未知字段都会被拒绝。校验或上游失败会返回错误，不会伪装成成功图片。'
           ),
           paragraph(
-            'Use a standard CBAPI API key and make sure model restrictions include gpt-image-2.',
-            '请使用普通 CBAPI API Key；启用模型限制时，必须包含 gpt-image-2。'
+            'Use a standard ApiPorter API key and make sure model restrictions include gpt-image-2.',
+            '请使用普通 ApiPorter API Key；启用模型限制时，必须包含 gpt-image-2。'
           ),
         ],
       },
@@ -1563,8 +1566,8 @@ function imagesDocument(rootUrl: string, v1Url: string): GuideDocument {
             ],
           ]),
           paragraph(
-            'Use the primary CBAPI domain for native Gemini requests and prefer the streaming endpoint for long image jobs.',
-            'Gemini 原生请求请使用 CBAPI 主域名；耗时较长的生图任务优先使用流式端点。'
+            'Use the primary ApiPorter domain for native Gemini requests and prefer the streaming endpoint for long image jobs.',
+            'Gemini 原生请求请使用 ApiPorter 主域名；耗时较长的生图任务优先使用流式端点。'
           ),
           heading('Streaming request', '流式请求', 3, 'gemini-stream'),
           paragraph(
@@ -1647,8 +1650,8 @@ function imagesDocument(rootUrl: string, v1Url: string): GuideDocument {
             'imageSize 中的 K 必须大写。以上为单张图片预估价格，最终费用会记录在用量日志中。'
           ),
           plainNote(
-            'Pass a standard CBAPI API key through x-goog-api-key. The key must include the Gemini image group and, when model restrictions are enabled, the selected Gemini image model.',
-            '通过 x-goog-api-key 传入普通 CBAPI API Key。该密钥必须包含 Gemini 图片分组；启用模型限制时，还必须包含所选 Gemini 图片模型。',
+            'Pass a standard ApiPorter API key through x-goog-api-key. The key must include the Gemini image group and, when model restrictions are enabled, the selected Gemini image model.',
+            '通过 x-goog-api-key 传入普通 ApiPorter API Key。该密钥必须包含 Gemini 图片分组；启用模型限制时，还必须包含所选 Gemini 图片模型。',
             'warning'
           ),
         ],
@@ -1660,7 +1663,7 @@ function imagesDocument(rootUrl: string, v1Url: string): GuideDocument {
 function ccSwitchDocument(rootUrl: string, siteUrl: string): GuideDocument {
   return {
     lead: text(
-      'Connect CC-Switch to CBAPI either by importing an API key directly or by creating a unified custom gateway manually.',
+      'Connect CC-Switch to ApiPorter either by importing an API key directly or by creating a unified custom gateway manually.',
       '本指南介绍两种 CC-Switch 接入方式：从 API Keys 页面直接导入，或在 CC-Switch 中手动添加统一自定义网关。'
     ),
     toc: [
@@ -1681,7 +1684,10 @@ function ccSwitchDocument(rootUrl: string, siteUrl: string): GuideDocument {
       },
       {
         id: 'cc-method-a',
-        text: text('Method A: Import from CBAPI', '方式 A：从 CBAPI 直接导入'),
+        text: text(
+          'Method A: Import from ApiPorter',
+          '方式 A：从 ApiPorter 直接导入'
+        ),
         depth: 2,
       },
       {
@@ -1699,7 +1705,7 @@ function ccSwitchDocument(rootUrl: string, siteUrl: string): GuideDocument {
         title: text('Step 1: Create an API key', '第一步：创建 API Key'),
         blocks: [
           inlineLink(
-            ['Sign in to CBAPI, open ', '登录 CBAPI，打开'],
+            ['Sign in to ApiPorter, open ', '登录 ApiPorter，打开'],
             ['API Keys', '令牌 / API Keys'],
             [
               ', and create a non-default key with access to the models required by your application.',
@@ -1736,8 +1742,8 @@ function ccSwitchDocument(rootUrl: string, siteUrl: string): GuideDocument {
         ),
         blocks: [
           heading(
-            'Method A: import from CBAPI',
-            '方式 A：从 CBAPI 直接导入',
+            'Method A: import from ApiPorter',
+            '方式 A：从 ApiPorter 直接导入',
             3,
             'cc-method-a'
           ),
@@ -1763,8 +1769,8 @@ function ccSwitchDocument(rootUrl: string, siteUrl: string): GuideDocument {
             true
           ),
           paragraph(
-            'CBAPI fills the Base URL and API key automatically, enables usage lookup, and refreshes it every 30 minutes. The provider card shows the account wallet balance plus account-wide total and used quota, not an individual key limit. Import Claude Code and Codex separately when both are needed; re-import older profiles to add usage lookup.',
-            'CBAPI 会自动填写正确的 Base URL 和 API Key，同时启用用量查询并每 30 分钟刷新。供应商卡片会显示当前账户的钱包余额，以及账户口径的总额度与已用额度，不显示单个 API Key 的额度上限。Claude Code 与 Codex 都需要配置时请分别导入；旧配置需重新导入后才能获得用量查询配置。'
+            'ApiPorter fills the Base URL and API key automatically, enables usage lookup, and refreshes it every 30 minutes. The provider card shows the account wallet balance plus account-wide total and used quota, not an individual key limit. Import Claude Code and Codex separately when both are needed; re-import older profiles to add usage lookup.',
+            'ApiPorter 会自动填写正确的 Base URL 和 API Key，同时启用用量查询并每 30 分钟刷新。供应商卡片会显示当前账户的钱包余额，以及账户口径的总额度与已用额度，不显示单个 API Key 的额度上限。Claude Code 与 Codex 都需要配置时请分别导入；旧配置需重新导入后才能获得用量查询配置。'
           ),
           heading(
             'Method B: add a unified provider manually',
@@ -1791,13 +1797,13 @@ function ccSwitchDocument(rootUrl: string, siteUrl: string): GuideDocument {
             [`API address: ${rootUrl}`, `API 地址：${rootUrl}`],
             [
               'API key: paste the key created in Step 1',
-              'API Key：粘贴第一步创建的 CBAPI API Key',
+              'API Key：粘贴第一步创建的 ApiPorter API Key',
             ],
             [`Website: ${siteUrl}`, `官网地址：${siteUrl}`],
           ]),
           paragraph(
-            'Select the applications that should use CBAPI under Enabled applications, then click Add.',
-            '在“启用的应用”中勾选需要使用 CBAPI 的应用，然后点击“添加”。'
+            'Select the applications that should use ApiPorter under Enabled applications, then click Add.',
+            '在“启用的应用”中勾选需要使用 ApiPorter 的应用，然后点击“添加”。'
           ),
         ],
       },

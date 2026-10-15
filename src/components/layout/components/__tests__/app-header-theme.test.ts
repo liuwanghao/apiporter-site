@@ -62,7 +62,7 @@ describe('app header theme', () => {
     shell.append(header)
     domWindow.document.body.append(shell)
 
-    assert.equal(domWindow.getComputedStyle(button).color, '#edf4ee')
+    assert.equal(domWindow.getComputedStyle(button).color, '#e8f1fc')
     domWindow.document.documentElement.classList.remove('dark')
   })
 
@@ -236,7 +236,7 @@ describe('app header theme', () => {
     assert.match(computedHeader.transition, /height/)
     assert.match(computedHeader.transition, /min-height/)
     assert.match(computedHeader.boxShadow, /12px 36px/)
-    assert.equal(computedHeader.backgroundColor, 'rgba(252, 246, 237, 0.88)')
+    assert.equal(computedHeader.backgroundColor, 'rgba(245, 248, 252, 0.88)')
     assert.equal(domWindow.getComputedStyle(nav).borderRadius, '14px')
     assert.equal(domWindow.getComputedStyle(link).minHeight, '34px')
     assert.match(
@@ -279,11 +279,11 @@ describe('app header theme', () => {
   test('uses the reference landing palette for the home topbar in dark mode', () => {
     assert.match(
       stylesheet,
-      /\.dark \.console-public header\.public-topbar\.home-topbar\s*{[\s\S]*?--console-page:\s*oklch\(0\.14 0\.018 52\);/
+      /\.dark \.console-public header\.public-topbar\.home-topbar\s*{[\s\S]*?--console-page:\s*#0b1625;/
     )
     assert.match(
       stylesheet,
-      /\.dark \.console-public header\.public-topbar\.home-topbar\s*{[\s\S]*?--console-topbar-scrolled-bg:\s*oklch\(0\.14 0\.018 52 \/ 88%\);/
+      /\.dark \.console-public header\.public-topbar\.home-topbar\s*{[\s\S]*?--console-topbar-scrolled-bg:\s*rgba\(11, 22, 37, 0\.88\);/
     )
   })
 

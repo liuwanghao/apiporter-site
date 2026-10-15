@@ -29,13 +29,13 @@ const mainSource = await readFile(
   'utf8'
 )
 
-test('loads the global Cloudbridge customer-support widget once', () => {
+test('loads the designated ApiPorter customer-support widget once', () => {
   const scriptMatches = indexHtml.match(
-    /https:\/\/csm\.cbapi\.ai\/widget\.js\?v=20260914\.2/g
+    /https:\/\/csm-cn\.cbapi\.ai\/widget\.js\?channel=stable/g
   )
 
   assert.equal(scriptMatches?.length, 1)
-  assert.match(indexHtml, /data-site-id="site_f937bdabb575a09fe00b"/)
+  assert.match(indexHtml, /data-site-id="site_b263a2db8fd9c533a560"/)
   assert.match(indexHtml, /data-language="auto"/)
   assert.match(indexHtml, /<script[^>]*\sasync(?:="")?[^>]*><\/script>/)
 })
@@ -49,7 +49,10 @@ test('shows a contact fallback until the official support widget mounts', async 
   assert.match(mainSource, /<CustomerSupportFallback\s*\/>/)
   assert.match(fallbackSource, /cloudbridge-support-error/)
   assert.match(fallbackSource, /cloudbridge-support-widget/)
-  assert.match(fallbackSource, /mailto:support@cbapi\.ai/)
+  assert.match(
+    fallbackSource,
+    /work\.weixin\.qq\.com\/kfid\/kfc04b263b7d12b1448/
+  )
   assert.match(fallbackSource, /aria-label=/)
   assert.match(fallbackSource, /t\('Customer service center'\)/)
   assert.match(fallbackSource, /styleOfficialWidgetLauncher\(label\)/)

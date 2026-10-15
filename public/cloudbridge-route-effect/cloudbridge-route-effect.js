@@ -137,8 +137,7 @@ export class CloudbridgeRouteEffect {
   }
 
   point(lane, t, time) {
-    const gate =
-      time === this.frameTime ? this.frameGate : this.gatePosition()
+    const gate = time === this.frameTime ? this.frameGate : this.gatePosition()
     const center =
       time === this.frameTime ? this.frameCenter : this.centerLine(time)
     if (t <= this.gatewayAt) {
@@ -272,7 +271,7 @@ export class CloudbridgeRouteEffect {
     ctx.clearRect(0, 0, this.width, this.height)
     ctx.save()
     const isDark = this.root.dataset.theme === 'dark'
-    const neutral = isDark ? '242,239,231' : '38,36,32'
+    const neutral = isDark ? '232,241,252' : '20,40,63'
     this.frameTime = time
     this.frameGate = this.gatePosition()
     this.frameCenter = this.centerLine(time)
@@ -288,7 +287,7 @@ export class CloudbridgeRouteEffect {
         time,
         pathAlpha,
         orange ? 1.05 : 0.65,
-        orange ? 'rgba(255,90,31,ALPHA)' : `rgba(${neutral},ALPHA)`
+        orange ? 'rgba(11,153,232,ALPHA)' : `rgba(${neutral},ALPHA)`
       )
       if (index % 10 === 0) {
         this.drawPath(
@@ -296,7 +295,7 @@ export class CloudbridgeRouteEffect {
           time,
           isDark ? 0.026 : 0.018,
           6,
-          orange ? 'rgba(255,90,31,ALPHA)' : `rgba(${neutral},ALPHA)`
+          orange ? 'rgba(11,153,232,ALPHA)' : `rgba(${neutral},ALPHA)`
         )
       }
     })
@@ -343,7 +342,7 @@ export class CloudbridgeRouteEffect {
       const tail = Math.max(-0.08, head - particle.tail)
       const start = this.point(lane, tail, time)
       const end = this.point(lane, head, time)
-      const rgb = particle.orange ? '255,90,31' : neutral
+      const rgb = particle.orange ? '11,153,232' : neutral
       const gradient = ctx.createLinearGradient(start.x, start.y, end.x, end.y)
       gradient.addColorStop(0, `rgba(${rgb},0)`)
       gradient.addColorStop(0.65, `rgba(${rgb},${particle.alpha * 0.45})`)
@@ -356,7 +355,9 @@ export class CloudbridgeRouteEffect {
       }
       ctx.strokeStyle = gradient
       ctx.lineWidth = particle.width
-      const shadowColor = particle.orange ? 'rgba(255,80,20,.7)' : 'transparent'
+      const shadowColor = particle.orange
+        ? 'rgba(11,153,232,.7)'
+        : 'transparent'
       const shadowBlur = particle.orange ? 9 : 0
       ctx.shadowColor = shadowColor
       ctx.shadowBlur = shadowBlur
@@ -390,14 +391,14 @@ export class CloudbridgeRouteEffect {
       0,
       outputY + this.height * 0.16
     )
-    slit.addColorStop(0, 'rgba(255,90,31,0)')
-    slit.addColorStop(0.45, 'rgba(255,90,31,.1)')
+    slit.addColorStop(0, 'rgba(11,153,232,0)')
+    slit.addColorStop(0.45, 'rgba(11,153,232,.1)')
     slit.addColorStop(
       0.5,
-      isDark ? 'rgba(255,220,190,.72)' : 'rgba(255,90,31,.58)'
+      isDark ? 'rgba(128,208,255,.72)' : 'rgba(11,153,232,.58)'
     )
-    slit.addColorStop(0.55, 'rgba(255,90,31,.1)')
-    slit.addColorStop(1, 'rgba(255,90,31,0)')
+    slit.addColorStop(0.55, 'rgba(11,153,232,.1)')
+    slit.addColorStop(1, 'rgba(11,153,232,0)')
     ctx.fillStyle = slit
     ctx.fillRect(
       gateX - 0.7,

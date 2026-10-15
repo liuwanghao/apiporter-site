@@ -38,7 +38,7 @@ writeFileSync(
   resolve(dist, '404.html'),
   htmlFor(
     '/404',
-    '<main><h1>404 · 页面不存在</h1><p><a href="/">返回 CBAPI 首页</a></p></main>'
+    '<main><h1>404 · 页面不存在</h1><p><a href="/">返回 ApiPorter 首页</a></p></main>'
   )
 )
 writeFileSync(

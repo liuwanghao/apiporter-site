@@ -69,8 +69,8 @@ export function mountDesktopTutorial(window, options) {
     document.documentElement.lang = state.lang || 'zh'
     if (state.lang) {
       document.title = isEn()
-        ? `${options.name} Quick Setup – Interactive Guide | CBAPI`
-        : `${options.name} 快速配置：互动教学 | CBAPI`
+        ? `${options.name} Quick Setup – Interactive Guide | ApiPorter`
+        : `${options.name} 快速配置：互动教学 | ApiPorter`
     }
   }
 
@@ -79,7 +79,7 @@ export function mountDesktopTutorial(window, options) {
   }
 
   function logoMarkup() {
-    return '<img class="brand-symbol" src="/logo.png" alt="" width="64" height="64" />'
+    return '<img class="brand-symbol" src="/brand/apiporter-logo.png" alt="" width="64" height="64" />'
   }
 
   function systemLogoMarkup(platform, className = 'system-logo') {
@@ -119,7 +119,7 @@ export function mountDesktopTutorial(window, options) {
   }
 
   function brandMarkup() {
-    return `<a class="brand-lockup" href="${WEB_URL}" data-action="home" aria-label="CBAPI">${logoMarkup()}</a>`
+    return `<a class="brand-lockup" href="${WEB_URL}" data-action="home" aria-label="ApiPorter">${logoMarkup()}</a>`
   }
 
   function backMarkup(action = 'back') {

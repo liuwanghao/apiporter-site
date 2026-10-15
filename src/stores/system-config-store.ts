@@ -103,6 +103,19 @@ export const useSystemConfigStore = create<SystemConfigState>()(
     }),
     {
       name: 'system-config-storage',
+      merge: (persistedState, currentState) => {
+        const cached = persistedState as Partial<SystemConfigState> | undefined
+        return {
+          ...currentState,
+          config: {
+            ...currentState.config,
+            ...cached?.config,
+            systemName: DEFAULT_SYSTEM_NAME,
+            logo: DEFAULT_LOGO,
+          },
+          loadedLogoUrl: DEFAULT_LOGO,
+        }
+      },
       partialize: (state) => ({
         config: state.config,
         loadedLogoUrl: state.loadedLogoUrl,

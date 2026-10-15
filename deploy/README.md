@@ -21,7 +21,7 @@ sudo apiporter-site-deploy
 ```
 
 The entrypoint uses `git@github.com:liuwanghao/apiporter-site.git` and pulls
-the branch selected by `BRANCH` (default: `develop`),
+the branch selected by `BRANCH` (default: `master`),
 installs locked dependencies, typechecks, builds, atomically switches the
 `current` symlink, checks Nginx, and restores the old release automatically
 when the health check fails.

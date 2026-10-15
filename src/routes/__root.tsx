@@ -27,6 +27,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { NavigationProgress } from '@/components/navigation-progress'
 import { PublicSeo } from '@/components/public-seo'
@@ -41,7 +42,6 @@ import { GeneralError } from '@/features/errors/general-error'
 import { NotFoundError } from '@/features/errors/not-found-error'
 import { getSetupStatus } from '@/features/setup/api'
 import { useSystemConfig } from '@/hooks/use-system-config'
-import { useTranslation } from 'react-i18next'
 import {
   bootstrapAuthentication,
   clearAuthenticatedClientState,
@@ -66,17 +66,17 @@ function RootComponent() {
     const page = getPage(location.pathname)
     const preview = document.querySelector('meta[name="seo-preview"]')
     const isPreview = preview?.getAttribute('content') === 'true'
-    
+
     document
       .querySelectorAll(
-        'title, meta[name="title"], meta[name="description"], meta[name="keywords"], meta[name="robots"], link[rel="canonical"], [data-cbapi-seo]'
+        'title, meta[name="title"], meta[name="description"], meta[name="keywords"], meta[name="robots"], link[rel="canonical"], [data-apiporter-seo]'
       )
       .forEach((el) => el.remove())
-    
+
     const head = document.head
     const tempDiv = document.createElement('div')
     tempDiv.innerHTML = renderHead(page, isPreview, systemConfig, i18n.language)
-    
+
     ;[...tempDiv.children].forEach((child) => {
       head.appendChild(child)
     })

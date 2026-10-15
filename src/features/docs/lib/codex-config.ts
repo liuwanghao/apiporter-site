@@ -33,7 +33,7 @@ model = "${CODEX_EXAMPLE_MODEL}"
 model_reasoning_effort = "high"
 
 [model_providers.apiporter]
-name = "CBAPI"
+name = "ApiPorter"
 base_url = "${apiBaseUrl}"
 env_key = "APIPORTER_API_KEY"
 wire_api = "responses"`

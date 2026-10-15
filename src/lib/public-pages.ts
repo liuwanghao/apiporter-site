@@ -5,7 +5,7 @@ import {
 } from '../features/docs/lib/guide-content'
 import guideTranslations from './public-guide-translations.json'
 
-export const origin = 'https://cbapi.ai'
+export const origin = 'https://www.apiporter.com'
 export type PublicPage = {
   path: string
   title: string
@@ -22,20 +22,26 @@ export type SeoConfig = {
 }
 const LOCALIZED_SEO_DEFAULTS = {
   en: {
-    description: 'CBAPI provides AI API access, integration documentation, and model pricing for developers.',
-    keywords: 'CBAPI, AI API, API gateway, Claude API, GPT API, Gemini API, AI model pricing',
+    description:
+      'ApiPorter provides AI API access, integration documentation, and model pricing for developers.',
+    keywords:
+      'ApiPorter, AI API, API gateway, Claude API, GPT API, Gemini API, AI model pricing',
   },
   zhCN: {
-    description: 'CBAPI 为开发者提供 AI API 接入、配置文档与模型价格查询。',
-    keywords: 'CBAPI, AI API, API 中转, API 接入, Claude API, GPT API, Gemini API, AI 模型价格',
+    description: 'ApiPorter 为开发者提供 AI API 接入、配置文档与模型价格查询。',
+    keywords:
+      'ApiPorter, AI API, API 中转, API 接入, Claude API, GPT API, Gemini API, AI 模型价格',
   },
   zhTW: {
-    description: 'CBAPI 為開發者提供 AI API 接入、設定文件與模型價格查詢。',
-    keywords: 'CBAPI, AI API, API 中轉, API 接入, Claude API, GPT API, Gemini API, AI 模型價格',
+    description: 'ApiPorter 為開發者提供 AI API 接入、設定文件與模型價格查詢。',
+    keywords:
+      'ApiPorter, AI API, API 中轉, API 接入, Claude API, GPT API, Gemini API, AI 模型價格',
   },
   ja: {
-    description: 'CBAPI は開発者向けに AI API 接続、設定ドキュメント、モデル価格を提供します。',
-    keywords: 'CBAPI, AI API, API ゲートウェイ, Claude API, GPT API, Gemini API, AI モデル価格',
+    description:
+      'ApiPorter は開発者向けに AI API 接続、設定ドキュメント、モデル価格を提供します。',
+    keywords:
+      'ApiPorter, AI API, API ゲートウェイ, Claude API, GPT API, Gemini API, AI モデル価格',
   },
 } as const
 const page = (
@@ -54,39 +60,39 @@ const page = (
 export const publicPages: PublicPage[] = [
   page(
     '/',
-    'CBAPI',
-    'CBAPI 为开发者提供统一的 AI API 中转服务，支持 Claude、GPT、Gemini 等主流模型。提供接入文档、实时价格与账户管理。'
+    'ApiPorter',
+    'ApiPorter 为开发者提供统一的 AI API 中转服务，支持 Claude、GPT、Gemini 等主流模型。提供接入文档、实时价格与账户管理。'
   ),
   page(
     '/pricing',
-    'CBAPI',
-    '查询 CBAPI 当前公开模型和价格。模型可用性、计费单位与账户分组价格以实时页面及实际用量记录为准。'
+    'ApiPorter',
+    '查询 ApiPorter 当前公开模型和价格。模型可用性、计费单位与账户分组价格以实时页面及实际用量记录为准。'
   ),
   page(
     '/docs',
-    'CBAPI',
-    '查阅 CBAPI 的 Codex、Claude Code 和其他工具接入指南，了解端点、API Key 配置与验证步骤。'
+    'ApiPorter',
+    '查阅 ApiPorter 的 Codex、Claude Code 和其他工具接入指南，了解端点、API Key 配置与验证步骤。'
   ),
   ...DOC_GUIDES.map((guide) =>
     page(
       `/docs/${guide.slug}`,
-      `${(guideTranslations as Record<string, string>)[guide.title] || guide.title}｜CBAPI`,
+      `${(guideTranslations as Record<string, string>)[guide.title] || guide.title}｜ApiPorter`,
       (
         (guideTranslations as Record<string, string>)[guide.description] ||
         guide.description
-      ).replaceAll('CBAPI', 'CBAPI'),
+      ).replaceAll('ApiPorter', 'ApiPorter'),
       guide.slug
     )
   ),
   page(
     '/docs/codex/start',
-    'Codex 交互式接入教程｜CBAPI',
+    'Codex 交互式接入教程｜ApiPorter',
     '按照已有 Codex 指南配置端点和 API Key，再通过交互式步骤验证连接。',
     'codex'
   ),
   page(
     '/docs/claude-code/start',
-    'Claude Code 交互式接入教程｜CBAPI',
+    'Claude Code 交互式接入教程｜ApiPorter',
     '按照已有 Claude Code 指南配置端点和 API Key，再通过交互式步骤验证连接。',
     'claude-code'
   ),
@@ -96,8 +102,8 @@ export function getPage(pathname: string): PublicPage {
   return (
     publicPages.find((item) => item.path === path) ?? {
       path,
-      title: 'CBAPI',
-      description: 'CBAPI 开发者平台',
+      title: 'ApiPorter',
+      description: 'ApiPorter 开发者平台',
       canonical: origin + path,
       index: false,
     }
@@ -170,7 +176,7 @@ export function renderPageBody(item: PublicPage, runtime = false): string {
       .replaceAll('<h1>', '<h2>')
       .replaceAll('</h1>', '</h2>')
   }
-  return `<article lang="zh-CN">${content}<nav aria-label="公开页面"><a href="/">CBAPI</a> · <a href="/docs">接入文档</a> · <a href="/pricing">模型价格</a> · <a href="/about">关于</a> · <a href="/sign-up">开始接入</a></nav></article>`
+  return `<article lang="zh-CN">${content}<nav aria-label="公开页面"><a href="/">ApiPorter</a> · <a href="/docs">接入文档</a> · <a href="/pricing">模型价格</a> · <a href="/about">关于</a> · <a href="/sign-up">开始接入</a></nav></article>`
 }
 export function renderHead(
   item: PublicPage,
@@ -179,18 +185,23 @@ export function renderHead(
   language = 'zhCN'
 ): string {
   const e = escapeHtml
-  const localized = LOCALIZED_SEO_DEFAULTS[language as keyof typeof LOCALIZED_SEO_DEFAULTS] ?? LOCALIZED_SEO_DEFAULTS.zhCN
+  const localized =
+    LOCALIZED_SEO_DEFAULTS[language as keyof typeof LOCALIZED_SEO_DEFAULTS] ??
+    LOCALIZED_SEO_DEFAULTS.zhCN
   const keywords = seoConfig.seoKeywords?.trim() || localized.keywords
   const title = seoConfig.seoTitle?.trim() || item.title
-  const description = seoConfig.seoDescription?.trim() || (language === 'en' ? localized.description : item.description)
-  const image = seoConfig.seoOgImage?.trim() || `${origin}/logo.png`
+  const description =
+    seoConfig.seoDescription?.trim() ||
+    (language === 'en' ? localized.description : item.description)
+  const image =
+    seoConfig.seoOgImage?.trim() || `${origin}/brand/apiporter-logo.png`
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: title,
     url: item.canonical,
     description,
-    isPartOf: { '@type': 'WebSite', name: 'CBAPI', url: origin },
+    isPartOf: { '@type': 'WebSite', name: 'ApiPorter', url: origin },
   }
-  return `<title>${e(title)}</title><meta name="title" content="${e(title)}"><meta name="description" content="${e(description)}"><meta name="keywords" content="${e(keywords)}"><meta name="robots" content="${preview || !item.index ? 'noindex, nofollow' : 'index, follow'}"><link rel="canonical" href="${e(item.canonical)}"><meta data-cbapi-seo property="og:site_name" content="CBAPI"><meta data-cbapi-seo property="og:title" content="${e(title)}"><meta data-cbapi-seo property="og:description" content="${e(description)}"><meta data-cbapi-seo property="og:url" content="${e(item.canonical)}"><meta data-cbapi-seo property="og:type" content="website"><meta data-cbapi-seo property="og:image" content="${e(image)}"><meta data-cbapi-seo name="twitter:card" content="summary"><meta data-cbapi-seo name="twitter:title" content="${e(title)}"><meta data-cbapi-seo name="twitter:description" content="${e(description)}"><meta data-cbapi-seo name="twitter:image" content="${e(image)}"><script data-cbapi-seo type="application/ld+json">${JSON.stringify({ ...schema, name: title, description }).replaceAll('<', '\\u003c')}</script>`
+  return `<title>${e(title)}</title><meta name="title" content="${e(title)}"><meta name="description" content="${e(description)}"><meta name="keywords" content="${e(keywords)}"><meta name="robots" content="${preview || !item.index ? 'noindex, nofollow' : 'index, follow'}"><link rel="canonical" href="${e(item.canonical)}"><meta data-apiporter-seo property="og:site_name" content="ApiPorter"><meta data-apiporter-seo property="og:title" content="${e(title)}"><meta data-apiporter-seo property="og:description" content="${e(description)}"><meta data-apiporter-seo property="og:url" content="${e(item.canonical)}"><meta data-apiporter-seo property="og:type" content="website"><meta data-apiporter-seo property="og:image" content="${e(image)}"><meta data-apiporter-seo name="twitter:card" content="summary"><meta data-apiporter-seo name="twitter:title" content="${e(title)}"><meta data-apiporter-seo name="twitter:description" content="${e(description)}"><meta data-apiporter-seo name="twitter:image" content="${e(image)}"><script data-apiporter-seo type="application/ld+json">${JSON.stringify({ ...schema, name: title, description }).replaceAll('<', '\\u003c')}</script>`
 }

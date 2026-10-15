@@ -1,13 +1,13 @@
 /* The first-party iframe receives these tokens from the public site shell. */
 .site-onboarding {
-  --guide-bg: var(--site-background, #f3f6f1);
+  --guide-bg: var(--site-background, #f5f8fc);
   --guide-panel: var(--site-card, #fff);
-  --guide-panel-strong: var(--site-muted, #edf2ed);
-  --guide-ink: var(--site-foreground, #17221b);
-  --guide-muted: var(--site-muted-foreground, #718078);
-  --guide-line: var(--site-border, rgb(23 34 27 / 10%));
+  --guide-panel-strong: var(--site-muted, #eaf1f8);
+  --guide-ink: var(--site-foreground, #14283f);
+  --guide-muted: var(--site-muted-foreground, #5c7087);
+  --guide-line: var(--site-border, rgb(20 40 63 / 10%));
   --guide-line-strong: var(--guide-line);
-  --guide-brand: var(--site-primary, #ec6038);
+  --guide-brand: var(--site-primary, #0878bd);
   --guide-success: var(--site-success, #2d9462);
   --guide-radius-action: var(--site-radius, 1rem);
   --guide-radius-panel: calc(var(--site-radius, 1rem) * 1.8);
@@ -24,7 +24,7 @@
     ),
     radial-gradient(
       circle at 88% 86%,
-      color-mix(in srgb, var(--site-success, #2d9462) 8%, transparent),
+      color-mix(in srgb, var(--guide-brand) 6%, transparent),
       transparent 36%
     ),
     var(--guide-bg);
@@ -55,7 +55,7 @@
 }
 
 .site-onboarding .brand-lockup::after {
-  content: 'CBAPI';
+  content: 'ApiPorter';
 }
 
 .site-onboarding .brand-lockup .brand-symbol {

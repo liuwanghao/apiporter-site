@@ -160,7 +160,7 @@ append_path() {
     return 0
   fi
   {
-    printf '\n# CBAPI CLI installer PATH\n'
+    printf '\n# ApiPorter CLI installer PATH\n'
     printf 'export PATH="$HOME/.local/bin:$PATH"\n'
   } >>"$rc_file" 2>/dev/null || return 0
   say "$(text '已更新命令路径：' 'コマンドパスを更新しました: ' 'Updated command path: ')$rc_file"
@@ -212,9 +212,9 @@ ensure_claude() {
 
 read_api_key() {
   say "$(text \
-    '请粘贴 CBAPI API Key（输入不会显示），然后按 Enter：' \
-    'CBAPI API Key を貼り付けて Enter を押してください（入力は表示されません）:' \
-    'Paste your CBAPI API key (input is hidden), then press Enter:')"
+    '请粘贴 ApiPorter API Key（输入不会显示），然后按 Enter：' \
+    'ApiPorter API Key を貼り付けて Enter を押してください（入力は表示されません）:' \
+    'Paste your ApiPorter API key (input is hidden), then press Enter:')"
   printf '> ' >&3
   TTY_STATE="$(stty -g <&3 2>/dev/null || true)"
   [ -z "$TTY_STATE" ] || stty -echo <&3
@@ -394,14 +394,14 @@ validate_key() {
       fi
       ;;
     401 | 403) warn "$(text 'API Key 验证失败，HTTP ' 'API Key の検証に失敗しました。HTTP ' 'API key validation failed with HTTP ')$status" ;;
-    000) warn "$(text '暂时无法连接 CBAPI，配置已保留并跳过在线验证。' 'CBAPI に接続できないため、設定を保持して検証をスキップしました。' 'CBAPI could not be reached; configuration was kept and validation was skipped.')" ;;
+    000) warn "$(text '暂时无法连接 ApiPorter，配置已保留并跳过在线验证。' 'ApiPorter に接続できないため、設定を保持して検証をスキップしました。' 'ApiPorter could not be reached; configuration was kept and validation was skipped.')" ;;
     *) warn "$(text '在线验证返回 HTTP ' 'オンライン検証の HTTP ステータス: ' 'Online validation returned HTTP ')$status" ;;
   esac
 }
 
 main() {
   ensure_environment
-  say "$(text 'CBAPI Claude Code 一键配置' 'CBAPI Claude Code ワンクリック設定' 'CBAPI Claude Code setup')"
+  say "$(text 'ApiPorter Claude Code 一键配置' 'ApiPorter Claude Code ワンクリック設定' 'ApiPorter Claude Code setup')"
   say "$(text '脚本会按需安装 Claude Code、保留并合并旧配置，然后验证两个模型。' 'Claude Code を必要に応じて導入し、既存設定を保持・統合して 2 モデルを検証します。' 'This installs Claude Code when needed, preserves and merges existing settings, then validates both models.')"
   say ''
 

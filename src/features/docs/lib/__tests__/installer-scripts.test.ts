@@ -33,9 +33,9 @@ const installers = {
   'claude.ps1': readInstaller('claude.ps1'),
 }
 
-test('installer scripts contain only CBAPI branding and variables', () => {
+test('installer scripts contain only ApiPorter branding and variables', () => {
   for (const [name, source] of Object.entries(installers)) {
-    assert.match(source, /CBAPI/iu, name)
+    assert.match(source, /ApiPorter/iu, name)
     assert.match(source, /APIPORTER_BASE_URL/u, name)
     assert.match(source, /APIPORTER_LANG/u, name)
     assert.match(source, /__APIPORTER_ORIGIN__/u, name)

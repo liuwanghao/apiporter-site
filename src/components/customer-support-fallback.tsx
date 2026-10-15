@@ -57,6 +57,8 @@ function styleOfficialWidgetLauncher(label: string) {
         gap: 0 !important;
         padding: 0 !important;
         border-radius: 18px 18px 6px 18px !important;
+        background: var(--primary) !important;
+        color: var(--primary-foreground) !important;
       }
       .wrap .launcher span {
         display: none !important;
@@ -109,11 +111,13 @@ export function CustomerSupportFallback() {
 
   return (
     <a
-      href='mailto:support@cbapi.ai?subject=Cloudbridge%20Support'
+      href='https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448'
+      target='_blank'
+      rel='noopener noreferrer'
       aria-label={label}
       title={label}
       data-customer-support-fallback='true'
-      className='fixed end-4 bottom-[max(66px,calc(env(safe-area-inset-bottom)+50px))] z-[2147482999] inline-flex size-14 items-center justify-center rounded-[18px_18px_6px_18px] border border-white/25 bg-[#f2653c] text-white shadow-[0_16px_40px_rgba(16,46,40,0.28)] transition-[transform,background-color,box-shadow] duration-200 outline-none hover:-translate-y-0.5 hover:bg-[#e95731] hover:shadow-[0_18px_44px_rgba(16,46,40,0.36)] focus-visible:ring-2 focus-visible:ring-[#f2653c] focus-visible:ring-offset-2 active:scale-95 motion-reduce:transition-none sm:end-5 sm:bottom-[max(70px,calc(env(safe-area-inset-bottom)+50px))] sm:size-[58px]'
+      className='bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring fixed end-4 bottom-[max(66px,calc(env(safe-area-inset-bottom)+50px))] z-[2147482999] inline-flex size-14 items-center justify-center rounded-[18px_18px_6px_18px] border border-white/25 shadow-[0_16px_40px_rgba(23,55,89,0.28)] transition-[transform,background-color,box-shadow] duration-200 outline-none hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(23,55,89,0.36)] focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-95 motion-reduce:transition-none sm:end-5 sm:bottom-[max(70px,calc(env(safe-area-inset-bottom)+50px))] sm:size-[58px]'
     >
       <MessageCircle
         aria-hidden='true'

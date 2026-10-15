@@ -9,12 +9,15 @@ import {
 } from '../public-pages'
 
 test('known public paths have unique canonical metadata and full guide content', () => {
-  assert.match(getPage('/').title, /CBAPI/)
-  assert.equal(getPage('/docs/codex').canonical, 'https://cbapi.ai/docs/codex')
+  assert.match(getPage('/').title, /ApiPorter/)
+  assert.equal(
+    getPage('/docs/codex').canonical,
+    'https://www.apiporter.com/docs/codex'
+  )
   assert.match(renderPageBody(getPage('/docs/codex')), /<pre>/)
   assert.match(renderPageBody(getPage('/')), /href="\/docs"/)
   assert.equal(
-    new Set(publicPages.map((p) => p.title)).size,
+    new Set(publicPages.map((p) => p.canonical)).size,
     publicPages.length
   )
 })

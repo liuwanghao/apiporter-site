@@ -175,7 +175,7 @@ append_path() {
     return 0
   fi
   {
-    printf '\n# CBAPI CLI installer PATH\n'
+    printf '\n# ApiPorter CLI installer PATH\n'
     printf 'export PATH="$HOME/.local/bin:$PATH"\n'
   } >>"$rc_file" 2>/dev/null || return 0
   say "$(text '已更新命令路径：' 'コマンドパスを更新しました: ' 'Updated command path: ')$rc_file"
@@ -264,9 +264,9 @@ backup_file() {
 
 read_api_key() {
   say "$(text \
-    '请粘贴 CBAPI API Key（输入不会显示），然后按 Enter：' \
-    'CBAPI API Key を貼り付けて Enter を押してください（入力は表示されません）:' \
-    'Paste your CBAPI API key (input is hidden), then press Enter:')"
+    '请粘贴 ApiPorter API Key（输入不会显示），然后按 Enter：' \
+    'ApiPorter API Key を貼り付けて Enter を押してください（入力は表示されません）:' \
+    'Paste your ApiPorter API key (input is hidden), then press Enter:')"
   printf '> ' >&3
   TTY_STATE="$(stty -g <&3 2>/dev/null || true)"
   [ -z "$TTY_STATE" ] || stty -echo <&3
@@ -312,7 +312,7 @@ write_files() {
       'model_supports_reasoning_summaries = true' \
       '' \
       '[model_providers.apiporter]' \
-      'name = "CBAPI"' \
+      'name = "ApiPorter"' \
       "base_url = \"$escaped_url\"" \
       'wire_api = "responses"' \
       'requires_openai_auth = true' >"$config_tmp"
@@ -349,14 +349,14 @@ validate_key() {
       fi
       ;;
     401 | 403) warn "$(text 'API Key 验证失败，HTTP ' 'API Key の検証に失敗しました。HTTP ' 'API key validation failed with HTTP ')$status" ;;
-    000) warn "$(text '暂时无法连接 CBAPI，配置已保留并跳过在线验证。' 'CBAPI に接続できないため、設定を保持して検証をスキップしました。' 'CBAPI could not be reached; configuration was kept and validation was skipped.')" ;;
+    000) warn "$(text '暂时无法连接 ApiPorter，配置已保留并跳过在线验证。' 'ApiPorter に接続できないため、設定を保持して検証をスキップしました。' 'ApiPorter could not be reached; configuration was kept and validation was skipped.')" ;;
     *) warn "$(text '在线验证返回 HTTP ' 'オンライン検証の HTTP ステータス: ' 'Online validation returned HTTP ')$status" ;;
   esac
 }
 
 main() {
   ensure_environment
-  say "$(text 'CBAPI Codex 一键配置' 'CBAPI Codex ワンクリック設定' 'CBAPI Codex setup')"
+  say "$(text 'ApiPorter Codex 一键配置' 'ApiPorter Codex ワンクリック設定' 'ApiPorter Codex setup')"
   say "$(text '脚本会安装或更新 Codex，备份旧配置，并验证 API Key。' 'Codex の導入・更新、設定のバックアップ、API Key の検証を行います。' 'This installs or updates Codex, backs up existing settings, and validates the API key.')"
   say ''
 

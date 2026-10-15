@@ -59,7 +59,7 @@ test('every published guide has route-specific sections', () => {
   }
 })
 
-test('generated examples use the active CBAPI gateway', () => {
+test('generated examples use the active ApiPorter gateway', () => {
   const serialized = Object.keys(expectedSectionCounts)
     .map((slug) => buildGuideDocument(slug, ROOT_URL, V1_URL))
     .map((document) => JSON.stringify(document))
