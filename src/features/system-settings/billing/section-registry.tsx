@@ -21,6 +21,7 @@ import { parseCurrencyDisplayType } from '@/lib/currency'
 import { CheckinSettingsSection } from '../general/checkin-settings-section'
 import { PricingSection } from '../general/pricing-section'
 import { QuotaSettingsSection } from '../general/quota-settings-section'
+import { AlipayOfficialSettingsSection } from '../integrations/alipay-official-settings-section'
 import { PaymentSettingsSection } from '../integrations/payment-settings-section'
 import { RatioSettingsCard } from '../models/ratio-settings-card'
 import type { BillingSettings } from '../types'
@@ -185,6 +186,32 @@ const BILLING_SECTIONS = [
           confirmedAt: settings['payment_setting.compliance_confirmed_at'] ?? 0,
           confirmedBy: settings['payment_setting.compliance_confirmed_by'] ?? 0,
         }}
+      />
+    ),
+  },
+  {
+    id: 'alipay-official',
+    titleKey: 'alipayOfficial.title',
+    build: (settings: BillingSettings) => (
+      <AlipayOfficialSettingsSection
+        defaultValues={{
+          enabled: settings['alipay_official.enabled'],
+          sandbox: settings['alipay_official.sandbox'],
+          app_id: settings['alipay_official.app_id'],
+          seller_id: settings['alipay_official.seller_id'],
+          private_key: '',
+          public_key: settings['alipay_official.public_key'],
+          callback_url: settings['alipay_official.callback_url'],
+          price: settings['alipay_official.price'],
+          min_topup: settings['alipay_official.min_topup'],
+        }}
+        privateKeyConfigured={
+          settings['alipay_official.private_key_configured']
+        }
+        complianceConfirmed={
+          (settings['payment_setting.compliance_confirmed'] ?? false) &&
+          settings['payment_setting.compliance_terms_version'] === 'v1'
+        }
       />
     ),
   },

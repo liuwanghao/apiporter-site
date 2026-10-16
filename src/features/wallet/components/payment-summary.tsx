@@ -25,12 +25,13 @@ import { formatCurrencyFixed } from '../lib'
 interface PaymentSummaryProps {
   topupAmount: number
   paymentAmount: number
+  displayRate?: number
   calculating: boolean
 }
 
 export function PaymentSummary(props: PaymentSummaryProps) {
   const { t } = useTranslation()
-  const subtotal = `${formatCurrencyFixed(props.paymentAmount)} HKD`
+  const subtotal = `${formatCurrencyFixed(props.paymentAmount)} CNY`
 
   return (
     <section
@@ -43,7 +44,8 @@ export function PaymentSummary(props: PaymentSummaryProps) {
           {t('Recharge Amount')}
         </p>
         <p className='mt-2 text-sm font-semibold tabular-nums sm:text-base'>
-          {formatCurrencyFixed(props.topupAmount)} USD
+          {formatCurrencyFixed(props.topupAmount * (props.displayRate ?? 1))}{' '}
+          CNY
         </p>
       </div>
       <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>

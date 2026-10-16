@@ -22,6 +22,7 @@ import { toast } from 'sonner'
 
 import {
   calculateAmount,
+  calculateAlipayOfficialAmount,
   calculateStripeAmount,
   calculateWaffoAmount,
   calculateWaffoPancakeAmount,
@@ -31,6 +32,7 @@ import {
 } from '../api'
 import {
   isStripePayment,
+  isAlipayOfficialPayment,
   isWaffoPayment,
   isWaffoPancakePayment,
   submitPaymentForm,
@@ -45,6 +47,7 @@ type AmountCalculator = (request: AmountRequest) => Promise<AmountResponse>
 
 export interface PaymentAmountCalculators {
   regular: AmountCalculator
+  alipayOfficial: AmountCalculator
   stripe: AmountCalculator
   waffo: AmountCalculator
   waffoPancake: AmountCalculator
@@ -52,6 +55,7 @@ export interface PaymentAmountCalculators {
 
 const defaultPaymentAmountCalculators: PaymentAmountCalculators = {
   regular: calculateAmount,
+  alipayOfficial: calculateAlipayOfficialAmount,
   stripe: calculateStripeAmount,
   waffo: calculateWaffoAmount,
   waffoPancake: calculateWaffoPancakeAmount,
@@ -63,7 +67,9 @@ export async function requestPaymentAmount(
   calculators: PaymentAmountCalculators = defaultPaymentAmountCalculators
 ): Promise<number> {
   let calculator = calculators.regular
-  if (isStripePayment(paymentType)) {
+  if (isAlipayOfficialPayment(paymentType)) {
+    calculator = calculators.alipayOfficial
+  } else if (isStripePayment(paymentType)) {
     calculator = calculators.stripe
   } else if (isWaffoPayment(paymentType)) {
     calculator = calculators.waffo

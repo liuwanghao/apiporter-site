@@ -191,10 +191,14 @@ export async function listWaffoPancakeSubscriptionProductOptions(): Promise<
   return res.data
 }
 
-export async function paySubscriptionEpay(
+export async function paySubscriptionOnline(
   data: SubscriptionPayRequest & { payment_method: string }
 ): Promise<SubscriptionPayResponse & { url?: string }> {
-  const res = await api.post('/api/subscription/epay/pay', data)
+  const endpoint =
+    data.payment_method === 'alipay_official'
+      ? '/api/subscription/alipay/pay'
+      : '/api/subscription/epay/pay'
+  const res = await api.post(endpoint, data)
   return {
     ...res.data,
     url: res.data.url || (res as unknown as { url?: string }).url,

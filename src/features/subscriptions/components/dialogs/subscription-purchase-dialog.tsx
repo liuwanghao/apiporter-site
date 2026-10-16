@@ -34,6 +34,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { submitPaymentForm } from '@/features/wallet/lib/payment'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { formatQuota } from '@/lib/format'
 import { DEFAULT_CURRENCY_CONFIG } from '@/stores/system-config-store'
@@ -41,7 +42,7 @@ import { DEFAULT_CURRENCY_CONFIG } from '@/stores/system-config-store'
 import {
   paySubscriptionStripe,
   paySubscriptionCreem,
-  paySubscriptionEpay,
+  paySubscriptionOnline,
   paySubscriptionWaffoPancake,
   paySubscriptionBalance,
 } from '../../api'
@@ -92,11 +93,16 @@ export function SubscriptionPurchaseDialog(props: Props) {
   const hasEpay =
     props.enableOnlineTopUp && (props.epayMethods || []).length > 0
   const hasAnyPayment = hasStripe || hasCreem || hasWaffoPancake || hasEpay
-  const selectedEpayMethodLabel =
-    (props.epayMethods || []).find((m) => m.type === selectedEpayMethod)
-      ?.name ||
-    selectedEpayMethod ||
-    t('Select payment method')
+  const getMethodLabel = (method: PaymentMethod): string =>
+    method.type === 'alipay_official'
+      ? t('Alipay Official')
+      : method.name || method.type
+  const selectedMethod = (props.epayMethods || []).find(
+    (method) => method.type === selectedEpayMethod
+  )
+  const selectedEpayMethodLabel = selectedMethod
+    ? getMethodLabel(selectedMethod)
+    : t('Select payment method')
   const totalAmount = Number(plan.total_amount || 0)
   const price = Number(plan.price_amount || 0).toFixed(2)
   const quotaPerUnit =
@@ -181,10 +187,6 @@ export function SubscriptionPurchaseDialog(props: Props) {
     }
   }
 
-  const isSafari =
-    typeof navigator !== 'undefined' &&
-    /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-
   const handlePayEpay = async () => {
     if (!selectedEpayMethod) {
       toast.error(t('Please select a payment method'))
@@ -192,27 +194,12 @@ export function SubscriptionPurchaseDialog(props: Props) {
     }
     setPaying(true)
     try {
-      const res = await paySubscriptionEpay({
+      const res = await paySubscriptionOnline({
         plan_id: plan.id,
         payment_method: selectedEpayMethod,
       })
       if (res.message === 'success' && res.url) {
-        const form = document.createElement('form')
-        form.action = res.url
-        form.method = 'POST'
-        if (!isSafari) {
-          form.target = '_blank'
-        }
-        Object.entries(res.data || {}).forEach(([key, value]) => {
-          const input = document.createElement('input')
-          input.type = 'hidden'
-          input.name = key
-          input.value = String(value)
-          form.appendChild(input)
-        })
-        document.body.appendChild(form)
-        form.submit()
-        document.body.removeChild(form)
+        submitPaymentForm(res.url, res.data || {})
         toast.success(t('Payment initiated'))
         props.onOpenChange(false)
       } else {
@@ -316,9 +303,21 @@ export function SubscriptionPurchaseDialog(props: Props) {
           )}
           <Separator />
           <div className='flex items-center justify-between'>
-            <span className='text-sm font-medium'>{t('Amount Due')}</span>
-            <span className='text-primary text-lg font-bold'>${price}</span>
+            <span className='text-sm font-medium'>
+              {selectedEpayMethod === 'alipay_official'
+                ? t('Plan Price')
+                : t('Amount Due')}
+            </span>
+            <span className='text-primary text-lg font-bold'>
+              ${price}
+              {selectedEpayMethod === 'alipay_official' ? ' USD' : ''}
+            </span>
           </div>
+          {selectedEpayMethod === 'alipay_official' && (
+            <p className='text-muted-foreground text-xs'>
+              CNY · {t('Subject to payment page')}
+            </p>
+          )}
         </div>
 
         {limitReached && (
@@ -405,12 +404,10 @@ export function SubscriptionPurchaseDialog(props: Props) {
             {hasEpay && (
               <div className='grid grid-cols-[minmax(0,1fr)_auto] gap-2'>
                 <Select
-                  items={[
-                    ...(props.epayMethods || []).map((m) => ({
-                      value: m.type,
-                      label: m.name || m.type,
-                    })),
-                  ]}
+                  items={(props.epayMethods || []).map((m) => ({
+                    value: m.type,
+                    label: getMethodLabel(m),
+                  }))}
                   value={selectedEpayMethod}
                   onValueChange={(v) => v !== null && setSelectedEpayMethod(v)}
                   disabled={limitReached}
@@ -422,7 +419,7 @@ export function SubscriptionPurchaseDialog(props: Props) {
                     <SelectGroup>
                       {(props.epayMethods || []).map((m) => (
                         <SelectItem key={m.type} value={m.type}>
-                          {m.name || m.type}
+                          {getMethodLabel(m)}
                         </SelectItem>
                       ))}
                     </SelectGroup>

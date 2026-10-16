@@ -83,6 +83,18 @@ export async function calculateAmount(
 }
 
 /**
+ * Calculate the independently priced amount for direct Alipay payment.
+ */
+export async function calculateAlipayOfficialAmount(
+  request: AmountRequest
+): Promise<AmountResponse> {
+  const res = await api.post('/api/user/alipay/amount', request, {
+    skipBusinessError: true,
+  })
+  return res.data
+}
+
+/**
  * Calculate payment amount for Stripe payment
  */
 export async function calculateStripeAmount(
@@ -112,7 +124,11 @@ export async function calculateWaffoAmount(
 export async function requestPayment(
   request: PaymentRequest
 ): Promise<PaymentResponse> {
-  const res = await api.post('/api/user/pay', request, {
+  const endpoint =
+    request.payment_method === 'alipay_official'
+      ? '/api/user/alipay/pay'
+      : '/api/user/pay'
+  const res = await api.post(endpoint, request, {
     skipBusinessError: true,
   } as Record<string, unknown>)
   return {

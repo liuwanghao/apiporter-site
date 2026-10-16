@@ -68,6 +68,10 @@ export function submitPaymentForm(
   document.body.removeChild(form)
 }
 
+export function isAlipayOfficialPayment(paymentType: string): boolean {
+  return paymentType === PAYMENT_TYPES.ALIPAY_OFFICIAL
+}
+
 /**
  * Check if payment method is Stripe
  */
@@ -205,6 +209,15 @@ export function getDefaultPaymentType(topupInfo: TopupInfo | null): string {
 export function getMinTopupAmount(topupInfo: TopupInfo | null): number {
   if (!topupInfo) {
     return DEFAULT_MIN_TOPUP
+  }
+
+  const selectedMethod = resolveDefaultPayment(topupInfo)?.method
+  if (selectedMethod?.min_topup && selectedMethod.min_topup > 0) {
+    return selectedMethod.min_topup
+  }
+
+  if (selectedMethod && isAlipayOfficialPayment(selectedMethod.type)) {
+    return topupInfo.alipay_official_min_topup || DEFAULT_MIN_TOPUP
   }
 
   if (topupInfo.enable_online_topup) {

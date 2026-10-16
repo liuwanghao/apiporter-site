@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { Gift, ExternalLink, Loader2, WalletCards } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -31,11 +31,7 @@ import { TitledCard } from '@/components/ui/titled-card'
 import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
-import {
-  getDiscountLabel,
-  getMinTopupAmount,
-  calculatePresetPricing,
-} from '../lib'
+import { getDiscountLabel, getMinTopupAmount } from '../lib'
 import type { PresetAmount, TopupInfo, CreemProduct } from '../types'
 import { CreemProductsSection } from './creem-products-section'
 import { PaymentSummary } from './payment-summary'
@@ -59,11 +55,28 @@ interface RechargeFormCardProps {
   redeeming: boolean
   topupLink?: string
   loading?: boolean
-  priceRatio?: number
-  usdExchangeRate?: number
+  rechargeDisplayRate?: number
   creemProducts?: CreemProduct[]
   enableCreemTopup?: boolean
   onCreemProductSelect?: (product: CreemProduct) => void
+}
+
+// Convert a yuan entry to the API's integer quantity only when it preserves cents.
+function parseRechargeQuantity(value: string, rate: number): number {
+  const yuan = Number(value)
+  const quantity = Math.round(yuan / rate)
+  if (
+    value === '' ||
+    !Number.isFinite(yuan) ||
+    yuan <= 0 ||
+    !Number.isSafeInteger(quantity) ||
+    quantity <= 0 ||
+    Number(yuan.toFixed(2)) !== yuan ||
+    Number((quantity * rate).toFixed(2)) !== yuan
+  ) {
+    return 0
+  }
+  return quantity
 }
 
 export function RechargeFormCard({
@@ -84,28 +97,32 @@ export function RechargeFormCard({
   redeeming,
   topupLink,
   loading,
-  priceRatio = 1,
-  usdExchangeRate = 1,
+  rechargeDisplayRate = 1,
   creemProducts,
   enableCreemTopup,
   onCreemProductSelect,
 }: RechargeFormCardProps) {
   const { t } = useTranslation()
-  const [localAmount, setLocalAmount] = useState(topupAmount.toString())
-
-  useEffect(() => {
-    // Empty string must survive, otherwise the field can never be cleared
-    setLocalAmount((prev) =>
-      prev === '' && topupAmount === 0 ? prev : topupAmount.toString()
-    )
-  }, [topupAmount])
-
+  const displayRate =
+    Number.isFinite(rechargeDisplayRate) && rechargeDisplayRate > 0
+      ? rechargeDisplayRate
+      : 1
+  const displayAmount = Number((topupAmount * displayRate).toFixed(2))
+  const [draft, setDraft] = useState<{
+    value: string
+    amount: number
+    rate: number
+  } | null>(null)
+  const localAmount =
+    draft?.amount === topupAmount && draft.rate === displayRate
+      ? draft.value
+      : displayAmount.toString()
+  const rechargeAmount = parseRechargeQuantity(localAmount, displayRate)
+  const validAmount = rechargeAmount > 0
   const handleAmountChange = (value: string) => {
-    setLocalAmount(value)
-    const numValue = Number.parseInt(value) || 0
-    if (numValue >= 0) {
-      onTopupAmountChange(numValue)
-    }
+    const nextAmount = parseRechargeQuantity(value, displayRate)
+    setDraft({ value, amount: nextAmount, rate: displayRate })
+    onTopupAmountChange(nextAmount)
   }
 
   const hasConfigurableTopup =
@@ -116,7 +133,7 @@ export function RechargeFormCard({
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
   const minTopup = getMinTopupAmount(topupInfo)
   const presetDisplayValues = presetAmounts.map(
-    (preset) => preset.value * usdExchangeRate
+    (preset) => preset.value * displayRate
   )
   const presetDisplayRange =
     presetDisplayValues.length > 0
@@ -183,8 +200,8 @@ export function RechargeFormCard({
       action={
         presetDisplayRange ? (
           <span className='text-muted-foreground text-sm font-medium tabular-nums'>
-            ${formatNumber(presetDisplayRange.min)}–$
-            {formatNumber(presetDisplayRange.max)} {t('USD')}
+            ¥{formatNumber(presetDisplayRange.min)}–¥
+            {formatNumber(presetDisplayRange.max)} {t('CNY')}
           </span>
         ) : null
       }
@@ -209,13 +226,8 @@ export function RechargeFormCard({
                         preset.discount ||
                         topupInfo?.discount?.[preset.value] ||
                         1.0
-                      const { displayValue, hasDiscount } =
-                        calculatePresetPricing(
-                          preset.value,
-                          priceRatio,
-                          discount,
-                          usdExchangeRate
-                        )
+                      const displayValue = preset.value * displayRate
+                      const hasDiscount = discount < 1
                       return (
                         <Button
                           key={preset.value}
@@ -235,7 +247,7 @@ export function RechargeFormCard({
                                 data-preset-amount-currency
                                 aria-hidden='true'
                               >
-                                $
+                                ¥
                               </span>
                               {formatNumber(displayValue)}
                             </div>
@@ -257,7 +269,7 @@ export function RechargeFormCard({
                   htmlFor='topup-amount'
                   className='text-muted-foreground text-xs font-medium tracking-wider uppercase'
                 >
-                  {t('Recharge Amount')} ({t('USD')})
+                  {t('Recharge Amount')} ({t('CNY')})
                 </Label>
                 <div className='grid gap-2 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center'>
                   <div className='relative'>
@@ -266,7 +278,7 @@ export function RechargeFormCard({
                       aria-hidden='true'
                       className='text-muted-foreground pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-base font-semibold'
                     >
-                      $
+                      ¥
                     </span>
                     <Input
                       id='topup-amount'
@@ -274,8 +286,16 @@ export function RechargeFormCard({
                       inputMode='decimal'
                       value={localAmount}
                       onChange={(e) => handleAmountChange(e.target.value)}
-                      min={minTopup}
-                      placeholder={`Minimum ${minTopup}`}
+                      min={Number((minTopup * displayRate).toFixed(2))}
+                      step='any'
+                      aria-invalid={
+                        localAmount !== '' &&
+                        (!validAmount || rechargeAmount < minTopup)
+                      }
+                      aria-describedby='topup-amount-hint'
+                      placeholder={t('wallet.recharge.minimum', {
+                        amount: formatNumber(minTopup * displayRate),
+                      })}
                       className='h-12 pl-7 text-base font-medium tabular-nums sm:text-lg'
                     />
                   </div>
@@ -283,7 +303,11 @@ export function RechargeFormCard({
                     type='button'
                     onClick={onOnlinePay}
                     disabled={
-                      onlinePaymentDisabled || onlinePaying || calculating
+                      onlinePaymentDisabled ||
+                      onlinePaying ||
+                      calculating ||
+                      !validAmount ||
+                      rechargeAmount < minTopup
                     }
                     className='h-12 min-w-32 px-6 text-sm font-semibold sm:min-w-36'
                   >
@@ -293,11 +317,29 @@ export function RechargeFormCard({
                     {t('Pay Online')}
                   </Button>
                 </div>
+                <p
+                  id='topup-amount-hint'
+                  className='text-muted-foreground text-xs'
+                >
+                  {t('wallet.recharge.minimum', {
+                    amount: formatNumber(minTopup * displayRate),
+                  })}
+                  {localAmount !== '' && !validAmount && (
+                    <span role='alert' className='text-destructive ml-2'>
+                      {t('wallet.recharge.increment', {
+                        amount: formatNumber(
+                          Math.max(0.01, Number(displayRate.toFixed(2)))
+                        ),
+                      })}
+                    </span>
+                  )}
+                </p>
               </div>
 
               <PaymentSummary
                 topupAmount={topupAmount}
                 paymentAmount={paymentAmount}
+                displayRate={displayRate}
                 calculating={calculating}
               />
 

@@ -288,6 +288,15 @@ export type BillingSettings = {
   MaxTokenAutoGroups: number
   DefaultUseAutoGroup: boolean
   'group_ratio_setting.group_special_usable_group': string
+  'alipay_official.enabled': boolean
+  'alipay_official.sandbox': boolean
+  'alipay_official.app_id': string
+  'alipay_official.seller_id': string
+  'alipay_official.private_key_configured': boolean
+  'alipay_official.public_key': string
+  'alipay_official.callback_url': string
+  'alipay_official.price': number
+  'alipay_official.min_topup': number
   PayAddress: string
   EpayId: string
   EpayKey: string

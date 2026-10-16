@@ -122,6 +122,10 @@ export interface WaffoPayMethod {
 export interface TopupInfo {
   /** Whether online topup is enabled */
   enable_online_topup: boolean
+  /** Whether direct Alipay topup is enabled */
+  enable_alipay_official_topup?: boolean
+  /** Independent minimum topup amount for direct Alipay */
+  alipay_official_min_topup?: number
   /** Whether Stripe topup is enabled */
   enable_stripe_topup: boolean
   /** Available payment methods */

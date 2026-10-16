@@ -21,7 +21,6 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SectionPageLayout } from '@/components/layout'
-import { useStatus } from '@/hooks/use-status'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { getSelf } from '@/lib/api'
 
@@ -68,7 +67,6 @@ export function Wallet(props: WalletProps) {
   const [showSubscriptionPanel, setShowSubscriptionPanel] = useState(true)
   const historySectionRef = useRef<HTMLDivElement>(null)
 
-  const { status } = useStatus()
   const { currency } = useSystemConfig()
   const { topupInfo, presetAmounts, loading: topupLoading } = useTopupInfo()
   const defaultPaymentSelection = useMemo(
@@ -80,12 +78,10 @@ export function Wallet(props: WalletProps) {
     defaultPaymentSelection?.method.min_topup || 0
   )
 
-  // Calculate effective exchange rate - when display type is USD, use rate of 1
-  const effectiveUsdExchangeRate = useMemo(() => {
-    return currency?.quotaDisplayType === 'USD'
-      ? 1
-      : currency?.usdExchangeRate || 1
-  }, [currency?.quotaDisplayType, currency?.usdExchangeRate])
+  // Display recharge credit in CNY while preserving the API's USD/token quantity.
+  const rechargeDisplayRate =
+    (currency?.usdExchangeRate || 1) /
+    (currency?.quotaDisplayType === 'TOKENS' ? currency.quotaPerUnit : 1)
   const {
     amount: paymentAmount,
     calculating,
@@ -283,8 +279,7 @@ export function Wallet(props: WalletProps) {
                   redeeming={redeeming}
                   topupLink={topupInfo?.topup_link}
                   loading={topupLoading}
-                  priceRatio={(status?.price as number) || 1}
-                  usdExchangeRate={effectiveUsdExchangeRate}
+                  rechargeDisplayRate={rechargeDisplayRate}
                   creemProducts={topupInfo?.creem_products}
                   enableCreemTopup={topupInfo?.enable_creem_topup}
                   onCreemProductSelect={handleCreemProductSelect}

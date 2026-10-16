@@ -30,6 +30,10 @@ describe('payment amount routing', () => {
         calls.push('regular')
         return { success: true, data: '1' }
       },
+      alipayOfficial: async () => {
+        calls.push('alipay_official')
+        return { success: true, data: '5' }
+      },
       stripe: async () => {
         calls.push('stripe')
         return { success: true, data: '2' }

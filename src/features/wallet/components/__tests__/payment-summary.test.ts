@@ -37,7 +37,7 @@ test('payment summary contains all four reference metrics', () => {
 })
 
 test('payment summary derives display values from live amounts', () => {
-  assert.match(paymentSummary, /formatCurrencyFixed\(props\.topupAmount\)/)
+  assert.match(paymentSummary, /formatCurrencyFixed\(props\.topupAmount \*/)
   assert.match(paymentSummary, /formatCurrencyFixed\(props\.paymentAmount\)/)
   assert.match(paymentSummary, /props\.calculating/)
 })
