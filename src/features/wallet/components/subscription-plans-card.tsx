@@ -69,9 +69,7 @@ interface SubscriptionPlansCardProps {
 }
 
 function getEpayMethods(payMethods: PaymentMethod[] = []): PaymentMethod[] {
-  return payMethods.filter(
-    (m) => m?.type && m.type !== 'stripe' && m.type !== 'creem'
-  )
+  return payMethods.filter((m) => m?.type === 'alipay')
 }
 
 function getBillingPreferenceLabel(

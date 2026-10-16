@@ -17,21 +17,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { useTranslation } from 'react-i18next'
-import {
-  SiAlipay,
-  SiAmericanexpress,
-  SiMastercard,
-  SiVisa,
-  SiWechat,
-} from 'react-icons/si'
+import { SiAlipay } from 'react-icons/si'
 
 const SUPPORTED_PAYMENT_CHANNELS = [
-  { name: 'Visa', icon: SiVisa, color: '#1434CB' },
-  { name: 'Mastercard', icon: SiMastercard, color: '#EB001B' },
-  { name: 'UnionPay', icon: null, color: '#007078' },
-  { name: 'American Express', icon: SiAmericanexpress, color: '#006FCF' },
   { name: 'Alipay', icon: SiAlipay, color: '#1677FF' },
-  { name: 'WeChat Pay', icon: SiWechat, color: '#07C160' },
 ] as const
 
 export function SupportedPaymentChannels() {

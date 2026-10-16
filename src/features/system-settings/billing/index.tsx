@@ -65,7 +65,7 @@ const defaultBillingSettings: BillingSettings = {
   Price: 7.3,
   MinTopUp: 1,
   CustomCallbackAddress: '',
-  PayMethods: '',
+  PayMethods: '[{"name":"支付宝","type":"alipay","icon":"SiAlipay"}]',
   'payment_setting.amount_options': '',
   'payment_setting.amount_discount': '',
   'payment_setting.compliance_confirmed': false,

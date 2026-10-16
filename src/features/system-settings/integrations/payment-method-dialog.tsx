@@ -68,9 +68,6 @@ type PaymentMethodDialogProps = {
 
 const PAYMENT_TYPE_ICON_NAMES: Record<string, string> = {
   alipay: 'SiAlipay',
-  stripe: 'SiStripe',
-  waffo_pancake: 'LuCreditCard',
-  wxpay: 'SiWechat',
 }
 
 const getDefaultIconName = (type: string) => PAYMENT_TYPE_ICON_NAMES[type] ?? ''
@@ -90,24 +87,6 @@ export function PaymentMethodDialog({
       label: `${t('Alipay')} (Epay: alipay)`,
       name: t('Alipay'),
       value: 'alipay',
-    },
-    {
-      iconName: 'SiWechat',
-      label: `${t('WeChat Pay')} (Epay: wxpay)`,
-      name: t('WeChat Pay'),
-      value: 'wxpay',
-    },
-    {
-      iconName: 'SiStripe',
-      label: `${t('Stripe')} (stripe)`,
-      name: t('Stripe'),
-      value: 'stripe',
-    },
-    {
-      iconName: 'LuCreditCard',
-      label: 'Waffo Pancake (waffo_pancake)',
-      name: 'Waffo Pancake',
-      value: 'waffo_pancake',
     },
   ]
   const getPaymentTypeOption = (value: string) =>
@@ -196,7 +175,7 @@ export function PaymentMethodDialog({
               <FormItem>
                 <FormLabel>{t('Name')}</FormLabel>
                 <FormControl>
-                  <Input placeholder={t('e.g., Alipay, WeChat')} {...field} />
+                  <Input placeholder={t('Alipay')} {...field} />
                 </FormControl>
                 <FormDescription>
                   {t('Display name for this payment method.')}
