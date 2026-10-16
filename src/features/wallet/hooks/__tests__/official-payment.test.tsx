@@ -62,7 +62,11 @@ const originalAdapter = api.defaults.adapter
 const originalSubmit = domWindow.HTMLFormElement.prototype.submit
 let root: ReturnType<typeof createRoot> | undefined
 const requests: { url: string; body: unknown }[] = []
-const submissions: { action: string; params: Record<string, string> }[] = []
+const submissions: {
+  action: string
+  acceptCharset: string
+  params: Record<string, string>
+}[] = []
 function mount(element: React.ReactNode) {
   const host = document.createElement('div')
   document.body.append(host)
@@ -136,6 +140,17 @@ for (const [type, amountEndpoint, payEndpoint, currency] of [
   ['alipay', '/api/user/amount', '/api/user/pay', 'CNY'],
 ]) {
   test(`${type} quote and checkout use their own endpoints and signed form`, async () => {
+    const action =
+      type === 'alipay_official'
+        ? 'https://openapi.alipay.com/gateway.do?charset=utf-8&sign_type=RSA2&sign=signed-by-server'
+        : 'https://openapi.alipay.com/gateway.do'
+    const params =
+      type === 'alipay_official'
+        ? {
+            biz_content: '{"subject":"钱包充值 & + =","total_amount":"140.00"}',
+          }
+        : { sign: 'signed-by-server', biz_content: '{"total_amount":"140.00"}' }
+
     api.defaults.adapter = async (config) => {
       requests.push({ url: config.url || '', body: JSON.parse(config.data) })
       return {
@@ -147,17 +162,15 @@ for (const [type, amountEndpoint, payEndpoint, currency] of [
           ? { success: true, data: '140.00' }
           : {
               message: 'success',
-              url: 'https://openapi.alipay.com/gateway.do',
-              data: {
-                sign: 'signed-by-server',
-                biz_content: '{"total_amount":"140.00"}',
-              },
+              url: action,
+              data: params,
             },
       }
     }
     domWindow.HTMLFormElement.prototype.submit = function () {
       submissions.push({
         action: this.action,
+        acceptCharset: this.acceptCharset,
         params: Object.fromEntries(
           [...this.querySelectorAll('input')].map((input) => [
             input.name,
@@ -179,11 +192,9 @@ for (const [type, amountEndpoint, payEndpoint, currency] of [
     ])
     assert.deepEqual(submissions, [
       {
-        action: 'https://openapi.alipay.com/gateway.do',
-        params: {
-          sign: 'signed-by-server',
-          biz_content: '{"total_amount":"140.00"}',
-        },
+        action,
+        acceptCharset: 'UTF-8',
+        params,
       },
     ])
   })
@@ -245,7 +256,11 @@ test('a failed official checkout never submits a form or falls back to Epay', as
     }
   }
   domWindow.HTMLFormElement.prototype.submit = function () {
-    submissions.push({ action: this.action, params: {} })
+    submissions.push({
+      action: this.action,
+      acceptCharset: this.acceptCharset,
+      params: {},
+    })
   }
   await mount(<PaymentHarness type='alipay_official' />)
   await act(async () => findButton('Pay').click())

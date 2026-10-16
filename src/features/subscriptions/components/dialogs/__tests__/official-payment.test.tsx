@@ -97,6 +97,20 @@ for (const [type, name, endpoint] of [
   ['alipay', 'Alipay', '/api/subscription/epay/pay'],
 ]) {
   test(`buying a subscription with ${type} posts the chosen provider and server signature`, async () => {
+    const action =
+      type === 'alipay_official'
+        ? 'https://openapi.alipay.com/gateway.do?charset=utf-8&sign_type=RSA2&sign=signed-subscription'
+        : 'https://openapi.alipay.com/gateway.do'
+    const params =
+      type === 'alipay_official'
+        ? {
+            biz_content: '{"subject":"订阅购买 & + =","total_amount":"140.00"}',
+          }
+        : {
+            sign: 'signed-subscription',
+            biz_content: '{"total_amount":"140.00"}',
+          }
+
     const requests: { url: string; body: unknown }[] = []
     const submitted: Record<string, string>[] = []
     const openChanges: boolean[] = []
@@ -109,16 +123,14 @@ for (const [type, name, endpoint] of [
         headers: {},
         data: {
           message: 'success',
-          url: 'https://openapi.alipay.com/gateway.do',
-          data: {
-            sign: 'signed-subscription',
-            biz_content: '{"total_amount":"140.00"}',
-          },
+          url: action,
+          data: params,
         },
       }
     }
     domWindow.HTMLFormElement.prototype.submit = function () {
-      assert.equal(this.action, 'https://openapi.alipay.com/gateway.do')
+      assert.equal(this.action, action)
+      assert.equal(this.acceptCharset, 'UTF-8')
       submitted.push(
         Object.fromEntries(
           [...this.querySelectorAll('input')].map((input) => [
@@ -163,9 +175,7 @@ for (const [type, name, endpoint] of [
     assert.deepEqual(requests, [
       { url: endpoint, body: { plan_id: 11, payment_method: type } },
     ])
-    assert.deepEqual(submitted, [
-      { sign: 'signed-subscription', biz_content: '{"total_amount":"140.00"}' },
-    ])
+    assert.deepEqual(submitted, [params])
     assert.deepEqual(openChanges, [false])
   })
 }
