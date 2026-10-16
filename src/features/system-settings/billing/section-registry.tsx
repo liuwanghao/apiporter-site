@@ -194,6 +194,7 @@ const BILLING_SECTIONS = [
     titleKey: 'alipayOfficial.title',
     build: (settings: BillingSettings) => (
       <AlipayOfficialSettingsSection
+        serverAddress={settings.ServerAddress}
         defaultValues={{
           enabled: settings['alipay_official.enabled'],
           sandbox: settings['alipay_official.sandbox'],

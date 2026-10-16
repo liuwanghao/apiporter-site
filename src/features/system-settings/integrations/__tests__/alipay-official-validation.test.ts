@@ -47,9 +47,49 @@ describe('official Alipay settings validation', () => {
     if (!result.success) {
       assert.deepEqual(
         result.error.issues.map((issue) => issue.path[0]).sort(),
-        ['app_id', 'callback_url', 'private_key', 'public_key', 'seller_id']
+        ['app_id', 'callback_url', 'private_key', 'public_key']
       )
     }
+  })
+
+  test('allows an omitted merchant PID and defaults callbacks to the configured server', () => {
+    const schema = createAlipayOfficialSchema(
+      t,
+      true,
+      true,
+      'https://api.example.com/'
+    )
+    const values = { ...configured, seller_id: '', callback_url: '' }
+    assert.equal(schema.parse(values).callback_url, '')
+    for (const address of [
+      '',
+      'http://api.example.com',
+      'https://api.example.com/path',
+    ]) {
+      assert.equal(
+        createAlipayOfficialSchema(t, true, true, address).safeParse(values)
+          .success,
+        false
+      )
+    }
+    assert.equal(
+      createAlipayOfficialSchema(
+        t,
+        true,
+        true,
+        'http://invalid.example.com'
+      ).safeParse(configured).success,
+      true
+    )
+    assert.equal(
+      createAlipayOfficialSchema(
+        t,
+        true,
+        true,
+        'http://localhost:8080'
+      ).safeParse({ ...values, sandbox: true }).success,
+      true
+    )
   })
 
   test('keeps a stored private key when the replacement field is empty', () => {

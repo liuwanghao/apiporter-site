@@ -54,13 +54,15 @@ Open **Billing & Payment → Alipay Official** at
 `/system-settings/billing/alipay-official`. This page configures direct Alipay
 Website Payment in RSA2 public-key mode, independently of the Epay gateway.
 Use an approved Alipay application with Website Payment enabled, its App ID,
-merchant PID, application private key and Alipay public key. The server does
-not return the private key; leaving its field blank preserves the saved key.
+application private key and Alipay public key. Merchant PID is optional;
+if supplied, payment notifications must match it. The server does not return
+the private key; leaving its field blank preserves the saved key.
 
-Set the public HTTPS origin used for payment notifications. Wallet and
-subscription notification URLs are generated from this origin and must be
-reachable by Alipay. The CNY price converts each USD of wallet balance or a
-subscription plan's USD price into the amount collected. Existing wallet
+Leave the callback origin blank to use the Server Address in system settings,
+or enter a public HTTPS origin to override it. Wallet and subscription
+notification URLs are generated automatically and must be reachable by Alipay.
+The CNY price converts each USD of wallet balance or a subscription plan's USD
+price into the amount collected. Existing wallet
 group ratios and preset discounts apply to wallet top-ups only. The payment
 compliance confirmation on the Payment Gateway page remains required.
 

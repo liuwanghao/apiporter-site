@@ -54,12 +54,14 @@ interface AlipayOfficialSettingsProps {
   defaultValues: AlipayOfficialValues
   privateKeyConfigured: boolean
   complianceConfirmed: boolean
+  serverAddress: string
 }
 
 export function AlipayOfficialSettingsSection({
   defaultValues,
   privateKeyConfigured,
   complianceConfirmed,
+  serverAddress,
 }: AlipayOfficialSettingsProps) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -67,13 +69,20 @@ export function AlipayOfficialSettingsSection({
   const [saveError, setSaveError] = useState('')
   const form = useForm<AlipayOfficialValues>({
     resolver: zodResolver(
-      createAlipayOfficialSchema(t, hasPrivateKey, complianceConfirmed)
+      createAlipayOfficialSchema(
+        t,
+        hasPrivateKey,
+        complianceConfirmed,
+        serverAddress
+      )
     ) as Resolver<AlipayOfficialValues>,
     defaultValues: { ...defaultValues, private_key: '' },
   })
   const saveSettings = useMutation({ mutationFn: saveAlipayOfficialSettings })
   const { isDirty, isSubmitting } = form.formState
-  const callbackOrigin = form.watch('callback_url').trim().replace(/\/+$/, '')
+  const callbackOrigin = (
+    form.watch('callback_url').trim() || serverAddress.trim()
+  ).replace(/\/+$/, '')
   const saving = isSubmitting || saveSettings.isPending
 
   async function onSubmit(values: AlipayOfficialValues) {
@@ -198,6 +207,11 @@ export function AlipayOfficialSettingsSection({
                   <FormControl>
                     <Input {...field} inputMode='numeric' disabled={saving} />
                   </FormControl>
+                  {name === 'seller_id' && (
+                    <FormDescription>
+                      {t('alipayOfficial.sellerIdHint')}
+                    </FormDescription>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -267,7 +281,7 @@ export function AlipayOfficialSettingsSection({
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder='https://api.example.com'
+                    placeholder={serverAddress || 'https://api.example.com'}
                     disabled={saving}
                   />
                 </FormControl>

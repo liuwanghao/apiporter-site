@@ -106,6 +106,7 @@ async function renderSettings(
                 public_key: 'saved-public-key',
                 callback_url: 'https://pay.example.com',
               }}
+              serverAddress='https://api.example.com/'
               privateKeyConfigured={privateKeyConfigured}
               complianceConfirmed={complianceConfirmed}
             />
@@ -172,6 +173,36 @@ describe('official Alipay configuration form', () => {
       'https://pay.example.com/api/user/alipay/notify',
       'https://pay.example.com/api/subscription/alipay/notify',
     ])
+    assert.equal(save.disabled, true)
+  })
+
+  test('saves blank merchant and callback fields while previewing the server address', async () => {
+    let requestBody: Record<string, unknown> | undefined
+    api.defaults.adapter = (async (config) => {
+      requestBody = JSON.parse(config.data as string) as Record<string, unknown>
+      return {
+        config,
+        data: { success: true },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+      }
+    }) satisfies AxiosAdapter
+    const { container, input, save } = await renderSettings()
+    await act(async () => {
+      setInput(input('Merchant account ID (PID)'), '')
+      setInput(input('Public callback origin'), '')
+    })
+    assert.deepEqual(
+      [...container.querySelectorAll('code')].map((node) => node.textContent),
+      [
+        'https://api.example.com/api/user/alipay/notify',
+        'https://api.example.com/api/subscription/alipay/notify',
+      ]
+    )
+    await act(async () => save.click())
+    assert.equal(requestBody?.seller_id, '')
+    assert.equal(requestBody?.callback_url, '')
     assert.equal(save.disabled, true)
   })
 

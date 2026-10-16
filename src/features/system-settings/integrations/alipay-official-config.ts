@@ -45,7 +45,8 @@ export const DEFAULT_ALIPAY_OFFICIAL_VALUES: AlipayOfficialValues = {
 export function createAlipayOfficialSchema(
   t: (key: string) => string,
   privateKeyConfigured: boolean,
-  complianceConfirmed: boolean
+  complianceConfirmed: boolean,
+  serverAddress = ''
 ) {
   return z
     .object({
@@ -84,9 +85,10 @@ export function createAlipayOfficialSchema(
           })
         }
       }
-      if (values.callback_url) {
+      const callbackOrigin = values.callback_url || serverAddress.trim()
+      if (values.callback_url || values.enabled) {
         try {
-          const url = new URL(values.callback_url)
+          const url = new URL(callbackOrigin)
           if (
             (url.protocol !== 'https:' &&
               !(values.sandbox && url.protocol === 'http:')) ||
@@ -107,12 +109,7 @@ export function createAlipayOfficialSchema(
         }
       }
       if (!values.enabled) return
-      for (const field of [
-        'app_id',
-        'seller_id',
-        'public_key',
-        'callback_url',
-      ] as const) {
+      for (const field of ['app_id', 'public_key'] as const) {
         if (!values[field]) {
           ctx.addIssue({
             code: 'custom',
