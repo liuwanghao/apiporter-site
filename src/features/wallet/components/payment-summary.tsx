@@ -18,26 +18,21 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { useTranslation } from 'react-i18next'
 
-import { Skeleton } from '@/components/ui/skeleton'
-
 import { formatCurrencyFixed } from '../lib'
 
 interface PaymentSummaryProps {
   topupAmount: number
-  paymentAmount: number
   displayRate?: number
-  calculating: boolean
 }
 
 export function PaymentSummary(props: PaymentSummaryProps) {
   const { t } = useTranslation()
-  const subtotal = `${formatCurrencyFixed(props.paymentAmount)} CNY`
 
   return (
     <section
       data-payment-summary
       aria-label={t('Payment Summary')}
-      className='grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4'
+      className='grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4'
     >
       <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
         <p className='text-muted-foreground text-xs font-medium'>
@@ -47,36 +42,6 @@ export function PaymentSummary(props: PaymentSummaryProps) {
           {formatCurrencyFixed(props.topupAmount * (props.displayRate ?? 1))}{' '}
           CNY
         </p>
-      </div>
-      <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
-        <p className='text-muted-foreground text-xs font-medium'>
-          {t('Subtotal')}
-        </p>
-        {props.calculating ? (
-          <Skeleton className='mt-2 h-6 w-24' />
-        ) : (
-          <p className='mt-2 text-sm font-semibold tabular-nums sm:text-base'>
-            {subtotal}
-          </p>
-        )}
-      </div>
-      <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
-        <p className='text-muted-foreground text-xs font-medium'>{t('Tax')}</p>
-        <p className='mt-2 text-sm font-semibold sm:text-base'>
-          {t('Subject to payment page')}
-        </p>
-      </div>
-      <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
-        <p className='text-muted-foreground text-xs font-medium'>
-          {t('Estimated Payment')}
-        </p>
-        {props.calculating ? (
-          <Skeleton className='mt-2 h-6 w-28' />
-        ) : (
-          <p className='mt-2 text-sm font-semibold tabular-nums sm:text-base'>
-            {t('Starting at {{amount}}', { amount: subtotal })}
-          </p>
-        )}
       </div>
     </section>
   )

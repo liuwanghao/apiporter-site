@@ -17,27 +17,40 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
-const paymentSummary = await readFile(
-  new URL('../payment-summary.tsx', import.meta.url),
-  'utf8'
-)
+import { createInstance } from 'i18next'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { I18nextProvider, initReactI18next } from 'react-i18next'
 
-test('payment summary contains all four reference metrics', () => {
-  for (const label of [
-    'Recharge Amount',
-    'Subtotal',
-    'Tax',
-    'Estimated Payment',
-  ]) {
-    assert.match(paymentSummary, new RegExp(`t\\('${label}'\\)`))
-  }
+import { PaymentSummary } from '../payment-summary'
+
+const i18n = createInstance()
+await i18n.use(initReactI18next).init({
+  lng: 'en',
+  resources: { en: { translation: {} } },
 })
 
-test('payment summary derives display values from live amounts', () => {
-  assert.match(paymentSummary, /formatCurrencyFixed\(props\.topupAmount \*/)
-  assert.match(paymentSummary, /formatCurrencyFixed\(props\.paymentAmount\)/)
-  assert.match(paymentSummary, /props\.calculating/)
+function renderSummary(topupAmount: number, displayRate?: number) {
+  return renderToStaticMarkup(
+    createElement(
+      I18nextProvider,
+      { i18n },
+      createElement(PaymentSummary, { topupAmount, displayRate })
+    )
+  )
+}
+
+test('payment summary only shows recharge amount and removes payment estimates', () => {
+  const markup = renderSummary(5)
+  assert.match(markup, /Recharge Amount/)
+  assert.match(markup, /5\.00/)
+  assert.doesNotMatch(markup, /Subtotal|Tax|Estimated Payment|Starting at/)
+})
+
+test('recharge amount follows the display rate and defaults to one', () => {
+  assert.match(renderSummary(10, 7.3), /73\.00/)
+  assert.match(renderSummary(0), /0\.00/)
+  assert.match(renderSummary(10), /10\.00/)
 })

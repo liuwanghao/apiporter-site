@@ -190,33 +190,19 @@ export function AlipayOfficialSettingsSection({
               </SettingsSwitchItem>
             )}
           />
-          {(['app_id', 'seller_id'] as const).map((name) => (
-            <FormField
-              key={name}
-              control={form.control}
-              name={name}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t(
-                      name === 'app_id'
-                        ? 'alipayOfficial.appId'
-                        : 'alipayOfficial.sellerId'
-                    )}
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} inputMode='numeric' disabled={saving} />
-                  </FormControl>
-                  {name === 'seller_id' && (
-                    <FormDescription>
-                      {t('alipayOfficial.sellerIdHint')}
-                    </FormDescription>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
+          <FormField
+            control={form.control}
+            name='app_id'
+            render={({ field }) => (
+              <FormItem data-settings-form-span='full'>
+                <FormLabel>{t('alipayOfficial.appId')}</FormLabel>
+                <FormControl>
+                  <Input {...field} inputMode='numeric' disabled={saving} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name='private_key'
@@ -298,7 +284,7 @@ export function AlipayOfficialSettingsSection({
               control={form.control}
               name={name}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='self-start'>
                   <FormLabel>
                     {t(
                       name === 'price'

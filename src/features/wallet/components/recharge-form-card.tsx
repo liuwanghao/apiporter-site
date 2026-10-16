@@ -44,7 +44,6 @@ interface RechargeFormCardProps {
   onSelectPreset: (preset: PresetAmount) => void
   topupAmount: number
   onTopupAmountChange: (amount: number) => void
-  paymentAmount: number
   calculating: boolean
   onOnlinePay: () => void
   onlinePaying: boolean
@@ -86,7 +85,6 @@ export function RechargeFormCard({
   onSelectPreset,
   topupAmount,
   onTopupAmountChange,
-  paymentAmount,
   calculating,
   onOnlinePay,
   onlinePaying,
@@ -170,10 +168,11 @@ export function RechargeFormCard({
             </div>
 
             {/* Payment Summary Skeleton */}
-            <div className='grid gap-2 sm:grid-cols-2 lg:grid-cols-4'>
-              {['amount', 'subtotal', 'tax', 'total'].map((key) => (
-                <Skeleton key={key} className='h-20 rounded-xl' />
-              ))}
+            <div
+              data-payment-summary
+              className='grid gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4'
+            >
+              <Skeleton className='h-20 rounded-xl' />
             </div>
           </div>
 
@@ -338,9 +337,7 @@ export function RechargeFormCard({
 
               <PaymentSummary
                 topupAmount={topupAmount}
-                paymentAmount={paymentAmount}
                 displayRate={displayRate}
-                calculating={calculating}
               />
 
               <SupportedPaymentChannels />

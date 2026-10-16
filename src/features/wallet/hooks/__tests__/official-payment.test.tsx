@@ -49,7 +49,6 @@ const { usePayment } = await import('../use-payment')
 const { useTopupInfo } = await import('../use-topup-info')
 const { getMinTopupAmount, resolveDefaultPayment } =
   await import('../../lib/payment')
-const { PaymentSummary } = await import('../../components/payment-summary')
 const { getPaymentMethodName } = await import('../../lib/billing')
 const { createInstance } = await import('i18next')
 const { I18nextProvider, initReactI18next } = await import('react-i18next')
@@ -99,11 +98,9 @@ function PaymentHarness(props: { type: string }) {
       >
         Pay
       </button>
-      <PaymentSummary
-        topupAmount={20}
-        paymentAmount={payment.amount}
-        calculating={payment.calculating}
-      />
+      <output aria-label='Quoted payment amount'>
+        {payment.amount.toFixed(2)} CNY
+      </output>
     </>
   )
 }

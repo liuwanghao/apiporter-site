@@ -57,10 +57,13 @@ let root: ReturnType<typeof createRoot> | undefined
 const selected: number[] = []
 const changed: number[] = []
 let payments = 0
-function RechargeHarness(props: { rate?: number; minimum?: number } = {}) {
+function RechargeHarness(
+  props: { rate?: number; minimum?: number; loading?: boolean } = {}
+) {
   const [amount, setAmount] = React.useState(20)
   return (
     <RechargeFormCard
+      loading={props.loading}
       topupInfo={{
         enable_online_topup: true,
         enable_stripe_topup: false,
@@ -81,7 +84,6 @@ function RechargeHarness(props: { rate?: number; minimum?: number } = {}) {
         changed.push(value)
         setAmount(value)
       }}
-      paymentAmount={131.4}
       calculating={false}
       onOnlinePay={() => {
         payments += 1
@@ -95,7 +97,9 @@ function RechargeHarness(props: { rate?: number; minimum?: number } = {}) {
     />
   )
 }
-async function mount(props: { rate?: number; minimum?: number } = {}) {
+async function mount(
+  props: { rate?: number; minimum?: number; loading?: boolean } = {}
+) {
   const host = document.createElement('div')
   document.body.append(host)
   const mountedRoot = createRoot(host)
@@ -148,7 +152,8 @@ test('domestic recharge shows CNY presets, input and summary without HKD or USD'
   assert.doesNotMatch(text, /HKD|USD|\$/)
   assert.equal(amountInput().value, '146')
   assert.equal(amountInput().min, '7.3')
-  assert.match(text, /131\.40 CNY/)
+  assert.match(text, /146\.00 CNY/)
+  assert.doesNotMatch(text, /Subtotal|Tax|Estimated Payment/)
   const preset = [...document.querySelectorAll('button')].find((item) =>
     item.textContent?.includes('730')
   )
@@ -183,4 +188,21 @@ test('CNY entry enforces the converted minimum and supports token-denominated re
   assert.equal(payButton().disabled, false)
   await enterAmount('1')
   assert.equal(payButton().disabled, true)
+})
+
+test('loading recharge summary reserves only the remaining amount card', async () => {
+  await mount({ loading: true })
+  const skeletons = document.querySelectorAll(
+    '[data-payment-summary] [data-slot="skeleton"]'
+  )
+  assert.equal(skeletons.length, 1)
+})
+
+test('domestic recharge shows Alipay as the only supported payment channel', async () => {
+  await mount()
+  const channels = document.querySelectorAll('[data-supported-channels] li')
+  assert.deepEqual(
+    [...channels].map((item) => item.getAttribute('aria-label')),
+    ['Alipay']
+  )
 })

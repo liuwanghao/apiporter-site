@@ -176,7 +176,33 @@ describe('official Alipay configuration form', () => {
     assert.equal(save.disabled, true)
   })
 
-  test('saves blank merchant and callback fields while previewing the server address', async () => {
+  test('hides the merchant field and gives the application ID the full row', async () => {
+    const { container, input } = await renderSettings()
+    assert.equal(container.querySelector('[name="seller_id"]'), null)
+    assert.doesNotMatch(
+      container.textContent ?? '',
+      /Merchant account ID|payment notification must match/
+    )
+    assert.equal(
+      input('Application ID (App ID)')
+        .closest('[data-slot="form-item"]')
+        ?.getAttribute('data-settings-form-span'),
+      'full'
+    )
+  })
+
+  test('aligns price and minimum controls at the top despite the price description', async () => {
+    const { input } = await renderSettings()
+    for (const label of [
+      'Price per USD of balance (CNY)',
+      'Minimum wallet top-up (USD)',
+    ]) {
+      const item = input(label).closest('[data-slot="form-item"]')
+      assert.ok(item?.classList.contains('self-start'))
+    }
+  })
+
+  test('preserves the stored merchant ID when saving a blank callback and previews the server address', async () => {
     let requestBody: Record<string, unknown> | undefined
     api.defaults.adapter = (async (config) => {
       requestBody = JSON.parse(config.data as string) as Record<string, unknown>
@@ -190,7 +216,6 @@ describe('official Alipay configuration form', () => {
     }) satisfies AxiosAdapter
     const { container, input, save } = await renderSettings()
     await act(async () => {
-      setInput(input('Merchant account ID (PID)'), '')
       setInput(input('Public callback origin'), '')
     })
     assert.deepEqual(
@@ -201,7 +226,7 @@ describe('official Alipay configuration form', () => {
       ]
     )
     await act(async () => save.click())
-    assert.equal(requestBody?.seller_id, '')
+    assert.equal(requestBody?.seller_id, '2088000000000001')
     assert.equal(requestBody?.callback_url, '')
     assert.equal(save.disabled, true)
   })

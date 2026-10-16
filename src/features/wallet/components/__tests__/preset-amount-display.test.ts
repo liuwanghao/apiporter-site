@@ -24,11 +24,6 @@ const rechargeForm = await readFile(
   new URL('../recharge-form-card.tsx', import.meta.url),
   'utf8'
 )
-const supportedChannels = await readFile(
-  new URL('../supported-payment-channels.tsx', import.meta.url),
-  'utf8'
-)
-
 test('preset amount buttons omit converted payment and savings copy', () => {
   assert.doesNotMatch(rechargeForm, /Pay \{formatCurrency\(actualPrice\)\}/)
   assert.doesNotMatch(rechargeForm, /Save \{formatCurrency\(savedAmount\)\}/)
@@ -45,20 +40,6 @@ test('preset amount buttons stay on one horizontally scrollable row', () => {
 test('preset and custom amounts display a dollar prefix', () => {
   assert.match(rechargeForm, /data-preset-amount-currency/)
   assert.match(rechargeForm, /data-custom-amount-currency/)
-})
-
-test('supported payment channels are fixed to the six reference brands', () => {
-  assert.match(rechargeForm, /<SupportedPaymentChannels \/>/)
-  for (const channel of [
-    'Visa',
-    'Mastercard',
-    'UnionPay',
-    'American Express',
-    'Alipay',
-    'WeChat Pay',
-  ]) {
-    assert.match(supportedChannels, new RegExp(`name: '${channel}'`))
-  }
 })
 
 test('custom amount uses one direct online payment action', () => {

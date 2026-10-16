@@ -82,13 +82,8 @@ export function Wallet(props: WalletProps) {
   const rechargeDisplayRate =
     (currency?.usdExchangeRate || 1) /
     (currency?.quotaDisplayType === 'TOKENS' ? currency.quotaPerUnit : 1)
-  const {
-    amount: paymentAmount,
-    calculating,
-    processing,
-    calculatePaymentAmount,
-    processPayment,
-  } = usePayment()
+  const { calculating, processing, calculatePaymentAmount, processPayment } =
+    usePayment()
   const {
     affiliateLink,
     loading: affiliateLoading,
@@ -260,7 +255,6 @@ export function Wallet(props: WalletProps) {
                   onSelectPreset={handleSelectPreset}
                   topupAmount={topupAmount}
                   onTopupAmountChange={handleTopupAmountChange}
-                  paymentAmount={paymentAmount}
                   calculating={calculating}
                   onOnlinePay={handleOnlinePayment}
                   onlinePaying={
