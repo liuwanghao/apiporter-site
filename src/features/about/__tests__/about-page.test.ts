@@ -66,7 +66,11 @@ describe('ApiPorter about page', () => {
     for (const key of aboutKeys) {
       assert.match(aboutPage, new RegExp(key.replaceAll('.', '\\.')))
     }
-    assert.match(aboutPage, /work\.weixin\.qq\.com\/kfid\/kfc04b263b7d12b1448/)
+    assert.match(aboutPage, /https:\/\/csm-cn\.cbapi\.ai\/index\.php/g)
+    assert.equal(
+      aboutPage.match(/https:\/\/csm-cn\.cbapi\.ai\/index\.php/g)?.length,
+      2
+    )
   })
 
   test('ships complete English, Japanese, simplified and traditional Chinese copy', async () => {

@@ -321,9 +321,13 @@ describe('landing page layout', () => {
         assert.equal(contact.textContent.trim(), labels.contactLabel)
         assert.equal(
           contact.getAttribute('href'),
-          'https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448'
+          'https://csm-cn.cbapi.ai/index.php'
         )
         assert.equal(contact.getAttribute('aria-label'), labels.contactAria)
+        assert.match(
+          landingPage,
+          /\.footer-brand,\s*\.footer-contact,\s*\.footer-legal-links\s*\{[^}]*align-items:\s*center;/
+        )
 
         const legalLinks = [...footer.querySelectorAll('.footer-legal-links a')]
         assert.deepEqual(

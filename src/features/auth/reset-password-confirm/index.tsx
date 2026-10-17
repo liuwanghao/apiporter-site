@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { useNavigate } from '@tanstack/react-router'
 import { CheckIcon, CopyIcon } from 'lucide-react'
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
@@ -27,13 +27,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useCountdown } from '@/hooks/use-countdown'
-import { persistLanguagePreference } from '@/i18n/language-persistence'
-import { normalizeInterfaceLanguage } from '@/i18n/languages'
 import { api } from '@/lib/api'
 import { copyToClipboard } from '@/lib/copy-to-clipboard'
 
 import { AuthLayout } from '../auth-layout'
-import { parseResetPasswordLanguage } from './language'
 
 export type ResetPasswordSearchParams = {
   email?: string
@@ -46,9 +43,8 @@ type ResetPasswordConfirmProps = ResetPasswordSearchParams
 export function ResetPasswordConfirm({
   email,
   token,
-  lang,
 }: ResetPasswordConfirmProps) {
-  const { i18n, t } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [newPassword, setNewPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -58,17 +54,6 @@ export function ResetPasswordConfirm({
     isActive,
     start: startCountdown,
   } = useCountdown({ initialSeconds: 30 })
-  const linkLanguage = useMemo(() => parseResetPasswordLanguage(lang), [lang])
-
-  useLayoutEffect(() => {
-    if (!linkLanguage) return
-
-    persistLanguagePreference(linkLanguage, 'manual')
-    if (normalizeInterfaceLanguage(i18n.language) !== linkLanguage) {
-      void i18n.changeLanguage(linkLanguage)
-    }
-  }, [i18n, linkLanguage])
-
   const isValidResetLink = Boolean(email && token)
 
   async function handleSubmit() {

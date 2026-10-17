@@ -39,7 +39,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PublicLayout } from '@/components/layout'
-import { Footer } from '@/components/layout/components/footer'
+import { PublicLegalFooter } from '@/components/layout/components/public-legal-footer'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -429,7 +429,7 @@ export function Docs() {
           })}
         </section>
       </main>
-      <Footer />
+      <PublicLegalFooter />
     </PublicLayout>
   )
 }

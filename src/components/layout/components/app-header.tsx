@@ -21,7 +21,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Dialog } from '@/components/dialog'
-import { LanguageSwitcher } from '@/components/language-switcher'
 import { NotificationPopover } from '@/components/notification-popover'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { ThemeSwitch } from '@/components/theme-switch'
@@ -84,11 +83,6 @@ export type AppHeaderProps = {
    */
   showThemeSwitch?: boolean
   /**
-   * Whether to show language switcher
-   * @default true
-   */
-  showLanguageSwitcher?: boolean
-  /**
    * Whether to show profile dropdown / auth buttons
    * @default true
    */
@@ -116,7 +110,6 @@ export function AppHeader({
   rightContent,
   showNotifications = true,
   showThemeSwitch = true,
-  showLanguageSwitcher = true,
   showProfileDropdown = true,
   showAuthButtons = true,
   showNavigation,
@@ -261,7 +254,6 @@ export function AppHeader({
                 />
               )}
 
-              {showLanguageSwitcher && <LanguageSwitcher />}
               {showThemeSwitch && <ThemeSwitch />}
 
               {showProfileDropdown && (

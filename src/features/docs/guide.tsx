@@ -21,7 +21,7 @@ import { ArrowLeft, BookOpen, Braces, Rocket } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { PublicLayout } from '@/components/layout'
-import { Footer } from '@/components/layout/components/footer'
+import { PublicLegalFooter } from '@/components/layout/components/public-legal-footer'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
@@ -198,7 +198,7 @@ export function GuideDocs(props: { guide: DocsGuide }) {
           </aside>
         </div>
       </main>
-      <Footer />
+      <PublicLegalFooter />
     </PublicLayout>
   )
 }

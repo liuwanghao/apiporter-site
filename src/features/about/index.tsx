@@ -160,7 +160,7 @@ export function About() {
                   {t('aboutPage.support.customerService.description')}
                 </p>
                 <a
-                  href='https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448'
+                  href='https://csm-cn.cbapi.ai/index.php'
                   target='_blank'
                   rel='noopener noreferrer'
                   className='mt-6 inline-flex min-h-10 items-center font-bold text-[var(--console-brand)] transition-transform hover:translate-x-1'
@@ -177,7 +177,7 @@ export function About() {
                   {t('aboutPage.support.business.description')}
                 </p>
                 <a
-                  href='https://work.weixin.qq.com/kfid/kfc04b263b7d12b1448'
+                  href='https://csm-cn.cbapi.ai/index.php'
                   className='mt-6 inline-flex min-h-10 items-center font-bold text-[var(--console-brand)] transition-transform hover:translate-x-1'
                 >
                   {t('Customer service center')} →

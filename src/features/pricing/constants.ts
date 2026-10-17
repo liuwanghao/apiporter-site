@@ -118,6 +118,12 @@ export const SIDEBAR_WIDTH = 'w-64'
 /** Excluded groups */
 export const EXCLUDED_GROUPS = ['', 'auto']
 
+/**
+ * The model plaza's standard/original price is intentionally shown as a
+ * multiple of the current recharge price.
+ */
+export const MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER = 6.5
+
 /** Quota type values */
 export const QUOTA_TYPE_VALUES = {
   TOKEN: 0,

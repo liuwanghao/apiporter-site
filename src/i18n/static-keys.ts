@@ -553,6 +553,17 @@ export const STATIC_I18N_KEYS = [
   'The model that was requested',
   'The upstream channel that served the requests',
 
+  // Public legal footer
+  'footer.aria',
+  'footer.contact',
+  'footer.contactAria',
+  'footer.aiUsageGuidelines',
+  'footer.rechargeAgreement',
+  'footer.thirdPartyModelNotice',
+  'footer.agreement',
+  'footer.privacy',
+  'footer.security',
+
   // Misc
   'Cancel',
   'Status',

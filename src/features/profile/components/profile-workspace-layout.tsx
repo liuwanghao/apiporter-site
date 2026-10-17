@@ -20,7 +20,7 @@ import type { ReactNode } from 'react'
 
 type ProfileWorkspaceLayoutProps = {
   accountSettings: ReactNode
-  languagePreferences: ReactNode
+  languagePreferences?: ReactNode
   securityActions: ReactNode
   passkey: ReactNode
   twoFactor: ReactNode
@@ -74,9 +74,11 @@ export function ProfileWorkspaceLayout(props: ProfileWorkspaceLayoutProps) {
           data-profile-settings-rail
           className='min-w-0 space-y-4 sm:space-y-5'
         >
-          <div data-profile-language-preferences className='min-w-0'>
-            {props.languagePreferences}
-          </div>
+          {props.languagePreferences ? (
+            <div data-profile-language-preferences className='min-w-0'>
+              {props.languagePreferences}
+            </div>
+          ) : null}
           <div data-profile-security-actions className='min-w-0'>
             {props.securityActions}
           </div>

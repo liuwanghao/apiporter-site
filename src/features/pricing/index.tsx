@@ -31,7 +31,10 @@ import {
   PricingToolbar,
   ModelPricingPanel,
 } from './components'
-import { EXCLUDED_GROUPS } from './constants'
+import {
+  EXCLUDED_GROUPS,
+  MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER,
+} from './constants'
 import { useFilters } from './hooks/use-filters'
 import { usePricingData } from './hooks/use-pricing-data'
 import {
@@ -120,6 +123,14 @@ export function Pricing() {
     clearSearch()
   }, [clearFilters, clearSearch])
 
+  // The standard mode represents the plaza's original price. Keep the
+  // recharge mode as the source of truth, then apply the requested 6.5x
+  // multiplier when standard prices are displayed.
+  const plazaPriceRate = showRechargePrice
+    ? priceRate
+    : priceRate * MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER
+  const plazaShowRechargePrice = true
+
   const renderModelWorkspace = () => {
     const workspaceView = getModelWorkspaceView({
       hasSelectedModel: Boolean(selectedModel),
@@ -133,10 +144,10 @@ export function Pricing() {
           groupRatio={groupRatio || {}}
           usableGroup={usableGroup || {}}
           autoGroups={autoGroups || []}
-          priceRate={priceRate ?? 1}
+          priceRate={plazaPriceRate ?? 1}
           usdExchangeRate={usdExchangeRate ?? 1}
           tokenUnit={tokenUnit}
-          showRechargePrice={showRechargePrice}
+          showRechargePrice={plazaShowRechargePrice}
           onOpenDetails={() => setDetailsOpen(true)}
         />
       )
@@ -260,10 +271,10 @@ export function Pricing() {
                 >) || {}
               }
               autoGroups={autoGroups || []}
-              priceRate={priceRate ?? 1}
+              priceRate={plazaPriceRate ?? 1}
               usdExchangeRate={usdExchangeRate ?? 1}
               tokenUnit={tokenUnit}
-              showRechargePrice={showRechargePrice}
+              showRechargePrice={plazaShowRechargePrice}
             />
           )}
         </PageTransition>
