@@ -67,8 +67,12 @@ describe('public legal footer', () => {
 
   test('keeps the footer brand and legal links aligned across responsive layouts', () => {
     assert.match(footer, /items-center/)
+    assert.match(footer, /leading-\[1\.6\]/)
+    assert.match(footer, /max-\[820px\]:w-\[calc\(100%-32px\)\]/)
+    assert.match(footer, /max-\[820px\]:gap-\[14px\]/)
     assert.match(footer, /max-\[820px\]:grid/)
     assert.match(footer, /max-\[820px\]:grid-cols-2/)
+    assert.match(footer, /max-\[820px\]:leading-\[1\.4\]/)
     assert.match(footer, /footer\.contactAria/)
   })
 
@@ -77,5 +81,13 @@ describe('public legal footer', () => {
       assert.match(page, /import \{ PublicLegalFooter \}/)
       assert.match(page, /<PublicLegalFooter \/>/)
     }
+  })
+
+  test('keeps homepage pixel sizes when the site theme changes font density', () => {
+    assert.match(footer, /\[--spacing:4px\]/)
+    assert.match(footer, /text-\[12px\] leading-\[1\.6\]/)
+    assert.match(footer, /text-\[14px\] leading-\[1\.6\]/)
+    assert.match(footer, /text-\[11px\] leading-\[1\.8\]/)
+    assert.doesNotMatch(footer, /\btext-(?:xs|sm)\b/)
   })
 })

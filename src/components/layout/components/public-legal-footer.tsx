@@ -59,9 +59,9 @@ export function PublicLegalFooter() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className='bg-background text-muted-foreground relative z-10'>
-      <div className='mx-auto w-[calc(100%-48px)] max-w-[1480px] max-[560px]:w-[calc(100%-24px)] max-[560px]:max-w-[520px]'>
-        <div className='border-border/40 flex flex-wrap items-center justify-between gap-x-8 gap-y-5 border-t py-8 text-xs leading-relaxed max-[820px]:flex-col max-[820px]:items-start max-[820px]:gap-3 max-[820px]:py-[26px]'>
+    <footer className='bg-background text-muted-foreground relative z-10 [--spacing:4px]'>
+      <div className='mx-auto w-[calc(100%-48px)] max-w-[1480px] max-[820px]:w-[calc(100%-32px)] max-[820px]:max-w-[680px] max-[560px]:w-[calc(100%-24px)] max-[560px]:max-w-[520px]'>
+        <div className='border-border/40 flex flex-wrap items-center justify-between gap-x-8 gap-y-5 border-t py-8 text-[12px] leading-[1.6] max-[820px]:flex-col max-[820px]:items-start max-[820px]:gap-[14px] max-[820px]:py-[26px]'>
           <div className='flex min-w-0 items-center gap-3'>
             <img
               className='size-[38px] shrink-0 object-contain'
@@ -70,7 +70,9 @@ export function PublicLegalFooter() {
               aria-hidden='true'
             />
             <div>
-              <p className='text-foreground m-0 text-sm font-bold'>ApiPorter</p>
+              <p className='text-foreground m-0 text-[14px] leading-[1.6] font-bold'>
+                ApiPorter
+              </p>
               <a
                 href={CUSTOMER_SERVICE_URL}
                 target='_blank'
@@ -94,7 +96,7 @@ export function PublicLegalFooter() {
                 href={link.href}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-muted-foreground hover:text-foreground inline-flex min-h-11 items-center transition-colors duration-200 max-[820px]:min-w-0 max-[820px]:py-1.5'
+                className='text-muted-foreground hover:text-foreground inline-flex min-h-11 items-center transition-colors duration-200 max-[820px]:min-w-0 max-[820px]:py-1.5 max-[820px]:leading-[1.4]'
               >
                 {t(link.translation)}
               </a>
@@ -102,8 +104,8 @@ export function PublicLegalFooter() {
           </nav>
         </div>
       </div>
-      <div className='border-border border-t px-6 py-5 text-center max-[820px]:pb-[calc(88px+env(safe-area-inset-bottom))]'>
-        <small className='mx-auto block w-full max-w-[1480px] text-[11px] leading-[1.8] [overflow-wrap:anywhere]'>
+      <div className='border-border border-t py-5 text-center max-[820px]:pb-[calc(88px+env(safe-area-inset-bottom))]'>
+        <small className='mx-auto block w-[calc(100%-48px)] max-w-[1480px] text-[11px] leading-[1.8] [overflow-wrap:anywhere] max-[820px]:w-[calc(100%-32px)] max-[820px]:max-w-[680px] max-[560px]:w-[calc(100%-24px)] max-[560px]:max-w-[520px]'>
           Copyright © {currentYear} ApiPorter. All rights reserved.
         </small>
       </div>
