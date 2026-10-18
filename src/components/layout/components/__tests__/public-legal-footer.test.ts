@@ -37,6 +37,14 @@ const docsPages = await Promise.all([
     new URL('../../../../features/docs/guide.tsx', import.meta.url),
     'utf8'
   ),
+  readFile(
+    new URL('../../../../features/pricing/index.tsx', import.meta.url),
+    'utf8'
+  ),
+  readFile(
+    new URL('../../../../features/about/index.tsx', import.meta.url),
+    'utf8'
+  ),
 ])
 
 describe('public legal footer', () => {
@@ -64,7 +72,7 @@ describe('public legal footer', () => {
     assert.match(footer, /footer\.contactAria/)
   })
 
-  test('uses the shared footer on every documentation page', () => {
+  test('uses the homepage footer on documentation, pricing and about pages', () => {
     for (const page of docsPages) {
       assert.match(page, /import \{ PublicLegalFooter \}/)
       assert.match(page, /<PublicLegalFooter \/>/)

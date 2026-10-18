@@ -60,7 +60,10 @@ import {
 import { getLobeIcon } from '@/lib/lobe-icon'
 import { cn } from '@/lib/utils'
 
-import { DEFAULT_TOKEN_UNIT } from '../constants'
+import {
+  DEFAULT_TOKEN_UNIT,
+  MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER,
+} from '../constants'
 import { usePricingData } from '../hooks/use-pricing-data'
 import {
   getDynamicPriceEntries,
@@ -129,7 +132,9 @@ const TOKEN_FORMAT = new Intl.NumberFormat(undefined, {
 })
 const MODEL_DETAILS_SKELETON_KEYS = ['first', 'second', 'third', 'fourth']
 const BASE_PRICE_GROUP_KEY = '_base'
-const BASE_PRICE_GROUP_RATIO = { [BASE_PRICE_GROUP_KEY]: 1 }
+const BASE_PRICE_GROUP_RATIO = {
+  [BASE_PRICE_GROUP_KEY]: MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER,
+}
 
 function formatCatalogTokenCount(tokens: number): string {
   if (!Number.isFinite(tokens) || tokens <= 0) return ''
@@ -689,7 +694,7 @@ function PriceSection(props: {
     showRechargePrice: props.showRechargePrice,
     priceRate: props.priceRate,
     usdExchangeRate: props.usdExchangeRate,
-    groupRatioMultiplier: 1,
+    groupRatioMultiplier: MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER,
   })
 
   const primaryPriceTypes: { label: string; type: PriceType }[] = [

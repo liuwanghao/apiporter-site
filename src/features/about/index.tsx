@@ -19,6 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { PublicLayout } from '@/components/layout'
+import { PublicLegalFooter } from '@/components/layout/components/public-legal-footer'
 import { PageTransition } from '@/components/page-transition'
 
 const principles = [
@@ -191,6 +192,7 @@ export function About() {
           </div>
         </section>
       </PageTransition>
+      <PublicLegalFooter />
     </PublicLayout>
   )
 }

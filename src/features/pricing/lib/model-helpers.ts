@@ -16,7 +16,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { EXCLUDED_GROUPS, FILTER_ALL, QUOTA_TYPE_VALUES } from '../constants'
+import {
+  EXCLUDED_GROUPS,
+  FILTER_ALL,
+  MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER,
+  QUOTA_TYPE_VALUES,
+} from '../constants'
 import type { PricingModel } from '../types'
 
 // ----------------------------------------------------------------------------
@@ -54,7 +59,7 @@ export type PricingComparisonRow =
   | {
       kind: 'base'
       key: 'base'
-      ratio: 1
+      ratio: number
       discountRate: 0
     }
   | {
@@ -68,9 +73,8 @@ export type PricingComparisonRow =
 /**
  * Build pricing rows with an optional base-price benchmark.
  *
- * Discount rate is the percentage saved against the base price, so a 0.6x
- * group multiplier becomes a 40% discount. Values above 1 remain negative to
- * make a surcharge visible instead of presenting it as a discount.
+ * Keep each group's billing multiplier intact and compare its price with the
+ * original-price benchmark. Ratios above the benchmark expose a surcharge.
  */
 export function getPricingComparisonRows(
   groups: string[],
@@ -79,7 +83,9 @@ export function getPricingComparisonRows(
 ): PricingComparisonRow[] {
   const rows: PricingComparisonRow[] = groups.map((group) => {
     const ratio = getConfiguredGroupRatio(groupRatio, group)
-    const discountRate = Number((1 - ratio).toFixed(6))
+    const discountRate = Number(
+      (1 - ratio / MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER).toFixed(6)
+    )
 
     return {
       kind: 'group',
@@ -93,7 +99,12 @@ export function getPricingComparisonRows(
   rows.sort((left, right) => left.ratio - right.ratio)
 
   if (includeBasePrice) {
-    rows.unshift({ kind: 'base', key: 'base', ratio: 1, discountRate: 0 })
+    rows.unshift({
+      kind: 'base',
+      key: 'base',
+      ratio: MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER,
+      discountRate: 0,
+    })
   }
 
   return rows

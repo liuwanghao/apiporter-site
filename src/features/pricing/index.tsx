@@ -21,6 +21,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PublicLayout } from '@/components/layout'
+import { PublicLegalFooter } from '@/components/layout/components/public-legal-footer'
 import { PageTransition } from '@/components/page-transition'
 
 import {
@@ -31,10 +32,7 @@ import {
   PricingToolbar,
   ModelPricingPanel,
 } from './components'
-import {
-  EXCLUDED_GROUPS,
-  MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER,
-} from './constants'
+import { EXCLUDED_GROUPS } from './constants'
 import { useFilters } from './hooks/use-filters'
 import { usePricingData } from './hooks/use-pricing-data'
 import {
@@ -123,14 +121,6 @@ export function Pricing() {
     clearSearch()
   }, [clearFilters, clearSearch])
 
-  // The standard mode represents the plaza's original price. Keep the
-  // recharge mode as the source of truth, then apply the requested 6.5x
-  // multiplier when standard prices are displayed.
-  const plazaPriceRate = showRechargePrice
-    ? priceRate
-    : priceRate * MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER
-  const plazaShowRechargePrice = true
-
   const renderModelWorkspace = () => {
     const workspaceView = getModelWorkspaceView({
       hasSelectedModel: Boolean(selectedModel),
@@ -144,10 +134,10 @@ export function Pricing() {
           groupRatio={groupRatio || {}}
           usableGroup={usableGroup || {}}
           autoGroups={autoGroups || []}
-          priceRate={plazaPriceRate ?? 1}
+          priceRate={priceRate ?? 1}
           usdExchangeRate={usdExchangeRate ?? 1}
           tokenUnit={tokenUnit}
-          showRechargePrice={plazaShowRechargePrice}
+          showRechargePrice={showRechargePrice}
           onOpenDetails={() => setDetailsOpen(true)}
         />
       )
@@ -187,6 +177,7 @@ export function Pricing() {
         <div className='console-model-plaza-loading mx-auto w-full max-w-[1524px] px-3 pt-16 pb-8 sm:px-6 sm:pt-20 sm:pb-10 xl:px-8'>
           <LoadingSkeleton viewMode={viewMode} />
         </div>
+        <PublicLegalFooter />
       </PublicLayout>
     )
   }
@@ -271,14 +262,15 @@ export function Pricing() {
                 >) || {}
               }
               autoGroups={autoGroups || []}
-              priceRate={plazaPriceRate ?? 1}
+              priceRate={priceRate ?? 1}
               usdExchangeRate={usdExchangeRate ?? 1}
               tokenUnit={tokenUnit}
-              showRechargePrice={plazaShowRechargePrice}
+              showRechargePrice={showRechargePrice}
             />
           )}
         </PageTransition>
       </div>
+      <PublicLegalFooter />
     </PublicLayout>
   )
 }

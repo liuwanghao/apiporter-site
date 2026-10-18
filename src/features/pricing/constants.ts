@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { type TFunction } from 'i18next'
+import type { TFunction } from 'i18next'
 
 import type { TokenUnit } from './types'
 
@@ -119,8 +119,8 @@ export const SIDEBAR_WIDTH = 'w-64'
 export const EXCLUDED_GROUPS = ['', 'auto']
 
 /**
- * The model plaza's standard/original price is intentionally shown as a
- * multiple of the current recharge price.
+ * The original-price benchmark uses this multiplier. Actual group prices
+ * retain their configured billing multipliers.
  */
 export const MODEL_PLAZA_ORIGINAL_PRICE_MULTIPLIER = 6.5
 
