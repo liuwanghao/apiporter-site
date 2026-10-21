@@ -19,9 +19,10 @@ For commercial licensing, please contact support@quantumnous.com
 import { useQueryClient, useIsFetching } from '@tanstack/react-query'
 import { useNavigate, getRouteApi } from '@tanstack/react-router'
 import type { Table } from '@tanstack/react-table'
-import { Eye, EyeOff } from 'lucide-react'
+import { Download, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useState, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -39,8 +40,9 @@ import {
 } from '@/components/ui/tooltip'
 
 import { LOG_TYPE_ALL_VALUE, LOG_TYPE_FILTERS } from '../constants'
+import { downloadUsageLogsCsv } from '../lib/export'
 import { buildSearchParams } from '../lib/filter'
-import { getDefaultTimeRange } from '../lib/utils'
+import { buildApiParams, getDefaultTimeRange } from '../lib/utils'
 import type { CommonLogFilters } from '../types'
 import { CommonLogsStats } from './common-logs-stats'
 import { CompactDateTimeRangePicker } from './compact-date-time-range-picker'
@@ -112,13 +114,14 @@ interface CommonLogsFilterBarProps<TData> {
 export function CommonLogsFilterBar<TData>(
   props: CommonLogsFilterBarProps<TData>
 ) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const searchParams = route.useSearch()
   const { isAdminView: isAdmin } = useLogsViewScope()
   const { sensitiveVisible, setSensitiveVisible } = useUsageLogsContext()
   const fetchingLogs = useIsFetching({ queryKey: ['logs'] })
+  const [isExporting, setIsExporting] = useState(false)
 
   const searchState = useMemo<CommonLogDraft>(() => {
     const { start, end } = getDefaultTimeRange()
@@ -226,6 +229,29 @@ export function CommonLogsFilterBar<TData>(
     queryClient.invalidateQueries({ queryKey: ['usage-logs-stats'] })
   }, [navigate, queryClient])
 
+  const handleExport = useCallback(async () => {
+    setIsExporting(true)
+
+    try {
+      const params = buildApiParams({
+        page: 1,
+        pageSize: 100,
+        searchParams,
+        columnFilters: props.table.getState().columnFilters,
+        isAdmin,
+      })
+      await downloadUsageLogsCsv(
+        params,
+        isAdmin,
+        i18n.resolvedLanguage || i18n.language
+      )
+    } catch {
+      toast.error(t('Failed to export logs'))
+    } finally {
+      setIsExporting(false)
+    }
+  }, [isAdmin, props.table, searchParams, t, i18n])
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Enter') handleApply()
@@ -287,6 +313,17 @@ export function CommonLogsFilterBar<TData>(
         {sensitiveVisible ? t('Hide') : t('Show')}
       </TooltipContent>
     </Tooltip>
+  )
+  const exportButton = (
+    <Button
+      type='button'
+      variant='outline'
+      onClick={handleExport}
+      disabled={isExporting}
+    >
+      {isExporting ? <Loader2 className='animate-spin' /> : <Download />}
+      {t('Export')}
+    </Button>
   )
 
   const dateRangeFilter = (
@@ -413,7 +450,12 @@ export function CommonLogsFilterBar<TData>(
     <LogsFilterToolbar
       table={props.table}
       stats={statsBar}
-      actionStart={sensitiveToggle}
+      actionStart={
+        <div className='flex items-center gap-1.5'>
+          {exportButton}
+          {sensitiveToggle}
+        </div>
+      }
       primaryFilters={
         <>
           {dateRangeFilter}

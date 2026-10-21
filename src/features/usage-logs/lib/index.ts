@@ -31,6 +31,8 @@ export {
   isViolationFeeLog,
 } from './format'
 
+export { downloadUsageLogsCsv } from './export'
+
 // Filter utilities
 export { buildSearchParams, getLogCategoryLabel } from './filter'
 
