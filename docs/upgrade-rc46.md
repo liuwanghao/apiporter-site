@@ -30,5 +30,26 @@ Alipay settings/quote/checkout/failure boundaries, subscription gateway selectio
 domestic CNY recharge, branding/cache, public legal pages, Chinese-only startup,
 6.5 original-price comparisons with unchanged group prices, task pricing,
 shared status caching and official export with independent API origin.
-Typecheck, repository lint, protected-header formatting and production build
-passed. Repository-wide regression batches are recorded by the upgrade report.
+The complete regression audit covers all 269 configured test files and 2,653
+assertions, with no missing files, failed cases or skipped cases in their latest
+results. Tests ran in isolated files with one worker, in bounded batches. Initial
+failures were resolved by retaining APIPorter's blue theme expectations,
+materializing the isolated dependency installation and correcting the Chinese
+`Well-Known URL` validation wording. Original OAuth assertions remain unchanged.
+The slow 91-case channel configuration suite passed unchanged on an isolated
+rerun with a 60-second per-test timeout; the default timeout remains unchanged.
+
+Typecheck, repository lint (zero errors; existing warnings), protected-header
+formatting and production build passed. The original APIPorter repository also
+passed frozen-lockfile installation, typecheck and the final production build.
+Detailed per-file results, source hashes and retained rerun evidence are in the
+workspace `.omx/reports/apiporter-rc46/frontend-regression-audit.json`.
+
+Backend verification covers 58 Go test packages, independent root/relaykit/
+tokenkit builds and vet, and actual old-to-new SQLite startup and restart. Real
+Alipay/provider/OAuth calls, MySQL/PostgreSQL migration and browser visual
+acceptance were not exercised. See the backend's
+`docs/upgrade-rc46-verification.md` for accounting and migration evidence.
+
+Both upgrades remain on local `develop`; no master merge, push or deployment
+was performed.
