@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -16,28 +18,31 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { describe, test } from 'vitest'
 
 const [stylesheet, landing, pricing, rankings, docs] = await Promise.all([
-  readFile(new URL('../reference-console.css', import.meta.url), 'utf8'),
+  readFile(resolve(import.meta.dirname, '../reference-console.css'), 'utf8'),
   readFile(
-    new URL('../../../public/relay-landing.html', import.meta.url),
+    resolve(import.meta.dirname, '../../../public/relay-landing.html'),
     'utf8'
   ),
   readFile(
-    new URL('../../features/pricing/index.tsx', import.meta.url),
+    resolve(import.meta.dirname, '../../features/pricing/index.tsx'),
     'utf8'
   ),
   readFile(
-    new URL(
-      '../../features/rankings/components/rankings-hero.tsx',
-      import.meta.url
+    resolve(
+      import.meta.dirname,
+      '../../features/rankings/components/rankings-hero.tsx'
     ),
     'utf8'
   ),
-  readFile(new URL('../../features/docs/home.tsx', import.meta.url), 'utf8'),
+  readFile(
+    resolve(import.meta.dirname, '../../features/docs/home.tsx'),
+    'utf8'
+  ),
 ])
 
 describe('public page typography', () => {

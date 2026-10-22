@@ -31,7 +31,8 @@ export {
   isViolationFeeLog,
 } from './format'
 
-export { downloadUsageLogsCsv } from './export'
+// Response model diagnostics
+export { isResponseModelMismatch } from './response-model'
 
 // Filter utilities
 export { buildSearchParams, getLogCategoryLabel } from './filter'

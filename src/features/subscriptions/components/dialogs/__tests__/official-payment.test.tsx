@@ -17,9 +17,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, afterEach, test } from 'node:test'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Window } from 'happy-dom'
+import { afterAll, afterEach, test } from 'vitest'
 
 const domWindow = new Window({ url: 'https://app.example.com/wallet' })
 for (const [key, value] of Object.entries({
@@ -78,11 +79,15 @@ const plan = {
     allow_balance_pay: false,
   }),
 }
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false, gcTime: 0 } },
+})
 const originalAdapter = api.defaults.adapter
 const originalSubmit = domWindow.HTMLFormElement.prototype.submit
 let root: ReturnType<typeof createRoot> | undefined
 
 afterEach(async () => {
+  queryClient.clear()
   const mountedRoot = root
   if (mountedRoot) await act(async () => mountedRoot.unmount())
   root = undefined
@@ -90,7 +95,7 @@ afterEach(async () => {
   api.defaults.adapter = originalAdapter
   domWindow.HTMLFormElement.prototype.submit = originalSubmit
 })
-after(() => domWindow.close())
+afterAll(() => domWindow.close())
 
 for (const [type, name, endpoint] of [
   ['alipay_official', 'Alipay Official', '/api/subscription/alipay/pay'],
@@ -146,19 +151,22 @@ for (const [type, name, endpoint] of [
     root = mountedRoot
     await act(async () =>
       mountedRoot.render(
-        <I18nextProvider i18n={i18n}>
-          <SubscriptionPurchaseDialog
-            open
-            onOpenChange={(open) => openChanges.push(open)}
-            plan={plan}
-            enableOnlineTopUp
-            epayMethods={[{ type, name }]}
-          />
-        </I18nextProvider>
+        <QueryClientProvider client={queryClient}>
+          <I18nextProvider i18n={i18n}>
+            <SubscriptionPurchaseDialog
+              open
+              onOpenChange={(open) => openChanges.push(open)}
+              plan={plan}
+              enableOnlineTopUp
+              epayMethods={[{ type, name }]}
+            />
+          </I18nextProvider>
+        </QueryClientProvider>
       )
     )
     assert.ok(
-      document.querySelector('[role="combobox"]')?.textContent?.includes(name)
+      document.querySelector<HTMLInputElement>('[role="combobox"]')?.value ===
+        name
     )
     if (type === 'alipay_official') {
       assert.ok(document.body.textContent?.includes('$20.00 USD'))
@@ -208,27 +216,29 @@ test('wallet subscription plans offer official Alipay when it is the only online
   root = mountedRoot
   await act(async () =>
     mountedRoot.render(
-      <I18nextProvider i18n={i18n}>
-        <SubscriptionPlansCard
-          topupInfo={{
-            enable_online_topup: true,
-            enable_alipay_official_topup: true,
-            enable_stripe_topup: false,
-            pay_methods: [
-              {
-                type: 'alipay_official',
-                name: 'Alipay Official',
-                min_topup: 20,
-              },
-            ],
-            min_topup: 20,
-            alipay_official_min_topup: 20,
-            stripe_min_topup: 1,
-            amount_options: [],
-            discount: {},
-          }}
-        />
-      </I18nextProvider>
+      <QueryClientProvider client={queryClient}>
+        <I18nextProvider i18n={i18n}>
+          <SubscriptionPlansCard
+            topupInfo={{
+              enable_online_topup: true,
+              enable_alipay_official_topup: true,
+              enable_stripe_topup: false,
+              pay_methods: [
+                {
+                  type: 'alipay_official',
+                  name: 'Alipay Official',
+                  min_topup: 20,
+                },
+              ],
+              min_topup: 20,
+              alipay_official_min_topup: 20,
+              stripe_min_topup: 1,
+              amount_options: [],
+              discount: {},
+            }}
+          />
+        </I18nextProvider>
+      </QueryClientProvider>
     )
   )
   const subscribe = [...document.querySelectorAll('button')].find(
@@ -237,9 +247,9 @@ test('wallet subscription plans offer official Alipay when it is the only online
   assert.ok(subscribe)
   await act(async () => subscribe.click())
   assert.ok(
-    document
-      .querySelector('[role="dialog"]')
-      ?.textContent?.includes('Alipay Official')
+    document.querySelector<HTMLInputElement>(
+      '[role="dialog"] [role="combobox"]'
+    )?.value === 'Alipay Official'
   )
   const pay = [...document.querySelectorAll('button')].find(
     (button) => button.textContent === 'Pay'

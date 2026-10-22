@@ -16,126 +16,128 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import assert from 'node:assert/strict'
-import { test } from 'node:test'
+import { createInstance } from 'i18next'
+import { describe, expect, test } from 'vitest'
 
-import { api } from '@/lib/api'
+import type { UsageLog } from '../../data/schema'
+import { getLogCsvHeader, getLogCsvRow, toCsvLine } from '../export'
 
-import { downloadUsageLogsCsv } from '../export'
+const consumeLog: UsageLog = {
+  id: 1,
+  user_id: 7,
+  created_at: new Date(2026, 9, 12, 8, 30, 5).getTime() / 1000,
+  type: 2,
+  content: '',
+  username: 'alice',
+  token_name: 'prod',
+  model_name: 'gpt-4o-mini',
+  quota: 250000,
+  prompt_tokens: 2008,
+  completion_tokens: 16,
+  use_time: 3,
+  is_stream: true,
+  channel: 162,
+  channel_name: 'azure',
+  token_id: 5,
+  group: 'default',
+  ip: '203.0.113.9',
+  other: JSON.stringify({
+    cache_tokens: 1906,
+    cache_creation_tokens_5m: 10,
+    cache_creation_tokens_1h: 5,
+  }),
+  request_id: 'req-1',
+  upstream_request_id: '',
+}
 
-test('exports applied filters in one request and downloads the backend CSV', async () => {
-  const originalAdapter = api.defaults.adapter
-  const originalDocument = Object.getOwnPropertyDescriptor(
-    globalThis,
-    'document'
-  )
-  const originalCreateObjectURL = URL.createObjectURL
-  const originalRevokeObjectURL = URL.revokeObjectURL
-  const csv = new Blob(['\uFEFFTime,Token\r\n'], { type: 'text/csv' })
-  let requests = 0
-  let clicks = 0
-  let removed = false
-  let filename = ''
-  api.defaults.adapter = async (config) => {
-    requests += 1
-    assert.equal(config.url, '/api/log/export')
-    assert.equal(config.responseType, 'blob')
-    assert.equal(config.params.p, undefined)
-    assert.equal(config.params.page_size, undefined)
-    assert.equal(config.params.model_name, 'gpt%')
-    assert.equal(config.params.token_name, 'key')
-    assert.equal(config.params.start_timestamp, 100)
-    assert.equal(config.params.language, 'zh')
-    assert.ok(config.params.timezone)
-    return {
-      data: csv,
-      status: 200,
-      statusText: 'OK',
-      headers: { 'content-type': 'text/csv; charset=utf-8' },
-      config,
-    }
-  }
-  URL.createObjectURL = (blob) => {
-    assert.equal(blob, csv)
-    return 'blob:export'
-  }
-  URL.revokeObjectURL = () => {}
-  const anchor = {
-    href: '',
-    download: '',
-    click() {
-      clicks += 1
-      filename = this.download
-    },
-    remove() {
-      removed = true
-    },
-  }
-  Object.defineProperty(globalThis, 'document', {
-    configurable: true,
-    value: { createElement: () => anchor, body: { append: () => {} } },
-  })
-  try {
-    await downloadUsageLogsCsv(
-      {
-        p: 5,
-        page_size: 1,
-        model_name: 'gpt%',
-        token_name: 'key',
-        start_timestamp: 100,
+async function chineseTranslator() {
+  const i18n = createInstance()
+  await i18n.init({
+    lng: 'zh',
+    resources: {
+      zh: {
+        translation: {
+          Time: '时间',
+          User: '用户',
+          Channel: '渠道',
+          Consume: '消费',
+          'Top-up': '充值',
+          Yes: '是',
+          'Recharged {{amount}}': '充值 {{amount}}',
+        },
       },
-      true,
-      'zh'
-    )
-    assert.equal(requests, 1)
-    assert.equal(clicks, 1)
-    assert.equal(removed, true)
-    assert.match(filename, /^usage-logs-.*\.csv$/)
-  } finally {
-    api.defaults.adapter = originalAdapter
-    if (originalDocument) {
-      Object.defineProperty(globalThis, 'document', originalDocument)
-    } else {
-      Reflect.deleteProperty(globalThis, 'document')
-    }
-    URL.createObjectURL = originalCreateObjectURL
-    URL.revokeObjectURL = originalRevokeObjectURL
-  }
-})
+    },
+  })
+  return i18n.t
+}
 
-test('self export rejects JSON business errors instead of downloading them', async () => {
-  const originalAdapter = api.defaults.adapter
-  let requests = 0
-  api.defaults.adapter = async (config) => {
-    requests += 1
-    assert.equal(config.url, '/api/log/self/export')
-    return {
-      data: new Blob(['{"success":false}']),
-      status: 200,
-      statusText: 'OK',
-      headers: { 'content-type': 'application/json' },
-      config,
-    }
-  }
-  try {
-    await assert.rejects(
-      downloadUsageLogsCsv({}, false, 'en'),
-      /Failed to export logs/
-    )
-    assert.equal(requests, 1)
-  } finally {
-    api.defaults.adapter = originalAdapter
-  }
-})
+describe('usage log CSV export', () => {
+  test('header in the user view has no user or channel column', async () => {
+    const t = await chineseTranslator()
 
-test('network failure rejects export so the button can show an error and reset', async () => {
-  const originalAdapter = api.defaults.adapter
-  api.defaults.adapter = async () => {
-    throw new Error('offline')
-  }
-  try {
-    await assert.rejects(downloadUsageLogsCsv({}, false, 'en'), /offline/)
-  } finally {
-    api.defaults.adapter = originalAdapter
-  }
+    const header = getLogCsvHeader(false, t)
+
+    expect(header[0]).toBe('时间')
+    expect(header).not.toContain('用户')
+    expect(header).not.toContain('渠道')
+  })
+
+  test('administrator row shows the user and channel next to the matching header', async () => {
+    const t = await chineseTranslator()
+
+    const header = getLogCsvHeader(true, t)
+    const row = getLogCsvRow(consumeLog, true, t)
+
+    expect(row).toHaveLength(header.length)
+    expect(row[header.indexOf('用户')]).toBe('alice')
+    expect(row[header.indexOf('渠道')]).toBe('#162 azure')
+  })
+
+  test('consume log row matches the log table values', async () => {
+    const t = await chineseTranslator()
+
+    expect(getLogCsvRow(consumeLog, false, t)).toEqual([
+      '2026-10-12 08:30:05',
+      '消费',
+      'prod',
+      'default',
+      'gpt-4o-mini',
+      '是',
+      '2008',
+      '16',
+      '1906',
+      '15',
+      '$0.5',
+      '3s',
+      '203.0.113.9',
+      'req-1',
+      '',
+    ])
+  })
+
+  test('top-up log row leaves usage cells empty and shows the translated content', async () => {
+    const t = await chineseTranslator()
+    const topup: UsageLog = {
+      ...consumeLog,
+      type: 1,
+      content: 'Recharged $5',
+      other: JSON.stringify({
+        content_parts: [
+          { key: 'Recharged {{amount}}', params: { amount: '$5' } },
+        ],
+      }),
+    }
+
+    const row = getLogCsvRow(topup, false, t)
+
+    expect(row.slice(1, 2)).toEqual(['充值'])
+    expect(row.slice(5, 12)).toEqual(['', '', '', '', '', '', ''])
+    expect(row.at(-1)).toBe('充值 $5')
+  })
+
+  test('cells are quoted and text that starts a formula stays text', () => {
+    expect(
+      toCsvLine(['=HYPERLINK("x")', '-12.5', '+cmd', 'a"b', 'two\nlines'])
+    ).toBe(`"'=HYPERLINK(""x"")","-12.5","'+cmd","a""b","two\nlines"\r\n`)
+  })
 })

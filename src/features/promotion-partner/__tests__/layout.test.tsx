@@ -17,36 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, describe, test } from 'node:test'
 
-import { Window } from 'happy-dom'
-
-const domWindow = new Window()
-const domGlobals = [
-  'window',
-  'document',
-  'navigator',
-  'HTMLElement',
-  'HTMLButtonElement',
-  'SVGElement',
-  'Node',
-  'Element',
-  'Event',
-  'KeyboardEvent',
-  'CustomEvent',
-  'MutationObserver',
-  'ResizeObserver',
-  'requestAnimationFrame',
-  'cancelAnimationFrame',
-  'getComputedStyle',
-] as const
-
-for (const key of domGlobals) {
-  Object.defineProperty(globalThis, key, {
-    configurable: true,
-    value: domWindow[key],
-  })
-}
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { describe, test } from 'vitest'
 
 const React = await import('react')
 const { act } = React
@@ -75,18 +48,19 @@ async function render(element: React.ReactNode) {
   document.body.append(container)
   const root = createRoot(container)
 
+  const client = new QueryClient()
   await act(async () =>
-    root.render(<I18nextProvider i18n={i18n}>{element}</I18nextProvider>)
+    root.render(
+      <QueryClientProvider client={client}>
+        <I18nextProvider i18n={i18n}>{element}</I18nextProvider>
+      </QueryClientProvider>
+    )
   )
 
   return { container, root }
 }
 
 describe('promotion partner overview layout', () => {
-  after(() => {
-    domWindow.close()
-  })
-
   test('combines earnings, performance, plan terms, and referral tools into one partner workspace', async () => {
     const rendered = await render(
       <PartnerMetricsOverview
@@ -148,7 +122,7 @@ describe('promotion partner overview layout', () => {
     assert.equal(
       Boolean(
         plan.compareDocumentPosition(referral) &
-        domWindow.Node.DOCUMENT_POSITION_FOLLOWING
+        Node.DOCUMENT_POSITION_FOLLOWING
       ),
       true
     )
@@ -281,7 +255,7 @@ describe('promotion partner overview layout', () => {
     assert.ok(input)
     assert.ok(rendered.container.querySelector('[role="combobox"]'))
     const setInputValue = Object.getOwnPropertyDescriptor(
-      domWindow.HTMLInputElement.prototype,
+      HTMLInputElement.prototype,
       'value'
     )?.set
     assert.ok(setInputValue)
@@ -292,7 +266,7 @@ describe('promotion partner overview layout', () => {
     })
     await act(async () => {
       input.dispatchEvent(
-        new domWindow.KeyboardEvent('keydown', {
+        new KeyboardEvent('keydown', {
           bubbles: true,
           key: 'Enter',
         }) as unknown as KeyboardEvent
@@ -354,7 +328,7 @@ describe('promotion partner overview layout', () => {
     assert.equal(
       Boolean(
         reactivationPanel.compareDocumentPosition(planTerms) &
-        domWindow.Node.DOCUMENT_POSITION_FOLLOWING
+        Node.DOCUMENT_POSITION_FOLLOWING
       ),
       true
     )

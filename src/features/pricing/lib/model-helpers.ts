@@ -16,6 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { toIntlLocale } from '@/i18n/languages'
+
 import {
   EXCLUDED_GROUPS,
   FILTER_ALL,
@@ -113,7 +115,9 @@ export function getPricingComparisonRows(
 export function createDiscountRateFormatter(
   locale?: string
 ): Intl.NumberFormat {
-  const normalizedLocale = locale?.replaceAll('_', '-') || undefined
+  const normalizedLocale = locale
+    ? toIntlLocale(locale.replaceAll('_', '-'))
+    : undefined
   const options: Intl.NumberFormatOptions = {
     style: 'percent',
     maximumFractionDigits: 2,

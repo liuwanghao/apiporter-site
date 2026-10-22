@@ -19,11 +19,12 @@ For commercial licensing, please contact support@quantumnous.com
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
-import test from 'node:test'
-import { fileURLToPath } from 'node:url'
+import { resolve } from 'node:path'
+
+import { test } from 'vitest'
 
 const installerUrl = (name: string) =>
-  new URL(`../../../../../public/install/${name}`, import.meta.url)
+  resolve(import.meta.dirname, `../../../../../public/install/${name}`)
 const readInstaller = (name: string) => readFileSync(installerUrl(name), 'utf8')
 
 const installers = {
@@ -76,6 +77,6 @@ test('Claude installers preserve settings and validate both configured models', 
 
 test('shell installers are valid POSIX shell syntax', () => {
   for (const name of ['codex.sh', 'claude.sh']) {
-    execFileSync('sh', ['-n', fileURLToPath(installerUrl(name))])
+    execFileSync('sh', ['-n', installerUrl(name)])
   }
 })

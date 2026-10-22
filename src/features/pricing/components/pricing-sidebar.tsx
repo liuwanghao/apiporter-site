@@ -37,6 +37,7 @@ import {
   getEndpointTypeLabels,
   getQuotaTypeLabels,
 } from '../constants'
+import { hasTaskUsageSchema } from '../lib/dynamic-price'
 import { parseTags } from '../lib/filters'
 import type { PricingModel, PricingVendor } from '../types'
 
@@ -101,6 +102,7 @@ function FilterChip(props: {
       type='button'
       onClick={props.onClick}
       data-active={props.active}
+      aria-pressed={props.active}
       className={cn(
         'group inline-flex max-w-full items-center gap-1.5 rounded-md border px-2 py-1 text-xs font-medium transition-all',
         props.active
@@ -202,12 +204,23 @@ export function PricingSidebar(props: PricingSidebarProps) {
     {
       value: QUOTA_TYPES.TOKEN,
       label: quotaTypeLabels[QUOTA_TYPES.TOKEN],
-      count: countBy(props.models, (model) => model.quota_type === 0),
+      count: countBy(
+        props.models,
+        (model) => !hasTaskUsageSchema(model) && model.quota_type === 0
+      ),
     },
     {
       value: QUOTA_TYPES.REQUEST,
       label: quotaTypeLabels[QUOTA_TYPES.REQUEST],
-      count: countBy(props.models, (model) => model.quota_type === 1),
+      count: countBy(
+        props.models,
+        (model) => !hasTaskUsageSchema(model) && model.quota_type === 1
+      ),
+    },
+    {
+      value: QUOTA_TYPES.TASK,
+      label: quotaTypeLabels[QUOTA_TYPES.TASK],
+      count: countBy(props.models, hasTaskUsageSchema),
     },
   ]
 

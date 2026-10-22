@@ -18,29 +18,30 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile, readdir } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
 
 import { Window } from 'happy-dom'
+import { describe, test } from 'vitest'
 
 const landingPage = await readFile(
-  new URL('../../../../public/relay-landing.html', import.meta.url),
+  resolve(import.meta.dirname, '../../../../public/relay-landing.html'),
   'utf8'
 )
 const homePage = await readFile(
-  new URL('../index.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../index.tsx'),
   'utf8'
 )
 const routeEffectScript = await readFile(
-  new URL(
-    '../../../../public/cloudbridge-route-effect/cloudbridge-route-effect.js',
-    import.meta.url
+  resolve(
+    import.meta.dirname,
+    '../../../../public/cloudbridge-route-effect/cloudbridge-route-effect.js'
   ),
   'utf8'
 )
 const routeEffectStyles = await readFile(
-  new URL(
-    '../../../../public/cloudbridge-route-effect/cloudbridge-route-effect.css',
-    import.meta.url
+  resolve(
+    import.meta.dirname,
+    '../../../../public/cloudbridge-route-effect/cloudbridge-route-effect.css'
   ),
   'utf8'
 )
@@ -137,7 +138,7 @@ describe('landing page layout', () => {
   test('bundles all six agreement PDFs with the homepage', async () => {
     for (const filename of agreementFiles) {
       const pdf = await readFile(
-        new URL(`../../../../public/pfd/${filename}`, import.meta.url)
+        resolve(import.meta.dirname, `../../../../public/pfd/${filename}`)
       )
       assert.equal(pdf.subarray(0, 5).toString(), '%PDF-')
     }
@@ -219,9 +220,9 @@ describe('landing page layout', () => {
 
   test('bundles the six-source and twelve-model route visualization assets', async () => {
     const modelAssets = await readdir(
-      new URL(
-        '../../../../public/cloudbridge-route-effect/assets/models/',
-        import.meta.url
+      resolve(
+        import.meta.dirname,
+        '../../../../public/cloudbridge-route-effect/assets/models/'
       )
     )
 

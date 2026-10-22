@@ -82,7 +82,9 @@ import path from 'node:path'
 const LOCALES_DIR = path.resolve('src/i18n/locales')
 const SRC_DIR = path.resolve('src')
 
-const en = JSON.parse(await fs.readFile(path.join(LOCALES_DIR, 'en.json'), 'utf8'))
+const en = JSON.parse(
+  await fs.readFile(path.join(LOCALES_DIR, 'en.json'), 'utf8')
+)
 const enKeys = new Set(Object.keys(en.translation))
 
 const tCallRegex = /\bt\(\s*['"`]([^'"`\n]+?)['"`]\s*[,)]/g
@@ -94,7 +96,12 @@ async function walkDir(dir) {
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (['node_modules', '.git', 'locales', '_reports', '_extras'].includes(entry.name)) continue
+      if (
+        ['node_modules', '.git', 'locales', '_reports', '_extras'].includes(
+          entry.name
+        )
+      )
+        continue
       files.push(...(await walkDir(fullPath)))
     } else if (/\.(tsx?|jsx?)$/.test(entry.name)) {
       files.push(fullPath)
@@ -127,7 +134,9 @@ if (missingKeys.size === 0) {
   console.log('All t() keys found in en.json!')
 } else {
   console.log(`Found ${missingKeys.size} missing keys:\n`)
-  for (const [key, files] of [...missingKeys.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+  for (const [key, files] of [...missingKeys.entries()].sort(([a], [b]) =>
+    a.localeCompare(b)
+  )) {
     console.log(`  "${key}"`)
     for (const f of [...new Set(files)]) console.log(`    -> ${f}`)
   }
@@ -143,34 +152,101 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 
 const LOCALES_DIR = path.resolve('src/i18n/locales')
-const en = JSON.parse(await fs.readFile(path.join(LOCALES_DIR, 'en.json'), 'utf8'))
+const en = JSON.parse(
+  await fs.readFile(path.join(LOCALES_DIR, 'en.json'), 'utf8')
+)
 const enTrans = en.translation
 
 // Brand names, URLs, technical terms — skip these
 const skipPatterns = [
-  /^https?:\/\//, /^smtp\./, /^socks5:/, /^name@/, /^noreply@/,
-  /^org-/, /^price_/, /^whsec_/, /^edit_this$/, /^my-status$/,
-  /^_copy$/, /^gpt-/, /^checkout\./, /^footer\./, /^\[?\{/,
-  /^"default/, /^\/status\//, /^\/your\//, /^example\.com/,
-  /^AZURE_/, /^AccessKey/, /^OAuth/, /^Client /, /^Webhook URL/,
-  /^API URL$/, /^Well-Known/, /^Worker URL$/, /^Uptime Kuma/,
-  /^New API/, /^Baidu V2$/, /^Zhipu V4$/, /^Quota:$/,
+  /^https?:\/\//,
+  /^smtp\./,
+  /^socks5:/,
+  /^name@/,
+  /^noreply@/,
+  /^org-/,
+  /^price_/,
+  /^whsec_/,
+  /^edit_this$/,
+  /^my-status$/,
+  /^_copy$/,
+  /^gpt-/,
+  /^checkout\./,
+  /^footer\./,
+  /^\[?\{/,
+  /^"default/,
+  /^\/status\//,
+  /^\/your\//,
+  /^example\.com/,
+  /^AZURE_/,
+  /^AccessKey/,
+  /^OAuth/,
+  /^Client /,
+  /^Webhook URL/,
+  /^API URL$/,
+  /^Well-Known/,
+  /^Worker URL$/,
+  /^Uptime Kuma/,
+  /^New API/,
+  /^Baidu V2$/,
+  /^Zhipu V4$/,
+  /^Quota:$/,
 ]
 
 const brandNames = new Set([
-  'AIGC2D','Anthropic','API2GPT','Claude','Cloudflare','Cohere','DeepSeek',
-  'Discord','DoubaoVideo','FastGPT','Gemini','GitHub','Jimeng','JustSong',
-  'LingYiWanWu','LinuxDO','Midjourney','MidjourneyPlus','MiniMax','Mistral',
-  'MokaAI','Moonshot','NewAPI','OhMyGPT','Ollama','OpenAI','OpenAIMax',
-  'OpenRouter','Passkey','Perplexity','QuantumNous','Replicate','SiliconFlow',
-  'Stripe','Submodel','SunoAPI','Telegram','Tencent','Vertex AI','VolcEngine',
-  'WeChat','Xinference','Xunfei','AI Proxy','One API',
+  'AIGC2D',
+  'Anthropic',
+  'API2GPT',
+  'Claude',
+  'Cloudflare',
+  'Cohere',
+  'DeepSeek',
+  'Discord',
+  'DoubaoVideo',
+  'FastGPT',
+  'Gemini',
+  'GitHub',
+  'Jimeng',
+  'JustSong',
+  'LingYiWanWu',
+  'LinuxDO',
+  'Midjourney',
+  'MidjourneyPlus',
+  'MiniMax',
+  'Mistral',
+  'MokaAI',
+  'Moonshot',
+  'NewAPI',
+  'OhMyGPT',
+  'Ollama',
+  'OpenAI',
+  'OpenAIMax',
+  'OpenRouter',
+  'Passkey',
+  'Perplexity',
+  'QuantumNous',
+  'Replicate',
+  'SiliconFlow',
+  'Stripe',
+  'Submodel',
+  'SunoAPI',
+  'Telegram',
+  'Tencent',
+  'Vertex AI',
+  'VolcEngine',
+  'WeChat',
+  'Xinference',
+  'Xunfei',
+  'AI Proxy',
+  'One API',
 ])
 
 const locales = ['fr', 'ja', 'ru', 'zh', 'zh-TW', 'vi']
 
 for (const locale of locales) {
-  const locFile = JSON.parse(await fs.readFile(path.join(LOCALES_DIR, `${locale}.json`), 'utf8'))
+  const locFile = JSON.parse(
+    await fs.readFile(path.join(LOCALES_DIR, `${locale}.json`), 'utf8')
+  )
   const locTrans = locFile.translation
   const untranslated = {}
 
@@ -178,7 +254,7 @@ for (const locale of locales) {
     const locVal = locTrans[key]
     if (locVal === undefined || locVal !== enVal) continue
     if (brandNames.has(key)) continue
-    if (skipPatterns.some(p => p.test(key))) continue
+    if (skipPatterns.some((p) => p.test(key))) continue
     if (typeof enVal === 'string' && enVal.length < 4) continue
     if (/[a-zA-Z]{3,}/.test(String(enVal))) untranslated[key] = enVal
   }
@@ -209,13 +285,13 @@ function stableStringify(obj) {
 }
 
 const newKeys = {
-  en: { /* "key": "English value" */ },
-  zh: { /* "key": "中文翻译" */ },
-  'zh-TW': { /* "key": "繁體中文翻譯" */ },
-  fr: { /* "key": "Traduction française" */ },
-  ja: { /* "key": "日本語翻訳" */ },
-  ru: { /* "key": "Русский перевод" */ },
-  vi: { /* "key": "Bản dịch tiếng Việt" */ },
+  en: {/* "key": "English value" */},
+  zh: {/* "key": "中文翻译" */},
+  'zh-TW': {/* "key": "繁體中文翻譯" */},
+  fr: {/* "key": "Traduction française" */},
+  ja: {/* "key": "日本語翻訳" */},
+  ru: {/* "key": "Русский перевод" */},
+  vi: {/* "key": "Bản dịch tiếng Việt" */},
 }
 
 async function main() {
@@ -250,7 +326,10 @@ async function main() {
   console.log(`\nTotal: ${totalAdded} translations applied`)
 }
 
-main().catch((err) => { console.error(err); process.exitCode = 1 })
+main().catch((err) => {
+  console.error(err)
+  process.exitCode = 1
+})
 ```
 
 Populate the `newKeys` object with actual translations for each locale.
@@ -281,23 +360,25 @@ Delete temporary scripts after completion.
 - Do not sacrifice meaning just to shorten text. When the call site has limited space, choose the shortest clear translation that preserves the UI intent.
 - For interpolated variables, counts, model names, provider names, quotas, and dates, consider the longest realistic rendered text, not only the translation string itself.
 
-| Language | Code | Notes |
-|----------|------|-------|
-| English | en | Base locale, key = value |
-| Chinese | zh | Fallback locale, must be complete |
-| Traditional Chinese | zh-TW | Use natural Traditional Chinese wording |
-| French | fr | Many English cognates are valid (e.g., "Configuration") |
-| Japanese | ja | Use katakana for technical loanwords |
-| Russian | ru | Use formal register |
-| Vietnamese | vi | Use standard Vietnamese |
+| Language            | Code  | Notes                                                   |
+| ------------------- | ----- | ------------------------------------------------------- |
+| English             | en    | Base locale, key = value                                |
+| Chinese             | zh    | Fallback locale, must be complete                       |
+| Traditional Chinese | zh-TW | Use natural Traditional Chinese wording                 |
+| French              | fr    | Many English cognates are valid (e.g., "Configuration") |
+| Japanese            | ja    | Use katakana for technical loanwords                    |
+| Russian             | ru    | Use formal register                                     |
+| Vietnamese          | vi    | Use standard Vietnamese                                 |
 
 **Keep as English (do not translate):**
+
 - Brand/product names (OpenAI, Claude, Gemini, etc.)
 - URLs and email placeholders
 - Technical identifiers (JSON keys, API paths, model names)
 - Code-like strings (gpt-3.5-turbo, price_xxx, etc.)
 
 **Always translate:**
+
 - UI labels, button text, error messages, descriptions
 - Time units (hours, minutes, months, years)
 - Action words (Move, Show, Delete, etc.)

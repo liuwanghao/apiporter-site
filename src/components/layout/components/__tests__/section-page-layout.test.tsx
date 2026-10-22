@@ -17,9 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, describe, test } from 'node:test'
 
 import { Window } from 'happy-dom'
+import { afterAll, describe, test } from 'vitest'
 
 const domWindow = new Window({ width: 1440, height: 900 })
 const domGlobals = [
@@ -71,7 +71,7 @@ async function renderLayout(fixedContent: boolean) {
 }
 
 describe('section page layout', () => {
-  after(() => {
+  afterAll(() => {
     domWindow.close()
   })
 

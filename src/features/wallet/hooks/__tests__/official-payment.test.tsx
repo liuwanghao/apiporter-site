@@ -17,9 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, afterEach, test } from 'node:test'
 
 import { Window } from 'happy-dom'
+import { afterAll, afterEach, test } from 'vitest'
 
 const domWindow = new Window({ url: 'https://app.example.com/wallet' })
 for (const [key, value] of Object.entries({
@@ -130,7 +130,7 @@ afterEach(async () => {
   requests.length = 0
   submissions.length = 0
 })
-after(() => domWindow.close())
+afterAll(() => domWindow.close())
 
 for (const [type, amountEndpoint, payEndpoint, currency] of [
   ['alipay_official', '/api/user/alipay/amount', '/api/user/alipay/pay', 'CNY'],

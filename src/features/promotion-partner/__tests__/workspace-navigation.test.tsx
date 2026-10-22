@@ -17,26 +17,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, describe, test } from 'node:test'
 
-import { Window } from 'happy-dom'
-
-const domWindow = new Window({ width: 1440, height: 900 })
-for (const [key, value] of Object.entries({
-  window: domWindow,
-  document: domWindow.document,
-  navigator: domWindow.navigator,
-  HTMLElement: domWindow.HTMLElement,
-  HTMLButtonElement: domWindow.HTMLButtonElement,
-  SVGElement: domWindow.SVGElement,
-  Node: domWindow.Node,
-  Element: domWindow.Element,
-  Event: domWindow.Event,
-  MutationObserver: domWindow.MutationObserver,
-  ResizeObserver: domWindow.ResizeObserver,
-})) {
-  Object.defineProperty(globalThis, key, { configurable: true, value })
-}
+import { describe, test } from 'vitest'
 
 const React = await import('react')
 const { act } = React
@@ -60,8 +42,6 @@ Object.defineProperty(globalThis, 'IS_REACT_ACT_ENVIRONMENT', {
 })
 
 describe('promotion partner workspace navigation', () => {
-  after(() => domWindow.close())
-
   test('uses a neutral horizontal workbench for partner data sections', async () => {
     const container = document.createElement('div')
     document.body.append(container)

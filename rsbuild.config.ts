@@ -67,6 +67,7 @@ export default defineConfig(({ envMode }) => {
     },
     html: {
       template: './index.html',
+      favicon: './public/cloudbridge-favicon.png',
     },
     server: {
       host: '0.0.0.0',

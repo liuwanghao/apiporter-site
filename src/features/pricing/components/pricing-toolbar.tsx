@@ -110,7 +110,9 @@ function SegmentedControl(props: {
           <button
             key={option.value}
             type='button'
-            onClick={() => props.onChange(option.value)}
+            onClick={() => {
+              if (!isActive) props.onChange(option.value)
+            }}
             aria-pressed={isActive}
             className={cn(
               'inline-flex h-full items-center justify-center rounded-md text-xs font-medium transition-all',

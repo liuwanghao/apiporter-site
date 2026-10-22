@@ -22,11 +22,11 @@ type ProfileWorkspaceLayoutProps = {
   accountSettings: ReactNode
   languagePreferences?: ReactNode
   securityActions: ReactNode
-  passkey: ReactNode
-  twoFactor: ReactNode
+  passkey?: ReactNode
+  twoFactor?: ReactNode
   checkin?: ReactNode
   sidebar?: ReactNode
-  sessions: ReactNode
+  sessions?: ReactNode
 }
 
 export function ProfileWorkspaceLayout(props: ProfileWorkspaceLayoutProps) {
@@ -41,23 +41,25 @@ export function ProfileWorkspaceLayout(props: ProfileWorkspaceLayoutProps) {
             {props.accountSettings}
           </div>
 
-          <div
-            data-profile-strong-auth-grid
-            className='grid min-w-0 gap-4 sm:gap-5 lg:grid-cols-2 lg:items-stretch'
-          >
+          {(props.passkey || props.twoFactor) && (
             <div
-              data-profile-passkey
-              className='min-w-0 lg:h-full lg:[&>*]:h-full'
+              data-profile-strong-auth-grid
+              className='grid min-w-0 gap-4 sm:gap-5 lg:grid-cols-2 lg:items-stretch'
             >
-              {props.passkey}
+              <div
+                data-profile-passkey
+                className='min-w-0 lg:h-full lg:[&>*]:h-full'
+              >
+                {props.passkey}
+              </div>
+              <div
+                data-profile-two-factor
+                className='min-w-0 lg:h-full lg:[&>*]:h-full'
+              >
+                {props.twoFactor}
+              </div>
             </div>
-            <div
-              data-profile-two-factor
-              className='min-w-0 lg:h-full lg:[&>*]:h-full'
-            >
-              {props.twoFactor}
-            </div>
-          </div>
+          )}
 
           {props.checkin ? (
             <div data-profile-checkin className='min-w-0'>
@@ -65,9 +67,11 @@ export function ProfileWorkspaceLayout(props: ProfileWorkspaceLayoutProps) {
             </div>
           ) : null}
 
-          <div data-profile-sessions className='min-w-0'>
-            {props.sessions}
-          </div>
+          {props.sessions && (
+            <div data-profile-sessions className='min-w-0'>
+              {props.sessions}
+            </div>
+          )}
         </div>
 
         <div

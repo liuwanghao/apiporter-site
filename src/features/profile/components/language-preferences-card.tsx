@@ -35,6 +35,8 @@ import {
   INTERFACE_LANGUAGE_OPTIONS,
   normalizeInterfaceLanguage,
 } from '@/i18n/languages'
+import { handleServerError } from '@/lib/handle-server-error'
+import { createServerError } from '@/lib/server-error-message'
 import { useAuthStore } from '@/stores/auth-store'
 
 import { updateUserLanguage } from '../api'
@@ -78,7 +80,7 @@ export function LanguagePreferencesCard(props: LanguagePreferencesCardProps) {
     try {
       const response = await updateUserLanguage(nextLanguage)
       if (!response.success) {
-        throw new Error(response.message || t('Failed to update settings'))
+        throw createServerError(response, t('Failed to update settings'))
       }
 
       if (auth.user) {
@@ -97,10 +99,10 @@ export function LanguagePreferencesCard(props: LanguagePreferencesCardProps) {
 
       props.onProfileUpdate()
       toast.success(t('Language preference saved'))
-    } catch {
+    } catch (error) {
       setCurrentLanguage(previousLanguage)
       await i18n.changeLanguage(previousLanguage)
-      toast.error(t('Failed to update settings'))
+      handleServerError(error, t('Failed to update settings'))
     } finally {
       setSaving(false)
     }

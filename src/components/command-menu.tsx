@@ -17,23 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { useLocation, useNavigate } from '@tanstack/react-router'
-import {
-  Laptop,
-  Moon,
-  Sun,
-  Key,
-  LayoutDashboard,
-  User,
-  Users,
-  CreditCard,
-  Settings,
-  Bot,
-  Activity,
-  DollarSign,
-  Gift,
-  Server,
-  Layers,
-} from 'lucide-react'
+import { ArrowRight, Laptop, Moon, Sun } from 'lucide-react'
 import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -49,9 +33,7 @@ import {
 } from '@/components/ui/command'
 import { useSearch } from '@/context/search-context'
 import { useTheme } from '@/context/theme-provider'
-import { useIsSidebarModuleVisible } from '@/hooks/use-sidebar-config'
-import { ROLE } from '@/lib/roles'
-import { useAuthStore } from '@/stores/auth-store'
+import { useSidebarView } from '@/hooks/use-sidebar-view'
 
 export function CommandMenu() {
   const { t } = useTranslation()
@@ -68,19 +50,7 @@ export function CommandMenu() {
     [search]
   )
 
-  const user = useAuthStore((state) => state.auth.user)
-  const isSuperAdmin = user?.role === ROLE.SUPER_ADMIN
-  const isDashboardVisible = useIsSidebarModuleVisible('/dashboard')
-  const isPlaygroundVisible = useIsSidebarModuleVisible('/playground')
-  const isKeysVisible = useIsSidebarModuleVisible('/keys')
-  const isChannelsVisible = useIsSidebarModuleVisible('/channels')
-  const isModelsVisible = useIsSidebarModuleVisible('/models')
-  const isUsersVisible = useIsSidebarModuleVisible('/users')
-  const isSubscriptionsVisible = useIsSidebarModuleVisible('/subscriptions')
-  const isRedemptionCodesVisible =
-    useIsSidebarModuleVisible('/redemption-codes')
-  const isUsageLogsVisible = useIsSidebarModuleVisible('/usage-logs')
-  const isWalletVisible = useIsSidebarModuleVisible('/wallet')
+  const { navGroups } = useSidebarView()
 
   const runCommand = useCallback(
     (command: () => unknown) => {
@@ -90,127 +60,30 @@ export function CommandMenu() {
     [setOpen]
   )
 
-  // 导航项列表
-  const navigationItems = useMemo(() => {
-    const items = [
-      {
-        title: t('Dashboard'),
-        icon: LayoutDashboard,
-        url: '/dashboard',
-        keywords: ['dashboard', 'home', 'overview', '控制台', '仪表盘', '首页'],
-        visible: isDashboardVisible,
-      },
-      {
-        title: t('Playground'),
-        icon: Bot,
-        url: '/playground',
-        keywords: ['playground', 'chat', 'test', '演练场', '测试', '对话'],
-        visible: isPlaygroundVisible,
-      },
-      {
-        title: t('API Keys'),
-        icon: Key,
-        url: '/keys',
-        keywords: ['api', 'key', 'token', 'access', '令牌', '密钥'],
-        visible: isKeysVisible,
-      },
-      {
-        title: t('Channels'),
-        icon: Layers,
-        url: '/channels',
-        keywords: ['channel', 'upstream', 'provider', '渠道', '通道', '上游'],
-        visible: isSuperAdmin && isChannelsVisible,
-      },
-      {
-        title: t('Models'),
-        icon: Server,
-        url: '/models',
-        keywords: ['model', 'ai', 'llm', '模型', '列表'],
-        visible: isSuperAdmin && isModelsVisible,
-      },
-      {
-        title: t('Users'),
-        icon: Users,
-        url: '/users',
-        keywords: ['user', 'account', 'member', '用户', '账号', '成员'],
-        visible: isSuperAdmin && isUsersVisible,
-      },
-      {
-        title: t('Subscriptions'),
-        icon: CreditCard,
-        url: '/subscriptions',
-        keywords: ['subscription', 'plan', 'pricing', '订阅', '套餐'],
-        visible: isSuperAdmin && isSubscriptionsVisible,
-      },
-      {
-        title: t('Redemption Codes'),
-        icon: Gift,
-        url: '/redemption-codes',
-        keywords: ['redemption', 'code', 'coupon', 'gift', '兑换码', '充值卡'],
-        visible: isSuperAdmin && isRedemptionCodesVisible,
-      },
-      {
-        title: t('Usage Logs'),
-        icon: Activity,
-        url: '/usage-logs',
-        keywords: ['log', 'usage', 'history', 'call', '日志', '使用记录'],
-        visible: isUsageLogsVisible,
-      },
-      {
-        title: t('Wallet'),
-        icon: DollarSign,
-        url: '/wallet',
-        keywords: ['wallet', 'balance', 'topup', 'pay', '钱包', '余额', '充值'],
-        visible: isWalletVisible,
-      },
-      {
-        title: t('Profile'),
-        icon: User,
-        url: '/profile',
-        keywords: [
-          'profile',
-          'user',
-          'account',
-          'setting',
-          '个人',
-          '设置',
-          '资料',
-        ],
-        visible: true,
-      },
-      {
-        title: t('System Settings'),
-        icon: Settings,
-        url: '/system-settings',
-        keywords: [
-          'system',
-          'settings',
-          'config',
-          'admin',
-          '系统',
-          '设置',
-          '配置',
-        ],
-        visible: isSuperAdmin,
-      },
-    ]
-
-    return items.filter((item) => item.visible && item.url !== pathname)
-  }, [
-    t,
-    isSuperAdmin,
-    isDashboardVisible,
-    isPlaygroundVisible,
-    isKeysVisible,
-    isChannelsVisible,
-    isModelsVisible,
-    isUsersVisible,
-    isSubscriptionsVisible,
-    isRedemptionCodesVisible,
-    isUsageLogsVisible,
-    isWalletVisible,
-    pathname,
-  ])
+  const navigationItems = useMemo(
+    () =>
+      navGroups
+        .flatMap((group) =>
+          group.items.flatMap((item) => {
+            if (item.url) {
+              return [
+                {
+                  title: item.title,
+                  url: item.url,
+                  icon: item.icon ?? ArrowRight,
+                },
+              ]
+            }
+            return (item.items ?? []).map((child) => ({
+              title: `${item.title} / ${child.title}`,
+              url: child.url,
+              icon: child.icon ?? item.icon ?? ArrowRight,
+            }))
+          })
+        )
+        .filter((item) => item.url !== pathname),
+    [navGroups, pathname]
+  )
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
@@ -225,7 +98,7 @@ export function CommandMenu() {
               {navigationItems.map((item) => (
                 <CommandItem
                   key={item.url}
-                  value={`${item.title} ${item.keywords.join(' ')}`}
+                  value={`${item.title} ${item.url}`}
                   onSelect={() => {
                     runCommand(() => navigate({ to: item.url }))
                   }}

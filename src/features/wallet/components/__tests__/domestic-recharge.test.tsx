@@ -17,9 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, afterEach, test } from 'node:test'
 
 import { Window } from 'happy-dom'
+import { afterAll, afterEach, test } from 'vitest'
 
 const domWindow = new Window({ url: 'https://app.example.com/wallet' })
 for (const [key, value] of Object.entries({
@@ -144,7 +144,7 @@ afterEach(async () => {
   changed.length = 0
   payments = 0
 })
-after(() => domWindow.close())
+afterAll(() => domWindow.close())
 
 test('domestic recharge shows CNY presets, input and summary without HKD or USD', async () => {
   await mount()

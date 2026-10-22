@@ -27,6 +27,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Button } from '@/components/ui/button'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { SystemUpdateAction } from '@/features/system-update/system-update-action'
 import { useNotifications } from '@/hooks/use-notifications'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { useTopNavLinks } from '@/hooks/use-top-nav-links'
@@ -228,6 +229,7 @@ export function AppHeader({
                 homeUrl={homeUrl}
               />
             )}
+            <SystemUpdateAction presentation='version' />
           </div>
 
           {/* Center Area: Primary navigation buttons */}

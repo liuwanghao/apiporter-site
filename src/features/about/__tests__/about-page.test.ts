@@ -18,17 +18,19 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { describe, test } from 'vitest'
 
 const aboutPage = await readFile(
-  new URL('../index.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../index.tsx'),
   'utf8'
 )
 const localeFiles = {
-  en: new URL('../../../i18n/locales/en.json', import.meta.url),
-  ja: new URL('../../../i18n/locales/ja.json', import.meta.url),
-  zh: new URL('../../../i18n/locales/zh.json', import.meta.url),
-  zhTW: new URL('../../../i18n/locales/zh-TW.json', import.meta.url),
+  en: resolve(import.meta.dirname, '../../../i18n/locales/en.json'),
+  ja: resolve(import.meta.dirname, '../../../i18n/locales/ja.json'),
+  zh: resolve(import.meta.dirname, '../../../i18n/locales/zh.json'),
+  zhTW: resolve(import.meta.dirname, '../../../i18n/locales/zh-TW.json'),
 }
 
 const aboutKeys = [

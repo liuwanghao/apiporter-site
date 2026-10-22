@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -16,15 +18,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
 
-const fontStylesheetUrl = new URL('../fonts.css', import.meta.url)
-const themeStylesheetUrl = new URL('../theme.css', import.meta.url)
-const fontAssetUrl = new URL(
-  '../../assets/fonts/maple-mono/maple-mono-cn-regular.woff2',
-  import.meta.url
+import { describe, test } from 'vitest'
+
+const fontStylesheetUrl = resolve(import.meta.dirname, '../fonts.css')
+const themeStylesheetUrl = resolve(import.meta.dirname, '../theme.css')
+const fontAssetUrl = resolve(
+  import.meta.dirname,
+  '../../assets/fonts/maple-mono/maple-mono-cn-regular.woff2'
 )
 
 describe('site font bundle', () => {

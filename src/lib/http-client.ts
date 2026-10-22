@@ -24,14 +24,15 @@ import { toDocumentLanguage } from '@/i18n/languages'
 import {
   applyAuthRotation,
   clearAuthentication,
+  getFreshAuthHeaders,
   refreshAuthentication,
 } from '@/lib/auth-session'
+import { markServerErrorHandled } from '@/lib/handle-server-error'
 import {
   claimSessionExpiration,
   isIntentionalSignOutInProgress,
-  requestErrorToastId,
 } from '@/lib/request-error-policy'
-import { getServerErrorMessageKey } from '@/lib/server-error-message'
+import { getServerErrorMessage } from '@/lib/server-error-message'
 import { API_BASE_URL } from '@/lib/server-url'
 import { useAuthStore } from '@/stores/auth-store'
 
@@ -43,6 +44,7 @@ declare module 'axios' {
     skipAuthRefresh?: boolean
     authRetry?: boolean
     acceptAuthRotation?: boolean
+    singleUseAuthorization?: boolean
   }
 }
 
@@ -52,7 +54,8 @@ export const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
-    'Cache-Control': 'no-store',
+    // no-store forbids storage; no-cache also revalidates any older cached response.
+    'Cache-Control': 'no-cache, no-store',
   },
 })
 
@@ -86,19 +89,17 @@ function redirectToSignIn(): void {
 
 function handleSessionExpiration(
   hadAuthenticatedSession: boolean,
-  skipErrorHandler?: boolean
+  skipErrorHandler?: boolean,
+  error?: unknown
 ): void {
-  if (
-    !hadAuthenticatedSession ||
-    isIntentionalSignOutInProgress() ||
-    !claimSessionExpiration()
-  ) {
-    return
-  }
+  if (!hadAuthenticatedSession || skipErrorHandler) return
 
-  if (!skipErrorHandler) {
-    toast.error(t('Session expired!'), { id: 'auth-session-expired' })
-  }
+  // Every terminal request shares the same expiration notice, including
+  // failures that settle after the first request claimed it.
+  markServerErrorHandled(error)
+  if (isIntentionalSignOutInProgress() || !claimSessionExpiration()) return
+
+  toast.error(t('Session expired!'), { id: 'auth-session-expired' })
   redirectToSignIn()
 }
 
@@ -108,17 +109,6 @@ api.interceptors.response.use(
       applyAuthRotation(response.data.data)
     }
 
-    if (
-      !response.config.skipBusinessError &&
-      typeof response.data?.success === 'boolean' &&
-      !response.data.success
-    ) {
-      const messageKey = getServerErrorMessageKey(response.data)
-      const message = messageKey
-        ? t(messageKey)
-        : response.data.message || t('Request failed')
-      toast.error(message, { id: requestErrorToastId(message) })
-    }
     return response
   },
   async (error) => {
@@ -145,31 +135,49 @@ api.interceptors.response.use(
         }
 
         if (outcome.kind === 'anonymous' || outcome.kind === 'out_of_sync') {
-          handleSessionExpiration(hadAuthenticatedSession, skipErrorHandler)
+          handleSessionExpiration(
+            hadAuthenticatedSession,
+            skipErrorHandler,
+            error
+          )
         }
       } else if (config?.authRetry) {
         clearAuthentication(false)
-        handleSessionExpiration(hadAuthenticatedSession, skipErrorHandler)
+        handleSessionExpiration(
+          hadAuthenticatedSession,
+          skipErrorHandler,
+          error
+        )
       } else {
-        handleSessionExpiration(hadAuthenticatedSession, skipErrorHandler)
+        handleSessionExpiration(
+          hadAuthenticatedSession,
+          skipErrorHandler,
+          error
+        )
       }
-    } else if (!skipErrorHandler) {
-      const messageKey = getServerErrorMessageKey(error)
-      const message = messageKey
-        ? t(messageKey)
-        : error?.response?.data?.message ||
-          error?.message ||
-          t('Request failed')
-      toast.error(message, { id: requestErrorToastId(message) })
     }
+    if (axios.isAxiosError(error)) error.message = getServerErrorMessage(error)
     throw error
   }
 )
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
   config.headers['Accept-Language'] = toDocumentLanguage(
     i18n.resolvedLanguage || i18n.language
   )
+  if (config.singleUseAuthorization || config.headers.has('X-Security-Proof')) {
+    // Refresh before spending a proof/flow, never by replaying its request.
+    config.skipAuthRefresh = true
+    try {
+      const headers = await getFreshAuthHeaders()
+      for (const [name, value] of Object.entries(headers)) {
+        config.headers.set(name, value)
+      }
+    } catch (error) {
+      throw axios.AxiosError.from(error, undefined, config)
+    }
+    return config
+  }
   const accessToken = useAuthStore.getState().auth.accessToken
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`

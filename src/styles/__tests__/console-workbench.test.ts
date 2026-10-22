@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -16,15 +18,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import { after, describe, test } from 'node:test'
+import { resolve } from 'node:path'
 
 import { Window } from 'happy-dom'
+import { afterAll, describe, test } from 'vitest'
 
 const domWindow = new Window({ width: 1440, height: 900 })
 const stylesheet = await readFile(
-  new URL('../reference-console.css', import.meta.url),
+  resolve(import.meta.dirname, '../reference-console.css'),
   'utf8'
 )
 const style = domWindow.document.createElement('style')
@@ -42,7 +43,7 @@ function createConsoleSurface(slot: string) {
 }
 
 describe('console workbench theme', () => {
-  after(() => {
+  afterAll(() => {
     domWindow.close()
   })
 

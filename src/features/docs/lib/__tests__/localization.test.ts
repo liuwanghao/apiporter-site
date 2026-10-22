@@ -18,7 +18,9 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { describe, test } from 'vitest'
 
 import { DOC_GUIDES } from '../guide-catalog.ts'
 
@@ -98,9 +100,9 @@ const catalogKeys = DOC_GUIDES.flatMap((guide) => [
 const documentationKeys = [...new Set([...pageKeys, ...catalogKeys])]
 
 async function loadTranslations(locale: 'en' | 'ja') {
-  const file = new URL(
-    `../../../../i18n/locales/${locale}.json`,
-    import.meta.url
+  const file = resolve(
+    import.meta.dirname,
+    `../../../../i18n/locales/${locale}.json`
   )
   return JSON.parse(await readFile(file, 'utf8')).translation as Record<
     string,

@@ -153,6 +153,8 @@ function ChatRouteComponent() {
     )
   }
 
+  // Chat presets load administrator-configured external apps with their existing auth and device permissions.
+  /* oxlint-disable react/iframe-missing-sandbox -- Preserve administrator-configured external chat authentication and device permissions. */
   return (
     <iframe
       src={iframeSrc}
@@ -162,4 +164,5 @@ function ChatRouteComponent() {
       title={`Chat preset: ${preset.name}`}
     />
   )
+  /* oxlint-enable react/iframe-missing-sandbox */
 }

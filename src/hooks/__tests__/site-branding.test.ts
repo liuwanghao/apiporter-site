@@ -17,9 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, test } from 'node:test'
 
 import { Window } from 'happy-dom'
+import { afterAll, test } from 'vitest'
 import { createJSONStorage } from 'zustand/middleware'
 
 const browser = new Window()
@@ -39,7 +39,7 @@ Object.defineProperty(globalThis, 'localStorage', {
 const { mapStatusDataToConfig } = await import('../use-system-config')
 const { useSystemConfigStore } =
   await import('../../stores/system-config-store')
-after(async () => {
+afterAll(async () => {
   if (originalWindow) {
     Object.defineProperty(globalThis, 'window', originalWindow)
   } else {

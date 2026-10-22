@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import test from 'node:test'
+import { resolve } from 'node:path'
 
 import { Window } from 'happy-dom'
+import { test } from 'vitest'
 
 const stylesheet = readFileSync(
-  new URL(
-    '../../../../../public/tutorials/shared/tutorial.css',
-    import.meta.url
+  resolve(
+    import.meta.dirname,
+    '../../../../../public/tutorials/shared/tutorial.css'
   ),
   'utf8'
 )

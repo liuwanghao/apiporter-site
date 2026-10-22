@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -16,15 +18,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { describe, test } from 'vitest'
 
 const publicPages = [
   {
     name: 'about',
     source: await readFile(
-      new URL('../../../../features/about/index.tsx', import.meta.url),
+      resolve(import.meta.dirname, '../../../../features/about/index.tsx'),
       'utf8'
     ),
     outerWidth: 1492,
@@ -33,7 +35,7 @@ const publicPages = [
   {
     name: 'docs',
     source: await readFile(
-      new URL('../../../../features/docs/home.tsx', import.meta.url),
+      resolve(import.meta.dirname, '../../../../features/docs/home.tsx'),
       'utf8'
     ),
     outerWidth: 1508,
@@ -42,7 +44,7 @@ const publicPages = [
   {
     name: 'pricing',
     source: await readFile(
-      new URL('../../../../features/pricing/index.tsx', import.meta.url),
+      resolve(import.meta.dirname, '../../../../features/pricing/index.tsx'),
       'utf8'
     ),
     outerWidth: 1524,
@@ -51,7 +53,7 @@ const publicPages = [
   {
     name: 'rankings',
     source: await readFile(
-      new URL('../../../../features/rankings/index.tsx', import.meta.url),
+      resolve(import.meta.dirname, '../../../../features/rankings/index.tsx'),
       'utf8'
     ),
     outerWidth: 1524,

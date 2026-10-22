@@ -175,6 +175,7 @@ For commercial licensing, please contact support@quantumnous.com
 }
 
 .dark {
+  color-scheme: dark;
   /* Cool navy surfaces pair with the ApiPorter logo in dark mode. */
   --brand-action-foreground: #0b1828;
   --background: #0b1625;

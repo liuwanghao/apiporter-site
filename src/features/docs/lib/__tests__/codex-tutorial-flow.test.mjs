@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
-import { afterEach, test } from 'node:test'
 
 import { Window } from 'happy-dom'
+import { afterEach, test } from 'vitest'
 
 import { mountCodexTutorial } from '../../../../../public/tutorials/codex/tutorial.js'
 

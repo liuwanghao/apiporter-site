@@ -17,10 +17,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
-import { after, afterEach, describe, test } from 'node:test'
 
 import type { AxiosAdapter } from 'axios'
 import { Window } from 'happy-dom'
+import { afterAll, afterEach, describe, test } from 'vitest'
 
 const domWindow = new Window({ url: 'http://localhost:5180' })
 const domGlobals = [
@@ -152,7 +152,7 @@ describe('official Alipay configuration form', () => {
     for (const cleanup of cleanups.splice(0)) await cleanup()
     api.defaults.adapter = originalAdapter
   })
-  after(() => {
+  afterAll(() => {
     testGlobals.IS_REACT_ACT_ENVIRONMENT = originalActEnvironment
     for (const key of domGlobals) {
       const original = originalGlobals.get(key)

@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -16,19 +18,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
 
-const logoAssetUrl = new URL(
-  '../../../../../public/brand/apiporter-logo.png',
-  import.meta.url
+import { describe, test } from 'vitest'
+
+const logoAssetUrl = resolve(
+  import.meta.dirname,
+  '../../../../../public/brand/apiporter-logo.png'
 )
-const faviconAssetUrl = new URL(
-  '../../../../../public/brand/apiporter-favicon.png',
-  import.meta.url
+const faviconAssetUrl = resolve(
+  import.meta.dirname,
+  '../../../../../public/brand/apiporter-favicon.png'
 )
-const indexHtmlUrl = new URL('../../../../../index.html', import.meta.url)
+const indexHtmlUrl = resolve(import.meta.dirname, '../../../../../index.html')
 
 function assertPng(asset: Buffer, expected: { width: number; height: number }) {
   assert.deepEqual(
@@ -43,7 +45,7 @@ function assertPng(asset: Buffer, expected: { width: number; height: number }) {
 describe('brand logo asset', () => {
   test('brand URLs avoid API proxy prefixes so the browser receives images', async () => {
     const constants = await readFile(
-      new URL('../../../../lib/constants.ts', import.meta.url),
+      resolve(import.meta.dirname, '../../../../lib/constants.ts'),
       'utf8'
     )
     const indexHtml = await readFile(indexHtmlUrl, 'utf8')

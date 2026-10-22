@@ -18,7 +18,9 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { describe, test } from 'vitest'
 
 const ERROR_FEATURE_KEYS = [
   'Error Request Center',
@@ -105,7 +107,7 @@ const VALID_IDENTICAL_TRANSLATIONS: Partial<
 
 async function readTranslations(locale: string) {
   const source = await readFile(
-    new URL(`../../../i18n/locales/${locale}.json`, import.meta.url),
+    resolve(import.meta.dirname, `../../../i18n/locales/${locale}.json`),
     'utf8'
   )
   return JSON.parse(source).translation as Record<string, string>

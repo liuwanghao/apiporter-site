@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict'
-import { after, describe, test } from 'node:test'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Window } from 'happy-dom'
@@ -7,8 +6,11 @@ import { createInstance } from 'i18next'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
+import { afterAll, describe, test, vi } from 'vitest'
 
 import type { PricingModel } from '../../types'
+
+vi.mock('@visactor/react-vchart', () => ({ VChart: () => null }))
 
 const dom = new Window()
 const originalStorage = Object.getOwnPropertyDescriptor(
@@ -93,7 +95,7 @@ function tableRows(container: ReturnType<typeof renderPrices>) {
 }
 
 describe('model original prices and group discounts', () => {
-  after(() => {
+  afterAll(() => {
     useSystemConfigStore.getState().setConfig(initialConfig)
     if (originalStorage) {
       Object.defineProperty(globalThis, 'localStorage', originalStorage)

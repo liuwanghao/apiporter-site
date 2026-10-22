@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import test from 'node:test'
+import { resolve } from 'node:path'
 
 import { Window } from 'happy-dom'
+import { test } from 'vitest'
 
 import { mountClaudeTutorial } from '../../../../../public/tutorials/claude-code/tutorial.js'
 import { mountCodexTutorial } from '../../../../../public/tutorials/codex/tutorial.js'
@@ -10,9 +11,9 @@ import { mountCodexTutorial } from '../../../../../public/tutorials/codex/tutori
 const stylesheet = ['tutorial.css', 'onboarding.css']
   .map((file) =>
     readFileSync(
-      new URL(
-        `../../../../../public/tutorials/shared/${file}`,
-        import.meta.url
+      resolve(
+        import.meta.dirname,
+        `../../../../../public/tutorials/shared/${file}`
       ),
       'utf8'
     )

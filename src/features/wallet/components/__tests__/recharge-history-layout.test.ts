@@ -18,14 +18,16 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import test from 'node:test'
+import { resolve } from 'node:path'
+
+import { test } from 'vitest'
 
 const walletPage = await readFile(
-  new URL('../../index.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../../index.tsx'),
   'utf8'
 )
 const historyCard = await readFile(
-  new URL('../recharge-history-card.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../recharge-history-card.tsx'),
   'utf8'
 )
 test('wallet page renders the complete recharge history inline', () => {

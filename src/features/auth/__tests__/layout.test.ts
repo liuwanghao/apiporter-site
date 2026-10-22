@@ -18,33 +18,38 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { describe, test } from 'vitest'
 
 const authLayout = await readFile(
-  new URL('../auth-layout.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../auth-layout.tsx'),
   'utf8'
 )
 const referenceConsoleStyles = await readFile(
-  new URL('../../../styles/reference-console.css', import.meta.url),
+  resolve(import.meta.dirname, '../../../styles/reference-console.css'),
   'utf8'
 )
 const signInForm = await readFile(
-  new URL('../sign-in/components/user-auth-form.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../sign-in/components/user-auth-form.tsx'),
   'utf8'
 )
 const forgotPasswordForm = await readFile(
-  new URL(
-    '../forgot-password/components/forgot-password-form.tsx',
-    import.meta.url
+  resolve(
+    import.meta.dirname,
+    '../forgot-password/components/forgot-password-form.tsx'
   ),
   'utf8'
 )
 const legalConsent = await readFile(
-  new URL('../components/legal-consent.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../components/legal-consent.tsx'),
   'utf8'
 )
 const publicFooter = await readFile(
-  new URL('../../../components/layout/components/footer.tsx', import.meta.url),
+  resolve(
+    import.meta.dirname,
+    '../../../components/layout/components/footer.tsx'
+  ),
   'utf8'
 )
 

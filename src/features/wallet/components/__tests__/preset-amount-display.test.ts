@@ -18,10 +18,12 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import test from 'node:test'
+import { resolve } from 'node:path'
+
+import { test } from 'vitest'
 
 const rechargeForm = await readFile(
-  new URL('../recharge-form-card.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../recharge-form-card.tsx'),
   'utf8'
 )
 test('preset amount buttons omit converted payment and savings copy', () => {

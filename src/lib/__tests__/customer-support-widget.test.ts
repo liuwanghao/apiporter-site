@@ -1,3 +1,5 @@
+import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -16,16 +18,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import { test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { test } from 'vitest'
 
 const indexHtml = await readFile(
-  new URL('../../../index.html', import.meta.url),
+  resolve(import.meta.dirname, '../../../index.html'),
   'utf8'
 )
 const mainSource = await readFile(
-  new URL('../../main.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../../main.tsx'),
   'utf8'
 )
 
@@ -42,7 +44,10 @@ test('loads the designated ApiPorter customer-support widget once', () => {
 
 test('shows a contact fallback until the official support widget mounts', async () => {
   const fallbackSource = await readFile(
-    new URL('../../components/customer-support-fallback.tsx', import.meta.url),
+    resolve(
+      import.meta.dirname,
+      '../../components/customer-support-fallback.tsx'
+    ),
     'utf8'
   ).catch(() => '')
 

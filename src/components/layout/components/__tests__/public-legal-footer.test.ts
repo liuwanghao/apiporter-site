@@ -18,31 +18,33 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
-import { describe, test } from 'node:test'
+import { resolve } from 'node:path'
+
+import { describe, test } from 'vitest'
 
 const footer = await readFile(
-  new URL('../public-legal-footer.tsx', import.meta.url),
+  resolve(import.meta.dirname, '../public-legal-footer.tsx'),
   'utf8'
 )
 const docsPages = await Promise.all([
   readFile(
-    new URL('../../../../features/docs/home.tsx', import.meta.url),
+    resolve(import.meta.dirname, '../../../../features/docs/home.tsx'),
     'utf8'
   ),
   readFile(
-    new URL('../../../../features/docs/index.tsx', import.meta.url),
+    resolve(import.meta.dirname, '../../../../features/docs/index.tsx'),
     'utf8'
   ),
   readFile(
-    new URL('../../../../features/docs/guide.tsx', import.meta.url),
+    resolve(import.meta.dirname, '../../../../features/docs/guide.tsx'),
     'utf8'
   ),
   readFile(
-    new URL('../../../../features/pricing/index.tsx', import.meta.url),
+    resolve(import.meta.dirname, '../../../../features/pricing/index.tsx'),
     'utf8'
   ),
   readFile(
-    new URL('../../../../features/about/index.tsx', import.meta.url),
+    resolve(import.meta.dirname, '../../../../features/about/index.tsx'),
     'utf8'
   ),
 ])

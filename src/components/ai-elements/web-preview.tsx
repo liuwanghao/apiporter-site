@@ -199,6 +199,7 @@ export type WebPreviewBodyProps = ComponentProps<'iframe'> & {
   loading?: ReactNode
 }
 
+/* oxlint-disable react/iframe-missing-sandbox -- External app previews require scripts and origin access; retain the existing explicit sandbox. */
 export const WebPreviewBody = ({
   className,
   loading,
@@ -230,6 +231,7 @@ export type WebPreviewConsoleProps = ComponentProps<'div'> & {
   }>
 }
 
+/* oxlint-enable react/iframe-missing-sandbox */
 export const WebPreviewConsole = ({
   className,
   logs = [],
@@ -280,6 +282,8 @@ export const WebPreviewConsole = ({
                   log.level === 'warn' && 'text-warning',
                   log.level === 'log' && 'text-foreground'
                 )}
+                // Log events append in order and may share timestamp, level, and text.
+                // oxlint-disable-next-line react/no-array-index-key
                 key={`${log.timestamp.getTime()}-${index}`}
               >
                 <span className='text-muted-foreground'>

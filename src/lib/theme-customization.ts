@@ -98,7 +98,7 @@ export type ThemeFont = 'default' | 'sans' | 'serif'
  * needs simple attribute selectors (no `:not()` gymnastics, no per-preset
  * font branches).
  */
-export type ResolvedThemeFont = Exclude<ThemeFont, 'default'>
+export type ResolvedThemeFont = 'system' | Exclude<ThemeFont, 'default'>
 
 export type ThemeCustomization = {
   preset: ThemePreset
@@ -146,14 +146,6 @@ export const CONTENT_LAYOUT_VALUES: ReadonlySet<ContentLayout> = new Set([
   'full',
   'centered',
 ])
-
-export const THEME_COOKIE_KEYS = {
-  preset: 'theme_preset',
-  font: 'theme_font',
-  radius: 'theme_radius',
-  scale: 'theme_scale',
-  contentLayout: 'theme_content_layout',
-} as const
 
 /**
  * Preset → default font mapping. Used by the provider to resolve the user's

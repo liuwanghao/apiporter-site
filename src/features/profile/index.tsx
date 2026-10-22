@@ -28,14 +28,11 @@ import { useStatus } from '@/hooks/use-status'
 import { useAuthStore } from '@/stores/auth-store'
 
 import { CheckinCalendarCard } from './components/checkin-calendar-card'
-import { LoginSessionsCard } from './components/login-sessions-card'
-import { PasskeyCard } from './components/passkey-card'
 import { ProfileHeader } from './components/profile-header'
 import { ProfileSecurityCard } from './components/profile-security-card'
 import { ProfileSettingsCard } from './components/profile-settings-card'
 import { ProfileWorkspaceLayout } from './components/profile-workspace-layout'
 import { SidebarModulesCard } from './components/sidebar-modules-card'
-import { TwoFACard } from './components/two-fa-card'
 import { useProfile } from './hooks'
 
 export function Profile() {
@@ -50,6 +47,9 @@ export function Profile() {
   )
   const turnstileSiteKey = status?.turnstile_site_key || ''
   const canConfigureSidebar = permissions?.sidebar_settings !== false
+  // Older cached status payloads lack these fields; the site default is on.
+  const quotaRemindEnabled = status?.quota_remind_enabled !== false
+  const quotaRemindThreshold = status?.quota_remind_threshold ?? 0
 
   return (
     <SectionPageLayout>
@@ -72,13 +72,13 @@ export function Profile() {
                   profile={profile}
                   loading={loading}
                   onProfileUpdate={refreshProfile}
+                  quotaRemindEnabled={quotaRemindEnabled}
+                  quotaRemindThreshold={quotaRemindThreshold}
                 />
               }
               securityActions={
                 <ProfileSecurityCard profile={profile} loading={loading} />
               }
-              passkey={<PasskeyCard loading={loading} />}
-              twoFactor={<TwoFACard loading={loading} />}
               checkin={
                 checkinEnabled ? (
                   <CheckinCalendarCard
@@ -89,7 +89,6 @@ export function Profile() {
                 ) : undefined
               }
               sidebar={canConfigureSidebar ? <SidebarModulesCard /> : undefined}
-              sessions={<LoginSessionsCard />}
             />
           </CardStaggerItem>
         </CardStaggerContainer>
