@@ -77,7 +77,7 @@ describe('console workbench theme', () => {
     const computedStyle = domWindow.getComputedStyle(rendered.surface)
 
     assert.equal(computedStyle.borderRadius, '7px')
-    assert.equal(computedStyle.backgroundColor, '#222d25')
+    assert.equal(computedStyle.backgroundColor, '#122237')
 
     rendered.consoleShell.remove()
     domWindow.document.documentElement.classList.remove('dark')

@@ -68,7 +68,7 @@ describe('shared page gradient', () => {
   test('reuses the documentation page radial gradient recipe', () => {
     assert.match(
       stylesheet,
-      /\.app-gradient-page\s*\{[\s\S]*?circle at 12% 15%[\s\S]*?var\(--primary\) 13%[\s\S]*?circle at 88% 32%[\s\S]*?var\(--success\) 11%/
+      /\.app-gradient-page\s*\{[\s\S]*?circle at 12% 15%[\s\S]*?var\(--primary\) 13%[\s\S]*?circle at 88% 32%[\s\S]*?var\(--brand-blue\) 8%/
     )
     assert.match(
       stylesheet,
