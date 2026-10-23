@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 /*
 Copyright (C) 2023-2026 QuantumNous
 
@@ -67,6 +67,28 @@ describe('brand logo asset', () => {
 
     assertPng(favicon, { width: 64, height: 64 })
     assert.match(indexHtml, /href="\/brand\/apiporter-favicon\.png"/)
+  })
+
+  test('build configuration cannot inject the legacy CBAPI favicon', async () => {
+    const buildConfig = await readFile(
+      resolve(import.meta.dirname, '../../../../../rsbuild.config.ts'),
+      'utf8'
+    )
+
+    assert.doesNotMatch(buildConfig, /cloudbridge-favicon\.png/)
+  })
+
+  test('public assets do not publish unused CBAPI brand images', async () => {
+    const publicAssets = await readdir(
+      resolve(import.meta.dirname, '../../../../../public')
+    )
+
+    assert.deepEqual(
+      publicAssets.filter((asset) =>
+        /^cloudbridge-(favicon|wordmark)\.png$/.test(asset)
+      ),
+      []
+    )
   })
 
   test('renders ApiPorter as the initial browser tab title', async () => {
