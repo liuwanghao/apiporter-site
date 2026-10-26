@@ -37,7 +37,9 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
 import { ConfirmDialog } from '@/components/confirm-dialog'
+import { ErrorState } from '@/components/error-state'
 import { SectionPageLayout } from '@/components/layout'
+import { LoadingState } from '@/components/loading-state'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -69,6 +71,7 @@ import {
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import type { User } from '@/features/users/types'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { toIntlLocale } from '@/i18n/languages'
@@ -107,6 +110,7 @@ import {
   updateSettings,
 } from './api'
 import { PartnerStatusControl } from './partner-status-control'
+import { RemoteUserSelect } from './remote-user-select'
 import type {
   CommissionLedgerDetail,
   CommissionSettingVersion,
@@ -874,6 +878,7 @@ export function AdminPromotion() {
   const locale = toIntlLocale(i18n.resolvedLanguage ?? i18n.language)
   const queryClient = useQueryClient()
   const [tab, setTab] = useState('overview')
+  const [summaryInviter, setSummaryInviter] = useState<User | null>(null)
   const [applicationPage, setApplicationPage] = useState(1)
   const [referralPage, setReferralPage] = useState(1)
   const [ledgerPage, setLedgerPage] = useState(1)
@@ -903,8 +908,8 @@ export function AdminPromotion() {
   } | null>(null)
 
   const summaryQuery = useQuery({
-    queryKey: ['admin-promotion', 'summary'],
-    queryFn: getAdminSummary,
+    queryKey: ['admin-promotion', 'summary', summaryInviter?.id],
+    queryFn: () => getAdminSummary(summaryInviter?.id),
   })
   const applicationsQuery = useQuery({
     queryKey: ['admin-promotion', 'applications', applicationPage],
@@ -1084,61 +1089,92 @@ export function AdminPromotion() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value='overview' className='mt-4'>
-              <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
-                <Metric
-                  label={t('Invited users')}
-                  value={String(summary?.invitee_count ?? 0)}
-                  icon={<Users />}
-                />
-                <Metric
-                  label={t('Consumption amount')}
-                  value={formatCommissionAmount(
-                    amountValue(summary?.consumption_amount),
-                    locale
-                  )}
-                  icon={<Banknote />}
-                />
-                <Metric
-                  label={t('Estimated')}
-                  value={formatCommissionAmount(
-                    amountValue(summary?.estimated_amount),
-                    locale
-                  )}
-                  icon={<Banknote />}
-                />
-                <Metric
-                  label={t('Confirmed')}
-                  value={formatCommissionAmount(
-                    amountValue(summary?.confirmed_amount),
-                    locale
-                  )}
-                  icon={<Check />}
-                />
-                <Metric
-                  label={t('Paid')}
-                  value={formatCommissionAmount(
-                    amountValue(summary?.paid_amount),
-                    locale
-                  )}
-                  icon={<WalletCards />}
-                />
-                <Metric
-                  label={t('Settled')}
-                  value={formatCommissionAmount(
-                    amountValue(summary?.settled_amount),
-                    locale
-                  )}
-                  icon={<ClipboardList />}
-                />
-                <Metric
-                  label={t('Reversals')}
-                  value={formatCommissionAmount(
-                    amountValue(summary?.reversal_amount),
-                    locale
-                  )}
-                  icon={<X />}
-                />
+              <div className='mb-4 flex flex-col gap-3 sm:flex-row sm:items-end'>
+                <div className='grid gap-1.5 sm:w-80'>
+                  <Label htmlFor='summary-inviter-filter'>
+                    {t('Promotion Partner')}
+                  </Label>
+                  <RemoteUserSelect
+                    id='summary-inviter-filter'
+                    value={summaryInviter}
+                    onValueChange={setSummaryInviter}
+                    placeholder={t('All users')}
+                  />
+                </div>
+                <Button
+                  variant='outline'
+                  disabled={!summaryInviter}
+                  onClick={() => setSummaryInviter(null)}
+                >
+                  <X />
+                  {t('Clear')}
+                </Button>
               </div>
+              {summaryQuery.isPending ? (
+                <div role='status'>
+                  <LoadingState />
+                </div>
+              ) : null}
+              {summaryQuery.isError ? (
+                <ErrorState onRetry={() => void summaryQuery.refetch()} />
+              ) : null}
+              {summaryQuery.isSuccess ? (
+                <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
+                  <Metric
+                    label={t('Invited users')}
+                    value={String(summary?.invitee_count ?? 0)}
+                    icon={<Users />}
+                  />
+                  <Metric
+                    label={t('Consumption amount')}
+                    value={formatCommissionAmount(
+                      amountValue(summary?.consumption_amount),
+                      locale
+                    )}
+                    icon={<Banknote />}
+                  />
+                  <Metric
+                    label={t('Estimated')}
+                    value={formatCommissionAmount(
+                      amountValue(summary?.estimated_amount),
+                      locale
+                    )}
+                    icon={<Banknote />}
+                  />
+                  <Metric
+                    label={t('Confirmed')}
+                    value={formatCommissionAmount(
+                      amountValue(summary?.confirmed_amount),
+                      locale
+                    )}
+                    icon={<Check />}
+                  />
+                  <Metric
+                    label={t('Paid')}
+                    value={formatCommissionAmount(
+                      amountValue(summary?.paid_amount),
+                      locale
+                    )}
+                    icon={<WalletCards />}
+                  />
+                  <Metric
+                    label={t('Settled')}
+                    value={formatCommissionAmount(
+                      amountValue(summary?.settled_amount),
+                      locale
+                    )}
+                    icon={<ClipboardList />}
+                  />
+                  <Metric
+                    label={t('Reversals')}
+                    value={formatCommissionAmount(
+                      amountValue(summary?.reversal_amount),
+                      locale
+                    )}
+                    icon={<X />}
+                  />
+                </div>
+              ) : null}
               <Card className='mt-4'>
                 <CardHeader>
                   <CardTitle className='text-base'>

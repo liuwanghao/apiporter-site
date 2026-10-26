@@ -17,10 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { useQuery } from '@tanstack/react-query'
-import { Check, ChevronsUpDown, Loader2 } from 'lucide-react'
+import { Check, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { ErrorState } from '@/components/error-state'
+import { LoadingState } from '@/components/loading-state'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -35,38 +37,36 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { searchUsers } from '@/features/users/api'
 import type { User } from '@/features/users/types'
-import { useDebounce } from '@/hooks/use-debounce'
 import { cn } from '@/lib/utils'
+
+import { getPromotionUsers } from './api'
 
 type RemoteUserSelectProps = {
   value: User | null
   onValueChange: (user: User | null) => void
   disabled?: boolean
+  id?: string
+  placeholder?: string
 }
 
 export function RemoteUserSelect({
   value,
   onValueChange,
   disabled,
+  id,
+  placeholder,
 }: RemoteUserSelectProps) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
-  const debouncedSearch = useDebounce(search.trim(), 500)
   const usersQuery = useQuery({
-    queryKey: ['admin-promotion', 'user-search', debouncedSearch],
-    queryFn: () =>
-      searchUsers({ keyword: debouncedSearch, p: 1, page_size: 10 }),
-    enabled: open && debouncedSearch.length > 0,
+    queryKey: ['admin-promotion', 'users'],
+    queryFn: getPromotionUsers,
+    enabled: open,
+    staleTime: 60_000,
   })
-  const users = usersQuery.data?.data?.items ?? []
-
-  const handleSearchChange = (nextSearch: string) => {
-    setSearch(nextSearch)
-    if (value) onValueChange(null)
-  }
+  const users = usersQuery.data ?? []
 
   const handleSelect = (user: User) => {
     onValueChange(user)
@@ -79,6 +79,7 @@ export function RemoteUserSelect({
       <PopoverTrigger
         render={
           <Button
+            id={id}
             type='button'
             variant='outline'
             role='combobox'
@@ -89,33 +90,55 @@ export function RemoteUserSelect({
         }
       >
         <span className={cn('truncate', !value && 'text-muted-foreground')}>
-          {value ? `${value.username} (#${value.id})` : t('Select a user')}
+          {value
+            ? `${value.username} (#${value.id})`
+            : (placeholder ?? t('Select a user'))}
         </span>
         <ChevronsUpDown className='size-4 shrink-0 opacity-50' />
       </PopoverTrigger>
       <PopoverContent className='w-[var(--anchor-width)] p-0'>
-        <Command shouldFilter={false}>
+        <Command
+          filter={(value, search, keywords) => {
+            const term = search.trim().toLowerCase()
+            return [value, ...(keywords ?? [])].some((field) =>
+              field.toLowerCase().includes(term)
+            )
+              ? 1
+              : 0
+          }}
+        >
           <CommandInput
             value={search}
-            onValueChange={handleSearchChange}
+            onValueChange={setSearch}
             placeholder={t('Search by username, name, email, or ID')}
           />
           <CommandList>
-            {usersQuery.isFetching ? (
-              <div className='text-muted-foreground flex items-center justify-center gap-2 py-6 text-sm'>
-                <Loader2 className='size-4 animate-spin' />
-                {t('Loading')}
-              </div>
-            ) : (
+            {usersQuery.isPending ? (
+              <LoadingState
+                size='sm'
+                className='min-h-0 py-6'
+                message={t('Loading')}
+              />
+            ) : null}
+            {usersQuery.isError ? (
+              <ErrorState
+                className='min-h-0 py-4'
+                onRetry={() => void usersQuery.refetch()}
+              />
+            ) : null}
+            {usersQuery.isSuccess ? (
               <>
-                <CommandEmpty>
-                  {debouncedSearch ? t('No users found') : t('Search users')}
-                </CommandEmpty>
+                <CommandEmpty>{t('No users found')}</CommandEmpty>
                 <CommandGroup>
                   {users.map((user) => (
                     <CommandItem
                       key={user.id}
                       value={String(user.id)}
+                      keywords={[
+                        user.username,
+                        user.display_name,
+                        user.email ?? '',
+                      ]}
                       onSelect={() => handleSelect(user)}
                     >
                       <Check
@@ -138,7 +161,7 @@ export function RemoteUserSelect({
                   ))}
                 </CommandGroup>
               </>
-            )}
+            ) : null}
           </CommandList>
         </Command>
       </PopoverContent>

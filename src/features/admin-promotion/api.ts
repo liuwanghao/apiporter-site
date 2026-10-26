@@ -16,7 +16,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { getUsers } from '@/features/users/api'
+import type { User } from '@/features/users/types'
 import { api } from '@/lib/api'
+import { requireServerSuccess } from '@/lib/server-error-message'
 
 import type {
   CommissionPartnerMembership,
@@ -35,11 +38,34 @@ import type {
   ReferralRelation,
 } from './types'
 
-export async function getAdminSummary(): Promise<
-  ApiResponse<CommissionSummary>
-> {
-  const response = await api.get('/api/admin/promotion/commission/summary')
-  return response.data
+export async function getAdminSummary(
+  inviterUserId?: number
+): Promise<ApiResponse<CommissionSummary>> {
+  const response = await api.get('/api/admin/promotion/commission/summary', {
+    params: { inviter_user_id: inviterUserId },
+  })
+  return requireServerSuccess(response.data)
+}
+
+export async function getPromotionUsers(): Promise<User[]> {
+  const users: User[] = []
+  let page = 1
+  while (true) {
+    const response = requireServerSuccess(
+      await getUsers({
+        p: page,
+        page_size: 100,
+        sort_by: 'id',
+        sort_order: 'asc',
+      })
+    )
+    const items = response.data?.items ?? []
+    users.push(...items)
+    if (items.length === 0 || users.length >= (response.data?.total ?? 0)) {
+      return users
+    }
+    page += 1
+  }
 }
 
 export async function getApplications(
