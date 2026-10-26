@@ -17,6 +17,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 const en = {
+  'Query promotion summary': 'Query promotion summary',
+  'Enter username or user ID': 'Enter username or user ID',
   Activate: 'Activate',
   'All statuses': 'All statuses',
   'Application note': 'Application note',
@@ -293,6 +295,8 @@ const en = {
 type PromotionTranslation = Record<keyof typeof en, string>
 
 const zhCN = {
+  'Query promotion summary': '查询',
+  'Enter username or user ID': '输入用户名或用户 ID',
   Activate: '启用',
   'All statuses': '全部状态',
   'Application note': '申请说明',
@@ -559,6 +563,8 @@ const zhCN = {
 } satisfies PromotionTranslation
 
 const zhTW = {
+  'Query promotion summary': '查詢',
+  'Enter username or user ID': '輸入使用者名稱或使用者 ID',
   Activate: '啟用',
   'All statuses': '全部狀態',
   'Application note': '申請說明',
@@ -826,6 +832,8 @@ const zhTW = {
 } satisfies PromotionTranslation
 
 const ja = {
+  'Query promotion summary': '照会',
+  'Enter username or user ID': 'ユーザー名またはユーザー ID を入力',
   Activate: '有効化',
   'All statuses': 'すべてのステータス',
   'Application note': '申請メモ',

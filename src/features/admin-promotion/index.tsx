@@ -71,7 +71,6 @@ import {
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
-import type { User } from '@/features/users/types'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { toIntlLocale } from '@/i18n/languages'
@@ -110,7 +109,6 @@ import {
   updateSettings,
 } from './api'
 import { PartnerStatusControl } from './partner-status-control'
-import { RemoteUserSelect } from './remote-user-select'
 import type {
   CommissionLedgerDetail,
   CommissionSettingVersion,
@@ -878,7 +876,8 @@ export function AdminPromotion() {
   const locale = toIntlLocale(i18n.resolvedLanguage ?? i18n.language)
   const queryClient = useQueryClient()
   const [tab, setTab] = useState('overview')
-  const [summaryInviter, setSummaryInviter] = useState<User | null>(null)
+  const [summaryInviter, setSummaryInviter] = useState('')
+  const [summaryKeyword, setSummaryKeyword] = useState('')
   const [applicationPage, setApplicationPage] = useState(1)
   const [referralPage, setReferralPage] = useState(1)
   const [ledgerPage, setLedgerPage] = useState(1)
@@ -908,8 +907,8 @@ export function AdminPromotion() {
   } | null>(null)
 
   const summaryQuery = useQuery({
-    queryKey: ['admin-promotion', 'summary', summaryInviter?.id],
-    queryFn: () => getAdminSummary(summaryInviter?.id),
+    queryKey: ['admin-promotion', 'summary', summaryKeyword],
+    queryFn: () => getAdminSummary(summaryKeyword),
   })
   const applicationsQuery = useQuery({
     queryKey: ['admin-promotion', 'applications', applicationPage],
@@ -1089,27 +1088,34 @@ export function AdminPromotion() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value='overview' className='mt-4'>
-              <div className='mb-4 flex flex-col gap-3 sm:flex-row sm:items-end'>
+              <form
+                className='mb-4 flex flex-col gap-3 sm:flex-row sm:items-end'
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  const keyword = summaryInviter.trim()
+                  if (keyword === summaryKeyword) {
+                    void summaryQuery.refetch()
+                  } else {
+                    setSummaryKeyword(keyword)
+                  }
+                }}
+              >
                 <div className='grid gap-1.5 sm:w-80'>
                   <Label htmlFor='summary-inviter-filter'>
                     {t('Promotion Partner')}
                   </Label>
-                  <RemoteUserSelect
+                  <Input
                     id='summary-inviter-filter'
                     value={summaryInviter}
-                    onValueChange={setSummaryInviter}
-                    placeholder={t('All users')}
+                    onChange={(event) => setSummaryInviter(event.target.value)}
+                    placeholder={t('Enter username or user ID')}
                   />
                 </div>
-                <Button
-                  variant='outline'
-                  disabled={!summaryInviter}
-                  onClick={() => setSummaryInviter(null)}
-                >
-                  <X />
-                  {t('Clear')}
+                <Button type='submit' variant='outline'>
+                  <Search />
+                  {t('Query promotion summary')}
                 </Button>
-              </div>
+              </form>
               {summaryQuery.isPending ? (
                 <div role='status'>
                   <LoadingState />
