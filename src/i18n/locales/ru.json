@@ -7483,6 +7483,22 @@
     "alipayOfficial.validationError": "Перед сохранением проверьте выделенные поля.",
     "Alipay Official": "Официальный Alipay",
     "wallet.recharge.minimum": "Минимальная сумма пополнения: ¥{{amount}}",
-    "wallet.recharge.increment": "Введите сумму, кратную ¥{{amount}}."
+    "wallet.recharge.increment": "Введите сумму, кратную ¥{{amount}}.",
+    "Captcha puzzle background": "Фон головоломки для проверки",
+    "Captcha verification expired, please refresh and try again!": "Срок проверки истёк. Обновите страницу и попробуйте ещё раз.",
+    "Captcha verification failed, please refresh and try again!": "Проверка не пройдена. Обновите страницу и попробуйте ещё раз.",
+    "Captcha verification required": "Требуется проверка ползунком",
+    "Check-in slider captcha is not enabled": "Проверка ползунком для отметки не включена",
+    "Drag the slider to complete the puzzle": "Перетащите ползунок, чтобы собрать пазл",
+    "Drag the slider to fit the puzzle piece into the gap.": "Перетащите ползунок, чтобы совместить фрагмент с выемкой.",
+    "Enable check-in slider captcha": "Включить проверку ползунком для отметки",
+    "Failed to load captcha": "Не удалось загрузить проверку",
+    "Require users to complete a slider puzzle before checking in to reduce automated abuse": "Требовать сборку пазла перед отметкой, чтобы снизить автоматические злоупотребления",
+    "This helps us prevent automated check-ins.": "Это помогает предотвращать автоматические отметки.",
+    "Try again": "Повторить",
+    "Verification failed, please try again.": "Проверка не пройдена. Попробуйте ещё раз.",
+    "Verification passed": "Проверка пройдена",
+    "Verifying...": "Проверка...",
+    "Use arrow keys to adjust, then press Enter to verify.": "Настройте стрелками и нажмите Enter для проверки."
   }
 }

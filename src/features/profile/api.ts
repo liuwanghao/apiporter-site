@@ -29,6 +29,8 @@ import type {
   UpdateUserSettingsRequest,
   CheckinStatusResponse,
   CheckinResponse,
+  SliderCaptchaChallenge,
+  SliderCaptchaSolution,
   AccountSecurityResult,
   EmailBindingFlow,
 } from './types'
@@ -296,14 +298,34 @@ export async function getCheckinStatus(
 }
 
 /**
+ * Get a new slider captcha puzzle for check-in.
+ */
+export async function getCheckinCaptcha(): Promise<
+  ApiResponse<SliderCaptchaChallenge>
+> {
+  const res = await api.get('/api/user/checkin/captcha', {
+    disableDuplicate: true,
+  })
+  return res.data
+}
+
+/**
  * Perform daily checkin
  */
 export async function performCheckin(
+  captcha?: SliderCaptchaSolution,
   turnstileToken?: string
 ): Promise<ApiResponse<CheckinResponse>> {
-  const url = turnstileToken
-    ? `/api/user/checkin?turnstile=${encodeURIComponent(turnstileToken)}`
-    : '/api/user/checkin'
-  const res = await api.post(url)
+  const params = new URLSearchParams()
+  if (turnstileToken) {
+    params.set('turnstile', turnstileToken)
+  }
+  const query = params.size > 0 ? `?${params.toString()}` : ''
+  const body = captcha
+    ? { captcha_token: captcha.token, captcha_x: captcha.x }
+    : undefined
+  const res = await api.post(`/api/user/checkin${query}`, body, {
+    singleUseAuthorization: Boolean(captcha || turnstileToken),
+  })
   return res.data
 }

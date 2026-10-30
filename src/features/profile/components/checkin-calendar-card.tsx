@@ -48,16 +48,19 @@ import { createServerError } from '@/lib/server-error-message'
 import { cn } from '@/lib/utils'
 
 import { getCheckinStatus, performCheckin } from '../api'
-import type { CheckinRecord } from '../types'
+import type { CheckinRecord, SliderCaptchaSolution } from '../types'
+import { CheckinSliderCaptcha } from './checkin-slider-captcha'
 
 interface CheckinCalendarCardProps {
   checkinEnabled: boolean
+  captchaEnabled: boolean
   turnstileEnabled: boolean
   turnstileSiteKey: string
 }
 
 export function CheckinCalendarCard({
   checkinEnabled,
+  captchaEnabled,
   turnstileEnabled,
   turnstileSiteKey,
 }: CheckinCalendarCardProps) {
@@ -69,6 +72,11 @@ export function CheckinCalendarCard({
   const [checkinLoading, setCheckinLoading] = useState(false)
   const [turnstileModalVisible, setTurnstileModalVisible] = useState(false)
   const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0)
+  const [captchaModalVisible, setCaptchaModalVisible] = useState(false)
+  const [captchaRequiredByServer, setCaptchaRequiredByServer] = useState(false)
+  const [pendingTurnstileToken, setPendingTurnstileToken] = useState<
+    string | undefined
+  >()
   const [initialLoaded, setInitialLoaded] = useState(false)
   const [collapsed, setCollapsed] = useState<boolean>(false)
 
@@ -121,6 +129,8 @@ export function CheckinCalendarCard({
   }, [])
 
   const checkedToday = checkinData?.stats?.checked_in_today === true
+  const requiresCaptcha =
+    captchaRequiredByServer || (checkinData?.captcha_enabled ?? captchaEnabled)
   const todayAward = checkinRecordsMap[todayString]
 
   useEffect(() => {
@@ -140,39 +150,92 @@ export function CheckinCalendarCard({
     [turnstileEnabled]
   )
 
+  const restartTurnstile = useCallback(() => {
+    setCaptchaModalVisible(false)
+    setPendingTurnstileToken(undefined)
+    setTurnstileWidgetKey((v) => v + 1)
+    setTurnstileModalVisible(true)
+  }, [])
+
   const doCheckin = useCallback(
-    async (token?: string) => {
+    async (
+      captcha?: SliderCaptchaSolution,
+      turnstileToken?: string
+    ): Promise<boolean | 'restart'> => {
       setCheckinLoading(true)
       try {
-        const res = await performCheckin(token)
+        const res = await performCheckin(captcha, turnstileToken)
         if (res.success && res.data) {
           toast.success(
             `${t('Check-in successful! Received')} ${formatQuotaWithCurrency(res.data.quota_awarded)}`
           )
           refetch()
           setTurnstileModalVisible(false)
-        } else {
-          if (!token && shouldTriggerTurnstile(res.message)) {
-            if (!turnstileSiteKey) {
-              toast.error(t('Turnstile is enabled but site key is empty.'))
-              return
-            }
-            setTurnstileModalVisible(true)
-            return
-          }
-          if (token && shouldTriggerTurnstile(res.message)) {
-            setTurnstileWidgetKey((v) => v + 1)
-          }
-          handleServerError(res, t('Check-in failed'))
+          setCaptchaModalVisible(false)
+          return true
         }
+
+        const captchaRejected =
+          res.code === 'captcha_required' ||
+          res.code === 'captcha_invalid' ||
+          res.code === 'captcha_expired'
+        if (captchaRejected) {
+          setCaptchaRequiredByServer(true)
+        }
+        // Turnstile tokens are spent even when the later check-in fails.
+        if (turnstileToken) {
+          restartTurnstile()
+          handleServerError(res, t('Check-in failed'))
+          return 'restart'
+        }
+        // The slider dialog renders the failure inline and reloads its puzzle.
+        if (captchaRejected) {
+          setCaptchaModalVisible(true)
+          return false
+        }
+
+        if (!turnstileToken && shouldTriggerTurnstile(res.message)) {
+          if (!turnstileSiteKey) {
+            toast.error(t('Turnstile is enabled but site key is empty.'))
+            return false
+          }
+          restartTurnstile()
+          return 'restart'
+        }
+        handleServerError(res, t('Check-in failed'))
+        return false
       } catch (error) {
+        if (turnstileToken) {
+          restartTurnstile()
+          handleServerError(error, t('Check-in failed'))
+          return 'restart'
+        }
         handleServerError(error, t('Check-in failed'))
+        return false
       } finally {
         setCheckinLoading(false)
       }
     },
-    [refetch, shouldTriggerTurnstile, t, turnstileSiteKey]
+    [refetch, restartTurnstile, shouldTriggerTurnstile, t, turnstileSiteKey]
   )
+
+  const startCheckin = useCallback(() => {
+    setPendingTurnstileToken(undefined)
+    if (turnstileEnabled) {
+      if (!turnstileSiteKey) {
+        toast.error(t('Turnstile is enabled but site key is empty.'))
+        return
+      }
+      setTurnstileWidgetKey((v) => v + 1)
+      setTurnstileModalVisible(true)
+      return
+    }
+    if (requiresCaptcha) {
+      setCaptchaModalVisible(true)
+      return
+    }
+    void doCheckin()
+  }, [requiresCaptcha, doCheckin, t, turnstileEnabled, turnstileSiteKey])
 
   const handlePrevMonth = () => {
     setCurrentMonth(
@@ -254,6 +317,22 @@ export function CheckinCalendarCard({
   return (
     <TooltipProvider delay={100}>
       <Dialog
+        open={captchaModalVisible}
+        onOpenChange={setCaptchaModalVisible}
+        title={t('Security Check')}
+        description={t('Drag the slider to fit the puzzle piece into the gap.')}
+        contentClassName='sm:max-w-md'
+        contentHeight='auto'
+        bodyClassName='space-y-4'
+      >
+        {captchaModalVisible ? (
+          <CheckinSliderCaptcha
+            onVerify={(solution) => doCheckin(solution, pendingTurnstileToken)}
+          />
+        ) : null}
+      </Dialog>
+
+      <Dialog
         open={turnstileModalVisible}
         onOpenChange={(open) => {
           setTurnstileModalVisible(open)
@@ -274,7 +353,13 @@ export function CheckinCalendarCard({
             key={turnstileWidgetKey}
             siteKey={turnstileSiteKey}
             onVerify={(token) => {
-              doCheckin(token)
+              setPendingTurnstileToken(token)
+              setTurnstileModalVisible(false)
+              if (requiresCaptcha) {
+                setCaptchaModalVisible(true)
+              } else {
+                void doCheckin(undefined, token)
+              }
             }}
             onExpire={() => {
               setTurnstileWidgetKey((v) => v + 1)
@@ -325,7 +410,7 @@ export function CheckinCalendarCard({
               </div>
             </button>
             <Button
-              onClick={() => doCheckin()}
+              onClick={startCheckin}
               disabled={checkinLoading || checkedToday}
               size='sm'
               className='w-full shrink-0 sm:w-auto'

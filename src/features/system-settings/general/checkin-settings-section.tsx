@@ -45,6 +45,7 @@ import { useUpdateOption } from '../hooks/use-update-option'
 
 const schema = z.object({
   enabled: z.boolean(),
+  captchaEnabled: z.boolean(),
   minQuota: z.coerce.number().int().min(0),
   maxQuota: z.coerce.number().int().min(0),
 })
@@ -56,6 +57,7 @@ export function CheckinSettingsSection({
 }: {
   defaultValues: {
     enabled: boolean
+    captchaEnabled: boolean
     minQuota: number
     maxQuota: number
   }
@@ -67,6 +69,7 @@ export function CheckinSettingsSection({
     resolver: zodResolver(schema) as unknown as Resolver<Values>,
     defaultValues: {
       enabled: defaultValues.enabled,
+      captchaEnabled: defaultValues.captchaEnabled,
       minQuota: defaultValues.minQuota,
       maxQuota: defaultValues.maxQuota,
     },
@@ -89,6 +92,13 @@ export function CheckinSettingsSection({
       updates.push({
         key: 'checkin_setting.min_quota',
         value: String(values.minQuota),
+      })
+    }
+
+    if (values.captchaEnabled !== defaultValues.captchaEnabled) {
+      updates.push({
+        key: 'checkin_setting.captcha_enabled',
+        value: String(values.captchaEnabled),
       })
     }
 
@@ -146,51 +156,79 @@ export function CheckinSettingsSection({
           />
 
           {enabled && (
-            <div className='grid gap-6 sm:grid-cols-2'>
+            <>
               <FormField
                 control={form.control}
-                name='minQuota'
+                name='captchaEnabled'
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('Minimum check-in quota')}</FormLabel>
+                  <SettingsSwitchItem>
+                    <SettingsSwitchContent>
+                      <FormLabel>
+                        {t('Enable check-in slider captcha')}
+                      </FormLabel>
+                      <FormDescription>
+                        {t(
+                          'Require users to complete a slider puzzle before checking in to reduce automated abuse'
+                        )}
+                      </FormDescription>
+                    </SettingsSwitchContent>
                     <FormControl>
-                      <Input
-                        type='number'
-                        min={0}
-                        placeholder={t('1000')}
-                        {...field}
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={updateOption.isPending || isSubmitting}
                       />
                     </FormControl>
-                    <FormDescription>
-                      {t('Minimum quota amount awarded for check-in')}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+                  </SettingsSwitchItem>
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name='maxQuota'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('Maximum check-in quota')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='number'
-                        min={0}
-                        placeholder={t('10000')}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {t('Maximum quota amount awarded for check-in')}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+              <div className='grid gap-6 sm:grid-cols-2'>
+                <FormField
+                  control={form.control}
+                  name='minQuota'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('Minimum check-in quota')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          min={0}
+                          placeholder={t('1000')}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {t('Minimum quota amount awarded for check-in')}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='maxQuota'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('Maximum check-in quota')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type='number'
+                          min={0}
+                          placeholder={t('10000')}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {t('Maximum quota amount awarded for check-in')}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </>
           )}
         </SettingsForm>
       </Form>

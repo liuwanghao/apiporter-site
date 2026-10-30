@@ -7684,6 +7684,22 @@
     "alipayOfficial.validationError": "儲存前請檢查標示的欄位。",
     "Alipay Official": "支付寶官方支付",
     "wallet.recharge.minimum": "最低儲值：¥{{amount}}",
-    "wallet.recharge.increment": "請輸入以 ¥{{amount}} 為單位的儲值金額。"
+    "wallet.recharge.increment": "請輸入以 ¥{{amount}} 為單位的儲值金額。",
+    "Captcha puzzle background": "拼圖驗證背景",
+    "Captcha verification expired, please refresh and try again!": "滑塊驗證已過期，請重新整理後重試！",
+    "Captcha verification failed, please refresh and try again!": "滑塊驗證失敗，請重新整理後重試！",
+    "Captcha verification required": "需要完成滑塊驗證",
+    "Check-in slider captcha is not enabled": "簽到滑塊驗證未啟用",
+    "Drag the slider to complete the puzzle": "拖動滑塊完成拼圖",
+    "Drag the slider to fit the puzzle piece into the gap.": "拖動滑塊將拼圖塊對準缺口。",
+    "Enable check-in slider captcha": "啟用簽到滑塊驗證",
+    "Failed to load captcha": "驗證碼載入失敗",
+    "Require users to complete a slider puzzle before checking in to reduce automated abuse": "簽到前需完成滑塊拼圖驗證，減少自動化濫用",
+    "This helps us prevent automated check-ins.": "這有助於防止自動化簽到。",
+    "Try again": "重試",
+    "Verification failed, please try again.": "驗證失敗，請重試。",
+    "Verification passed": "驗證通過",
+    "Verifying...": "驗證中...",
+    "Use arrow keys to adjust, then press Enter to verify.": "可使用方向鍵調整，然後按 Enter 鍵驗證。"
   }
 }

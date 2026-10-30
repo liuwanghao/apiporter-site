@@ -7483,6 +7483,22 @@
     "alipayOfficial.validationError": "Kiểm tra các trường được đánh dấu trước khi lưu.",
     "Alipay Official": "Thanh toán Alipay chính thức",
     "wallet.recharge.minimum": "Nạp tối thiểu: ¥{{amount}}",
-    "wallet.recharge.increment": "Nhập số tiền theo bội số của ¥{{amount}}."
+    "wallet.recharge.increment": "Nhập số tiền theo bội số của ¥{{amount}}.",
+    "Captcha puzzle background": "Nền câu đố xác minh",
+    "Captcha verification expired, please refresh and try again!": "Xác minh đã hết hạn. Hãy tải lại trang và thử lại.",
+    "Captcha verification failed, please refresh and try again!": "Xác minh không thành công. Hãy tải lại trang và thử lại.",
+    "Captcha verification required": "Cần xác minh bằng thanh trượt",
+    "Check-in slider captcha is not enabled": "Xác minh thanh trượt khi điểm danh chưa được bật",
+    "Drag the slider to complete the puzzle": "Kéo thanh trượt để hoàn thành câu đố",
+    "Drag the slider to fit the puzzle piece into the gap.": "Kéo thanh trượt để khớp mảnh ghép vào khoảng trống.",
+    "Enable check-in slider captcha": "Bật xác minh thanh trượt khi điểm danh",
+    "Failed to load captcha": "Không thể tải xác minh",
+    "Require users to complete a slider puzzle before checking in to reduce automated abuse": "Yêu cầu hoàn thành câu đố trượt trước khi điểm danh để giảm lạm dụng tự động",
+    "This helps us prevent automated check-ins.": "Điều này giúp ngăn điểm danh tự động.",
+    "Try again": "Thử lại",
+    "Verification failed, please try again.": "Xác minh không thành công, vui lòng thử lại.",
+    "Verification passed": "Xác minh thành công",
+    "Verifying...": "Đang xác minh...",
+    "Use arrow keys to adjust, then press Enter to verify.": "Dùng phím mũi tên để điều chỉnh, rồi nhấn Enter để xác minh."
   }
 }

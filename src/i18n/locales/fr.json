@@ -7483,6 +7483,22 @@
     "alipayOfficial.validationError": "Vérifiez les champs mis en évidence avant d’enregistrer.",
     "Alipay Official": "Alipay officiel",
     "wallet.recharge.minimum": "Recharge minimale : ¥{{amount}}",
-    "wallet.recharge.increment": "Saisissez un montant par incréments de ¥{{amount}}."
+    "wallet.recharge.increment": "Saisissez un montant par incréments de ¥{{amount}}.",
+    "Captcha puzzle background": "Arrière-plan du puzzle captcha",
+    "Captcha verification expired, please refresh and try again!": "La vérification a expiré. Actualisez la page et réessayez.",
+    "Captcha verification failed, please refresh and try again!": "La vérification a échoué. Actualisez la page et réessayez.",
+    "Captcha verification required": "La vérification par curseur est requise",
+    "Check-in slider captcha is not enabled": "La vérification par curseur du pointage n’est pas activée",
+    "Drag the slider to complete the puzzle": "Faites glisser le curseur pour terminer le puzzle",
+    "Drag the slider to fit the puzzle piece into the gap.": "Faites glisser le curseur pour placer la pièce dans l’espace vide.",
+    "Enable check-in slider captcha": "Activer la vérification par curseur du pointage",
+    "Failed to load captcha": "Impossible de charger le captcha",
+    "Require users to complete a slider puzzle before checking in to reduce automated abuse": "Demander aux utilisateurs de résoudre un puzzle avant le pointage afin de limiter les abus automatisés",
+    "This helps us prevent automated check-ins.": "Cela aide à empêcher les pointages automatisés.",
+    "Try again": "Réessayer",
+    "Verification failed, please try again.": "La vérification a échoué. Veuillez réessayer.",
+    "Verification passed": "Vérification réussie",
+    "Verifying...": "Vérification...",
+    "Use arrow keys to adjust, then press Enter to verify.": "Ajustez avec les flèches, puis appuyez sur Entrée pour vérifier."
   }
 }

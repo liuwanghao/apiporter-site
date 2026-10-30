@@ -28,6 +28,8 @@ import type { UserPermissions } from '@/stores/auth-store'
 export interface ApiResponse<T = unknown> {
   success: boolean
   message?: string
+  /** Stable machine-readable error code, when the endpoint provides one. */
+  code?: string
   data?: T
 }
 
@@ -228,8 +230,45 @@ export interface CheckinStats {
 export interface CheckinStatusResponse {
   /** Whether check-in feature is enabled */
   enabled: boolean
+  /** Whether the server requires a slider captcha before check-in */
+  captcha_enabled: boolean
   /** Check-in statistics */
   stats: CheckinStats
+}
+
+/**
+ * A slider captcha puzzle returned by the backend.
+ */
+export interface SliderCaptchaChallenge {
+  /** Opaque, expiring challenge token */
+  token: string
+  /** Image data URL of the scene with the puzzle gap cut out */
+  background: string
+  /** PNG data URL of the transparent puzzle piece */
+  piece: string
+  /** Image width in pixels */
+  width: number
+  /** Image height in pixels */
+  height: number
+  /** Puzzle piece width/height in pixels */
+  piece_size: number
+  /** Initial horizontal position of the puzzle piece in image pixels */
+  piece_x: number
+  /** Vertical position of the puzzle piece in image pixels */
+  piece_y: number
+  /** Maximum horizontal offset the piece can travel */
+  max_offset: number
+  /** Seconds until the challenge expires */
+  expires_in: number
+}
+
+/**
+ * Solved slider captcha submitted with check-in.
+ */
+export interface SliderCaptchaSolution {
+  token: string
+  /** Horizontal offset in image pixels */
+  x: number
 }
 
 /**

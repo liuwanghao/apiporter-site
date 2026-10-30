@@ -42,6 +42,7 @@ export function Profile() {
   const permissions = useAuthStore((s) => s.auth.user?.permissions)
 
   const checkinEnabled = status?.checkin_enabled === true
+  const checkinCaptchaEnabled = status?.checkin_captcha_enabled === true
   const turnstileEnabled = !!(
     status?.turnstile_check && status?.turnstile_site_key
   )
@@ -83,6 +84,7 @@ export function Profile() {
                 checkinEnabled ? (
                   <CheckinCalendarCard
                     checkinEnabled={checkinEnabled}
+                    captchaEnabled={checkinCaptchaEnabled}
                     turnstileEnabled={turnstileEnabled}
                     turnstileSiteKey={turnstileSiteKey}
                   />

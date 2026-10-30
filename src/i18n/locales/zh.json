@@ -7685,6 +7685,22 @@
     "alipayOfficial.validationError": "保存前请检查标出的字段。",
     "Alipay Official": "支付宝官方支付",
     "wallet.recharge.minimum": "最低充值：¥{{amount}}",
-    "wallet.recharge.increment": "请输入以 ¥{{amount}} 为单位的充值金额。"
+    "wallet.recharge.increment": "请输入以 ¥{{amount}} 为单位的充值金额。",
+    "Captcha puzzle background": "拼图验证背景",
+    "Captcha verification expired, please refresh and try again!": "滑块验证已过期，请刷新后重试！",
+    "Captcha verification failed, please refresh and try again!": "滑块验证失败，请刷新后重试！",
+    "Captcha verification required": "需要完成滑块验证",
+    "Check-in slider captcha is not enabled": "签到滑块验证未启用",
+    "Drag the slider to complete the puzzle": "拖动滑块完成拼图",
+    "Drag the slider to fit the puzzle piece into the gap.": "拖动滑块将拼图块对准缺口。",
+    "Enable check-in slider captcha": "启用签到滑块验证",
+    "Failed to load captcha": "验证码加载失败",
+    "Require users to complete a slider puzzle before checking in to reduce automated abuse": "签到前需完成滑块拼图验证，减少自动化滥用",
+    "This helps us prevent automated check-ins.": "这有助于防止自动化签到。",
+    "Try again": "重试",
+    "Verification failed, please try again.": "验证失败，请重试。",
+    "Verification passed": "验证通过",
+    "Verifying...": "验证中...",
+    "Use arrow keys to adjust, then press Enter to verify.": "可使用方向键调整，然后按回车键验证。"
   }
 }

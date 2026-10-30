@@ -7674,6 +7674,22 @@
     "alipayOfficial.validationError": "Check the highlighted fields before saving.",
     "Alipay Official": "Alipay Official",
     "wallet.recharge.minimum": "Minimum recharge: ¥{{amount}}",
-    "wallet.recharge.increment": "Enter an amount in increments of ¥{{amount}}."
+    "wallet.recharge.increment": "Enter an amount in increments of ¥{{amount}}.",
+    "Captcha puzzle background": "Captcha puzzle background",
+    "Captcha verification expired, please refresh and try again!": "Captcha verification expired, please refresh and try again!",
+    "Captcha verification failed, please refresh and try again!": "Captcha verification failed, please refresh and try again!",
+    "Captcha verification required": "Captcha verification required",
+    "Check-in slider captcha is not enabled": "Check-in slider captcha is not enabled",
+    "Drag the slider to complete the puzzle": "Drag the slider to complete the puzzle",
+    "Drag the slider to fit the puzzle piece into the gap.": "Drag the slider to fit the puzzle piece into the gap.",
+    "Enable check-in slider captcha": "Enable check-in slider captcha",
+    "Failed to load captcha": "Failed to load captcha",
+    "Require users to complete a slider puzzle before checking in to reduce automated abuse": "Require users to complete a slider puzzle before checking in to reduce automated abuse",
+    "This helps us prevent automated check-ins.": "This helps us prevent automated check-ins.",
+    "Try again": "Try again",
+    "Verification failed, please try again.": "Verification failed, please try again.",
+    "Verification passed": "Verification passed",
+    "Verifying...": "Verifying...",
+    "Use arrow keys to adjust, then press Enter to verify.": "Use arrow keys to adjust, then press Enter to verify."
   }
 }

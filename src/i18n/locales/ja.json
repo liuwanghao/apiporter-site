@@ -7685,6 +7685,22 @@
     "alipayOfficial.validationError": "保存する前に強調表示された項目を確認してください。",
     "Alipay Official": "Alipay 公式決済",
     "wallet.recharge.minimum": "最低チャージ額：¥{{amount}}",
-    "wallet.recharge.increment": "¥{{amount}} 単位で金額を入力してください。"
+    "wallet.recharge.increment": "¥{{amount}} 単位で金額を入力してください。",
+    "Captcha puzzle background": "パズル認証の背景",
+    "Captcha verification expired, please refresh and try again!": "認証の有効期限が切れました。更新してもう一度お試しください。",
+    "Captcha verification failed, please refresh and try again!": "認証に失敗しました。更新してもう一度お試しください。",
+    "Captcha verification required": "スライダー認証が必要です",
+    "Check-in slider captcha is not enabled": "チェックインのスライダー認証は無効です",
+    "Drag the slider to complete the puzzle": "スライダーをドラッグしてパズルを完成させてください",
+    "Drag the slider to fit the puzzle piece into the gap.": "スライダーをドラッグしてピースを隙間に合わせてください。",
+    "Enable check-in slider captcha": "チェックインのスライダー認証を有効にする",
+    "Failed to load captcha": "認証を読み込めませんでした",
+    "Require users to complete a slider puzzle before checking in to reduce automated abuse": "自動化された悪用を減らすため、チェックイン前にスライダーパズルの完了を必須にします",
+    "This helps us prevent automated check-ins.": "自動チェックインの防止に役立ちます。",
+    "Try again": "再試行",
+    "Verification failed, please try again.": "認証に失敗しました。もう一度お試しください。",
+    "Verification passed": "認証に成功しました",
+    "Verifying...": "認証中...",
+    "Use arrow keys to adjust, then press Enter to verify.": "矢印キーで調整し、Enter キーで認証します。"
   }
 }

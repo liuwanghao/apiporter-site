@@ -1,0 +1,35 @@
+/*
+Copyright (C) 2023-2026 QuantumNous
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+For commercial licensing, please contact support@quantumnous.com
+*/
+/* The upstream header duplicates the shared dialog title and accessible refresh
+   action. Keep its puzzle and native mouse/touch slider intact. */
+.checkin-captcha {
+  --go-captcha-theme-text-color: var(--foreground);
+  --go-captcha-theme-bg-color: var(--background);
+  --go-captcha-theme-drag-bar-color: var(--muted);
+  --go-captcha-theme-drag-bg-color: var(--primary);
+  --go-captcha-theme-drag-icon-color: var(--primary-foreground);
+}
+
+.checkin-captcha [class*='gocaptcha-module_header__'] {
+  display: none;
+}
+
+.checkin-captcha [class*='gocaptcha-module_body__'] {
+  margin-top: 0;
+}
