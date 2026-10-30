@@ -33,53 +33,15 @@ const mainSource = await readFile(
 
 test('loads the designated ApiPorter customer-support widget once', () => {
   const scriptMatches = indexHtml.match(
-    /https:\/\/csm-cn\.cbapi\.ai\/widget\.js\?channel=stable/g
+    /https:\/\/im\.myhelp\.im\/api\/v1\/public\/access-sdk\.js\?site=7a510f9e-6425-4feb-9e2b-16d8535e63e8/g
   )
 
   assert.equal(scriptMatches?.length, 1)
-  assert.match(indexHtml, /data-site-id="site_b263a2db8fd9c533a560"/)
-  assert.match(indexHtml, /data-language="auto"/)
+  assert.match(indexHtml, /data-site="7a510f9e-6425-4feb-9e2b-16d8535e63e8"/)
   assert.match(indexHtml, /<script[^>]*\sasync(?:="")?[^>]*><\/script>/)
 })
 
-test('shows a contact fallback until the official support widget mounts', async () => {
-  const fallbackSource = await readFile(
-    resolve(
-      import.meta.dirname,
-      '../../components/customer-support-fallback.tsx'
-    ),
-    'utf8'
-  ).catch(() => '')
-
-  assert.match(mainSource, /<CustomerSupportFallback\s*\/>/)
-  assert.match(fallbackSource, /cloudbridge-support-error/)
-  assert.match(fallbackSource, /cloudbridge-support-widget/)
-  assert.match(
-    fallbackSource,
-    /work\.weixin\.qq\.com\/kfid\/kfc04b263b7d12b1448/
-  )
-  assert.match(fallbackSource, /aria-label=/)
-  assert.match(fallbackSource, /t\('Customer service center'\)/)
-  assert.match(fallbackSource, /styleOfficialWidgetLauncher\(label\)/)
-  assert.match(
-    fallbackSource,
-    /\.wrap \.launcher span\s*\{\s*display: none !important;/
-  )
-  assert.match(
-    fallbackSource,
-    /\.wrap\s*\{\s*bottom: max\(66px, calc\(env\(safe-area-inset-bottom\) \+ 50px\)\) !important;/
-  )
-  assert.match(
-    fallbackSource,
-    /bottom: max\(70px, calc\(env\(safe-area-inset-bottom\) \+ 50px\)\) !important;/
-  )
-  assert.match(
-    fallbackSource,
-    /bottom-\[max\(66px,calc\(env\(safe-area-inset-bottom\)\+50px\)\)\]/
-  )
-  assert.match(
-    fallbackSource,
-    /sm:bottom-\[max\(70px,calc\(env\(safe-area-inset-bottom\)\+50px\)\)\]/
-  )
-  assert.doesNotMatch(fallbackSource, /<span/)
+test('does not mount the legacy widget or its duplicate fallback launcher', () => {
+  assert.doesNotMatch(indexHtml, /csm-cn\.cbapi\.ai\/widget\.js/)
+  assert.doesNotMatch(mainSource, /CustomerSupportFallback/)
 })

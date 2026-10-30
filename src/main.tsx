@@ -21,7 +21,6 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 
-import { CustomerSupportFallback } from '@/components/customer-support-fallback'
 import { installAnalytics } from '@/lib/analytics'
 import { installBuildMetadata } from '@/lib/build-metadata'
 import { DEFAULT_LOGO } from '@/lib/constants'
@@ -104,7 +103,6 @@ if (!rootElement.innerHTML) {
           <FontProvider>
             <DirectionProvider>
               <RouterProvider router={router} />
-              <CustomerSupportFallback />
             </DirectionProvider>
           </FontProvider>
         </ThemeProvider>
