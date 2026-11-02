@@ -1,5 +1,18 @@
 {
   "translation": {
+    "Keyword filtering user whitelist": "關鍵詞過濾使用者白名單",
+    "Enter one user ID per line": "每行輸入一個使用者 ID",
+    "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.": "白名單內使用者僅豁免關鍵詞過濾。每行輸入一個正整數使用者 ID，留空則所有使用者均依過濾規則檢查。",
+    "Enter positive integer user IDs, one per line.": "請輸入正整數使用者 ID，每行一個。",
+    "Searching users...": "正在搜尋使用者…",
+    "No matching users": "沒有符合的使用者",
+    "Search for a user to add": "搜尋使用者並選擇新增",
+    "No whitelisted users": "暫無白名單使用者",
+    "Search and select users to add them to the whitelist.": "搜尋並選擇使用者，將其加入白名單。",
+    "Whitelisted users": "白名單使用者",
+    "Remove user {{id}} from whitelist": "從白名單移除使用者 {{id}}",
+    "User unavailable": "使用者資訊無法取得",
+    "Users in this list skip keyword filtering. Save to apply changes.": "清單內使用者可略過關鍵詞過濾。儲存後生效。",
     "SEO Title": "SEO 標題",
     "SEO Description": "SEO 描述",
     "SEO Keywords": "SEO 關鍵字",

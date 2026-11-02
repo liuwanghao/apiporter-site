@@ -1,5 +1,18 @@
 {
   "translation": {
+    "Keyword filtering user whitelist": "Белый список пользователей для фильтрации ключевых слов",
+    "Enter one user ID per line": "Введите один ID пользователя в каждой строке",
+    "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.": "Пользователи из этого списка освобождены только от фильтрации ключевых слов. Введите положительные целые ID пользователей, по одному в строке. Оставьте поле пустым, чтобы применять фильтр ко всем пользователям.",
+    "Enter positive integer user IDs, one per line.": "Введите положительные целые ID пользователей, по одному в строке.",
+    "Searching users...": "Поиск пользователей…",
+    "No matching users": "Нет подходящих пользователей",
+    "Search for a user to add": "Найдите пользователя для добавления",
+    "No whitelisted users": "Белый список пуст",
+    "Search and select users to add them to the whitelist.": "Найдите и выберите пользователей для добавления в белый список.",
+    "Whitelisted users": "Пользователи белого списка",
+    "Remove user {{id}} from whitelist": "Удалить пользователя {{id}} из белого списка",
+    "User unavailable": "Данные пользователя недоступны",
+    "Users in this list skip keyword filtering. Save to apply changes.": "Пользователи из этого списка освобождены от фильтрации ключевых слов. Сохраните изменения, чтобы применить их.",
     "360": "360",
     "1000": "1000",
     "10000": "10000",

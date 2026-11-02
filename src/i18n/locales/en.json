@@ -1,5 +1,18 @@
 {
   "translation": {
+    "Keyword filtering user whitelist": "Keyword filtering user whitelist",
+    "Enter one user ID per line": "Enter one user ID per line",
+    "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.": "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.",
+    "Enter positive integer user IDs, one per line.": "Enter positive integer user IDs, one per line.",
+    "Searching users...": "Searching users...",
+    "No matching users": "No matching users",
+    "Search for a user to add": "Search for a user to add",
+    "No whitelisted users": "No whitelisted users",
+    "Search and select users to add them to the whitelist.": "Search and select users to add them to the whitelist.",
+    "Whitelisted users": "Whitelisted users",
+    "Remove user {{id}} from whitelist": "Remove user {{id}} from whitelist",
+    "User unavailable": "User unavailable",
+    "Users in this list skip keyword filtering. Save to apply changes.": "Users in this list skip keyword filtering. Save to apply changes.",
     "360": "360",
     "1000": "1000",
     "10000": "10000",

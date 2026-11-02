@@ -1,5 +1,18 @@
 {
   "translation": {
+    "Keyword filtering user whitelist": "キーワードフィルタリングのユーザーホワイトリスト",
+    "Enter one user ID per line": "1行に1つのユーザーIDを入力",
+    "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.": "このリストのユーザーはキーワードフィルタリングのみ免除されます。正の整数のユーザーIDを1行に1つ入力してください。空欄の場合は全ユーザーにフィルタリングを適用します。",
+    "Enter positive integer user IDs, one per line.": "正の整数のユーザーIDを1行に1つ入力してください。",
+    "Searching users...": "ユーザーを検索中…",
+    "No matching users": "一致するユーザーがいません",
+    "Search for a user to add": "追加するユーザーを検索",
+    "No whitelisted users": "ホワイトリストは空です",
+    "Search and select users to add them to the whitelist.": "ユーザーを検索して選択し、ホワイトリストに追加してください。",
+    "Whitelisted users": "ホワイトリストのユーザー",
+    "Remove user {{id}} from whitelist": "ユーザー {{id}} をホワイトリストから削除",
+    "User unavailable": "ユーザー情報を取得できません",
+    "Users in this list skip keyword filtering. Save to apply changes.": "このリストのユーザーはキーワードフィルタリングをスキップします。保存すると反映されます。",
     "SEO Title": "SEO タイトル",
     "SEO Description": "SEO 説明",
     "SEO Keywords": "SEO キーワード",

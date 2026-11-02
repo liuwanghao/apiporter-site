@@ -1,5 +1,18 @@
 {
   "translation": {
+    "Keyword filtering user whitelist": "关键词过滤用户白名单",
+    "Enter one user ID per line": "每行输入一个用户 ID",
+    "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.": "白名单内用户仅豁免关键词过滤。每行输入一个正整数用户 ID，留空则所有用户均按过滤规则检查。",
+    "Enter positive integer user IDs, one per line.": "请输入正整数用户 ID，每行一个。",
+    "Searching users...": "正在搜索用户…",
+    "No matching users": "没有匹配的用户",
+    "Search for a user to add": "搜索用户并选择添加",
+    "No whitelisted users": "暂无白名单用户",
+    "Search and select users to add them to the whitelist.": "搜索并选择用户，将其添加到白名单。",
+    "Whitelisted users": "白名单用户",
+    "Remove user {{id}} from whitelist": "从白名单移除用户 {{id}}",
+    "User unavailable": "用户信息不可用",
+    "Users in this list skip keyword filtering. Save to apply changes.": "列表内用户可跳过关键词过滤。保存后生效。",
     "SEO Title": "SEO 标题",
     "SEO Description": "SEO 描述",
     "SEO Keywords": "SEO 关键词",

@@ -149,6 +149,30 @@ beforeEach(() => {
   })
   vi.spyOn(api, 'get').mockImplementation(async (url) => {
     if (url === '/api/option/') return { data: optionsResponse() }
+    if (url.startsWith('/api/user/search?')) {
+      return {
+        data: {
+          success: true,
+          data: {
+            items: [{ id: 12, username: 'alice', display_name: 'Alice' }],
+            total: 1,
+          },
+        },
+      }
+    }
+    const userId = url.match(/^\/api\/user\/(\d+)$/)?.[1]
+    if (userId) {
+      return {
+        data: {
+          success: true,
+          data: {
+            id: Number(userId),
+            username: `user-${userId}`,
+            display_name: `User ${userId}`,
+          },
+        },
+      }
+    }
     if (url === '/api/option/request_policy') {
       return {
         data: {
@@ -232,6 +256,7 @@ describe('request policy settings', () => {
   )
 
   it('turning filtering off preserves the prompt switch and keyword list', async () => {
+    Object.assign(settings, { SensitiveWordsUserWhitelist: '12\n34' })
     await renderPolicies('/system-settings/request-policies/filtering')
     await userEvent.click(
       await screen.findByRole('switch', { name: 'Enable filtering' })
@@ -242,6 +267,9 @@ describe('request policy settings', () => {
     expect(
       screen.getByRole('textbox', { name: 'Blocked keywords' })
     ).toHaveValue('blocked')
+    expect(
+      screen.getByRole('button', { name: 'Remove user 12 from whitelist' })
+    ).toBeVisible()
     await userEvent.click(
       screen.getByRole('button', { name: 'Save sensitive words' })
     )
@@ -251,6 +279,77 @@ describe('request policy settings', () => {
         { options: { CheckSensitiveEnabled: 'false' } }
       )
     )
+  })
+
+  it('saves the user whitelist and loads it again when reopening request checks', async () => {
+    vi.mocked(api.patch).mockImplementation(async (_url, body) => {
+      const update = body as { options: Record<string, string> }
+      Object.assign(settings, update.options)
+      return { data: { success: true, data: { options: update.options } } }
+    })
+    await renderPolicies('/system-settings/request-policies/filtering')
+    const whitelist = await screen.findByRole('combobox', {
+      name: 'Keyword filtering user whitelist',
+    })
+    await userEvent.type(whitelist, 'ali')
+    await userEvent.click(await screen.findByRole('option', { name: /alice/ }))
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Save sensitive words' })
+    )
+    await waitFor(() =>
+      expect(api.patch).toHaveBeenCalledExactlyOnceWith(
+        '/api/option/request_policy',
+        { options: { SensitiveWordsUserWhitelist: '12' } }
+      )
+    )
+    cleanup()
+    queryClient.clear()
+    await renderPolicies('/system-settings/request-policies/filtering')
+    expect(
+      await screen.findByRole('button', {
+        name: 'Remove user 12 from whitelist',
+      })
+    ).toBeVisible()
+  })
+
+  it('clears the whitelist without changing filtering switches or keywords', async () => {
+    Object.assign(settings, { SensitiveWordsUserWhitelist: '12\n34' })
+    await renderPolicies('/system-settings/request-policies/filtering')
+    await userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Remove user 12 from whitelist',
+      })
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove user 34 from whitelist' })
+    )
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Save sensitive words' })
+    )
+    await waitFor(() =>
+      expect(api.patch).toHaveBeenCalledExactlyOnceWith(
+        '/api/option/request_policy',
+        { options: { SensitiveWordsUserWhitelist: '' } }
+      )
+    )
+  })
+
+  it('places keywords before the whitelist in a responsive two-column grid', async () => {
+    await renderPolicies('/system-settings/request-policies/filtering')
+    const keywords = await screen.findByRole('textbox', {
+      name: 'Blocked keywords',
+    })
+    const whitelist = screen.getByRole('combobox', {
+      name: 'Keyword filtering user whitelist',
+    })
+    const lists = screen.getByTestId('keyword-filter-lists')
+    expect(lists).toHaveClass('grid-cols-1', 'lg:grid-cols-2')
+    expect(lists).toContainElement(keywords)
+    expect(lists).toContainElement(whitelist)
+    expect(
+      keywords.compareDocumentPosition(whitelist) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
   })
 
   it('refreshing another policy keeps unsaved filter text', async () => {

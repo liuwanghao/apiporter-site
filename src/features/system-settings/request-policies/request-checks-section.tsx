@@ -45,12 +45,26 @@ import {
 } from '../components/settings-form-layout'
 import { SettingsPageFormActions } from '../components/settings-page-context'
 import { SettingsSection } from '../components/settings-section'
+import { KeywordUserWhitelist } from './keyword-user-whitelist'
 import { useSavePolicy } from './use-save-policy'
 
 const sensitiveSchema = z.object({
   CheckSensitiveEnabled: z.boolean(),
   CheckSensitiveOnPromptEnabled: z.boolean(),
   SensitiveWords: z.string().optional(),
+  SensitiveWordsUserWhitelist: z.string().refine(
+    (value) =>
+      value.split('\n').every((line) => {
+        const id = line.trim()
+        return (
+          id === '' ||
+          (/^[0-9]+$/.test(id) &&
+            Number.isSafeInteger(Number(id)) &&
+            Number(id) > 0)
+        )
+      }),
+    'Enter positive integer user IDs, one per line.'
+  ),
 })
 
 type SensitiveFormValues = z.infer<typeof sensitiveSchema>
@@ -174,28 +188,45 @@ export function RequestChecksSection({
             </SettingsControlChildren>
           </SettingsControlGroup>
 
-          <FormField
-            control={form.control}
-            name='SensitiveWords'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('Blocked keywords')}</FormLabel>
-                <FormControl>
-                  <Textarea
-                    rows={12}
-                    placeholder={t('Enter one keyword per line')}
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  {t(
-                    'Each line represents one keyword. Leave blank to disable the list but keep the switch states.'
-                  )}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div
+            data-testid='keyword-filter-lists'
+            className='grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-2'
+          >
+            <FormField
+              control={form.control}
+              name='SensitiveWords'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('Blocked keywords')}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      rows={12}
+                      className='min-h-80'
+                      placeholder={t('Enter one keyword per line')}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    {t(
+                      'Each line represents one keyword. Leave blank to disable the list but keep the switch states.'
+                    )}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='SensitiveWordsUserWhitelist'
+              render={({ field }) => (
+                <KeywordUserWhitelist
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                />
+              )}
+            />
+          </div>
         </SettingsForm>
       </Form>
     </SettingsSection>

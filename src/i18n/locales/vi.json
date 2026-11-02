@@ -1,5 +1,18 @@
 {
   "translation": {
+    "Keyword filtering user whitelist": "Danh sách trắng người dùng cho bộ lọc từ khóa",
+    "Enter one user ID per line": "Nhập một ID người dùng trên mỗi dòng",
+    "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.": "Người dùng trong danh sách này chỉ được miễn lọc từ khóa. Nhập ID người dùng là số nguyên dương, mỗi dòng một ID. Để trống để áp dụng bộ lọc cho tất cả người dùng.",
+    "Enter positive integer user IDs, one per line.": "Nhập ID người dùng là số nguyên dương, mỗi dòng một ID.",
+    "Searching users...": "Đang tìm người dùng…",
+    "No matching users": "Không có người dùng phù hợp",
+    "Search for a user to add": "Tìm người dùng để thêm",
+    "No whitelisted users": "Chưa có người dùng trong danh sách trắng",
+    "Search and select users to add them to the whitelist.": "Tìm và chọn người dùng để thêm vào danh sách trắng.",
+    "Whitelisted users": "Người dùng trong danh sách trắng",
+    "Remove user {{id}} from whitelist": "Xóa người dùng {{id}} khỏi danh sách trắng",
+    "User unavailable": "Không có thông tin người dùng",
+    "Users in this list skip keyword filtering. Save to apply changes.": "Người dùng trong danh sách này được miễn lọc từ khóa. Lưu để áp dụng thay đổi.",
     "360": "360",
     "1000": "1000",
     "10000": "10000",

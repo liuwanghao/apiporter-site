@@ -1,5 +1,18 @@
 {
   "translation": {
+    "Keyword filtering user whitelist": "Liste blanche des utilisateurs pour le filtrage par mots-clés",
+    "Enter one user ID per line": "Saisissez un identifiant utilisateur par ligne",
+    "Users listed here skip keyword filtering only. Enter positive user IDs, one per line. Leave blank to filter all users.": "Les utilisateurs de cette liste sont uniquement exemptés du filtrage par mots-clés. Saisissez des identifiants utilisateurs entiers positifs, un par ligne. Laissez vide pour appliquer le filtrage à tous les utilisateurs.",
+    "Enter positive integer user IDs, one per line.": "Saisissez des identifiants utilisateurs entiers positifs, un par ligne.",
+    "Searching users...": "Recherche des utilisateurs…",
+    "No matching users": "Aucun utilisateur correspondant",
+    "Search for a user to add": "Recherchez un utilisateur à ajouter",
+    "No whitelisted users": "Aucun utilisateur dans la liste blanche",
+    "Search and select users to add them to the whitelist.": "Recherchez et sélectionnez des utilisateurs pour les ajouter à la liste blanche.",
+    "Whitelisted users": "Utilisateurs en liste blanche",
+    "Remove user {{id}} from whitelist": "Retirer l’utilisateur {{id}} de la liste blanche",
+    "User unavailable": "Utilisateur indisponible",
+    "Users in this list skip keyword filtering. Save to apply changes.": "Les utilisateurs de cette liste sont exemptés du filtrage par mots-clés. Enregistrez pour appliquer les modifications.",
     "360": "360",
     "1000": "1000",
     "10000": "10000",
