@@ -290,6 +290,14 @@ const en = {
     'Your previous application was not approved. You can update your application and apply again.',
   'Your referral link will appear after an administrator approves your partner application.':
     'Your referral link will appear after an administrator approves your partner application.',
+  'Bind referral relation': 'Bind referral relation',
+  'Create relation': 'Create relation',
+  'Enter a valid user ID': 'Enter a valid user ID',
+  'Inviter and invitee must be different':
+    'Inviter and invitee must be different',
+  'Referral relation created': 'Referral relation created',
+  'The relation takes effect now and does not apply to earlier activity.':
+    'The relation takes effect now and does not apply to earlier activity.',
 } as const
 
 type PromotionTranslation = Record<keyof typeof en, string>
@@ -560,6 +568,13 @@ const zhCN = {
     '上次申请未获通过。您可以更新申请说明后重新申请。',
   'Your referral link will appear after an administrator approves your partner application.':
     '管理员通过您的推广伙伴申请后，推荐链接将在此显示。',
+  'Bind referral relation': '手动绑定推荐关系',
+  'Create relation': '创建关系',
+  'Enter a valid user ID': '请输入有效的用户 ID',
+  'Inviter and invitee must be different': '邀请人和受邀人不能相同',
+  'Referral relation created': '推荐关系已绑定',
+  'The relation takes effect now and does not apply to earlier activity.':
+    '关系从现在开始生效，不追溯此前的消费。',
 } satisfies PromotionTranslation
 
 const zhTW = {
@@ -829,6 +844,13 @@ const zhTW = {
     '上次申請未獲通過。您可以更新申請說明後重新申請。',
   'Your referral link will appear after an administrator approves your partner application.':
     '管理員通過您的推廣夥伴申請後，推薦連結將在此顯示。',
+  'Bind referral relation': '手動綁定推薦關係',
+  'Create relation': '建立關係',
+  'Enter a valid user ID': '請輸入有效的使用者 ID',
+  'Inviter and invitee must be different': '邀請人與受邀人不能相同',
+  'Referral relation created': '推薦關係已綁定',
+  'The relation takes effect now and does not apply to earlier activity.':
+    '關係從現在開始生效，不追溯此前的消費。',
 } satisfies PromotionTranslation
 
 const ja = {
@@ -1106,6 +1128,14 @@ const ja = {
     '前回の申請は承認されませんでした。申請内容を更新して再申請できます。',
   'Your referral link will appear after an administrator approves your partner application.':
     '管理者がパートナー申請を承認すると、紹介リンクがここに表示されます。',
+  'Bind referral relation': '紹介関係を手動で紐づける',
+  'Create relation': '関係を作成',
+  'Enter a valid user ID': '有効なユーザー ID を入力してください',
+  'Inviter and invitee must be different':
+    '紹介者と招待されたユーザーは別である必要があります',
+  'Referral relation created': '紹介関係を作成しました',
+  'The relation takes effect now and does not apply to earlier activity.':
+    '関係は現在から有効になり、過去の利用には適用されません。',
 } satisfies PromotionTranslation
 
 export const promotionTranslations = { en, zhCN, zhTW, ja } as const

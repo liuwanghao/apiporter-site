@@ -131,6 +131,14 @@ export async function getReferrals(
   return response.data
 }
 
+export async function createReferral(payload: {
+  inviter_user_id: number
+  invitee_user_id: number
+}): Promise<ApiResponse<ReferralRelation>> {
+  const response = await api.post('/api/admin/promotion/referrals', payload)
+  return requireServerSuccess(response.data as ApiResponse<ReferralRelation>)
+}
+
 export async function setReferralEnabled(
   id: number,
   enabled: boolean,

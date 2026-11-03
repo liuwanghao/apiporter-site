@@ -25,6 +25,7 @@ import {
   Loader2,
   Megaphone,
   Pencil,
+  Plus,
   Search,
   Settings,
   SlidersHorizontal,
@@ -74,7 +75,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { useDebounce } from '@/hooks/use-debounce'
 import { useSystemConfig } from '@/hooks/use-system-config'
 import { toIntlLocale } from '@/i18n/languages'
+import { hasPermission } from '@/lib/admin-permissions'
 import { getCurrencyLabel } from '@/lib/currency'
+import { useAuthStore } from '@/stores/auth-store'
 
 import { LedgerStatusBadge } from '../promotion-partner/ledger-status-badge'
 import { ListPager as Pager } from '../promotion-partner/pager'
@@ -102,12 +105,14 @@ import {
   getReferrals,
   getSettings,
   getSettingVersions,
+  createReferral,
   reviewApplication,
   reviewSettlement,
   setPartnerEnabled,
   setReferralEnabled,
   updateSettings,
 } from './api'
+import { ManualReferralDialog } from './manual-referral-dialog'
 import { PartnerStatusControl } from './partner-status-control'
 import type {
   CommissionLedgerDetail,
@@ -872,6 +877,8 @@ export function SettingsPanel() {
 
 export function AdminPromotion() {
   const { t, i18n } = useTranslation()
+  const currentUser = useAuthStore((state) => state.auth.user)
+  const canChangeReferrals = hasPermission(currentUser, 'referral', 'change')
   useSystemConfig()
   const locale = toIntlLocale(i18n.resolvedLanguage ?? i18n.language)
   const queryClient = useQueryClient()
@@ -880,6 +887,7 @@ export function AdminPromotion() {
   const [summaryKeyword, setSummaryKeyword] = useState('')
   const [applicationPage, setApplicationPage] = useState(1)
   const [referralPage, setReferralPage] = useState(1)
+  const [manualReferralOpen, setManualReferralOpen] = useState(false)
   const [ledgerPage, setLedgerPage] = useState(1)
   const [ledgerInviter, setLedgerInviter] = useState('')
   const [ledgerInvitee, setLedgerInvitee] = useState('')
@@ -980,6 +988,19 @@ export function AdminPromotion() {
     onSuccess: () => {
       toast.success(t('Settlement updated'))
       void queryClient.invalidateQueries({ queryKey: ['admin-promotion'] })
+    },
+  })
+  const createReferralMutation = useMutation({
+    mutationFn: createReferral,
+    onSuccess: () => {
+      toast.success(t('Referral relation created'))
+      setReferralPage(1)
+      void queryClient.invalidateQueries({
+        queryKey: ['admin-promotion', 'referrals'],
+      })
+      void queryClient.invalidateQueries({
+        queryKey: ['admin-promotion', 'summary'],
+      })
     },
   })
   const referralMutation = useMutation({
@@ -1335,10 +1356,19 @@ export function AdminPromotion() {
             </TabsContent>
             <TabsContent value='referrals' className='mt-4'>
               <Card>
-                <CardHeader>
+                <CardHeader className='flex flex-row items-center justify-between gap-3'>
                   <CardTitle className='text-base'>
                     {t('Referral relations')}
                   </CardTitle>
+                  {canChangeReferrals ? (
+                    <Button
+                      size='sm'
+                      onClick={() => setManualReferralOpen(true)}
+                    >
+                      <Plus />
+                      {t('Bind referral relation')}
+                    </Button>
+                  ) : null}
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -1374,7 +1404,10 @@ export function AdminPromotion() {
                                 checkedChildren={t('On')}
                                 unCheckedChildren={t('Off')}
                                 checked={item.status === 'active'}
-                                disabled={referralMutation.isPending}
+                                disabled={
+                                  referralMutation.isPending ||
+                                  !canChangeReferrals
+                                }
                                 aria-label={
                                   item.status === 'active'
                                     ? t('Disable referral relation')
@@ -1713,6 +1746,19 @@ export function AdminPromotion() {
             })
           }
           setSettlementReviewTarget(null)
+        }}
+      />
+      <ManualReferralDialog
+        open={manualReferralOpen}
+        isPending={createReferralMutation.isPending}
+        onOpenChange={setManualReferralOpen}
+        onSubmit={async (payload) => {
+          try {
+            await createReferralMutation.mutateAsync(payload)
+            return true
+          } catch {
+            return false
+          }
         }}
       />
       <ReasonDialog

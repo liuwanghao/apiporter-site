@@ -23,6 +23,8 @@ import type { AxiosResponse } from 'axios'
 import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import { api } from '@/lib/api'
+import { ROLE } from '@/lib/roles'
+import { useAuthStore } from '@/stores/auth-store'
 
 import { AdminPromotion } from '../index'
 
@@ -125,7 +127,10 @@ function metricValue(label: string) {
   return within(metric).getAllByRole('paragraph')[1].textContent
 }
 
-afterEach(() => vi.restoreAllMocks())
+afterEach(() => {
+  vi.restoreAllMocks()
+  useAuthStore.getState().auth.setUser(null)
+})
 
 describe('promotion overview inviter filter', () => {
   test('editing input keeps the current totals until the query is submitted and repeating the query refreshes them', async () => {
@@ -356,5 +361,79 @@ describe('promotion overview inviter filter', () => {
     await waitFor(() => expect(metricValue('Invited users')).toBe('0'))
     expect(metricValue('Consumption amount')).toMatch(/0/)
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+})
+
+describe('manual referral binding', () => {
+  test('searches both users, rejects identical selections, and refreshes referrals after binding', async () => {
+    const requests = setupRequests()
+    const post = vi.spyOn(api, 'post').mockResolvedValue({
+      data: { success: true, data: { id: 8 } },
+    } as AxiosResponse)
+    useAuthStore.getState().auth.setUser({
+      id: 99,
+      username: 'operator',
+      role: ROLE.SUPER_ADMIN,
+    })
+    renderPromotion()
+    const user = userEvent.setup()
+
+    await user.click(screen.getByRole('tab', { name: 'Referrals' }))
+    await user.click(
+      screen.getByRole('button', { name: 'Bind referral relation' })
+    )
+    const inviter = screen.getByRole('combobox', { name: 'Inviter user ID' })
+    const invitee = screen.getByRole('combobox', { name: 'Invitee user ID' })
+    await user.type(inviter, 'partner-alice')
+    await user.click(
+      await screen.findByRole('option', { name: /partner-alice · #42/ })
+    )
+    await user.type(invitee, 'partner-alice')
+    await user.click(
+      await screen.findByRole('option', { name: /partner-alice · #42/ })
+    )
+    await user.click(screen.getByRole('button', { name: 'Create relation' }))
+    expect(post).not.toHaveBeenCalled()
+    expect(
+      await screen.findByText('Inviter and invitee must be different')
+    ).toBeInTheDocument()
+
+    await user.type(invitee, 'partner-alice-two')
+    await user.click(
+      await screen.findByRole('option', { name: /partner-alice-two · #77/ })
+    )
+    await user.click(screen.getByRole('button', { name: 'Create relation' }))
+    await waitFor(() =>
+      expect(post).toHaveBeenCalledWith('/api/admin/promotion/referrals', {
+        inviter_user_id: 42,
+        invitee_user_id: 77,
+      })
+    )
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    )
+    await waitFor(() =>
+      expect(
+        requests.mock.calls.filter(
+          ([url]) => url === '/api/admin/promotion/referrals'
+        ).length
+      ).toBeGreaterThan(1)
+    )
+  })
+
+  test('hides the binding action without referral change permission', async () => {
+    setupRequests()
+    useAuthStore.getState().auth.setUser({
+      id: 10,
+      username: 'viewer',
+      role: ROLE.ADMIN,
+      permissions: { admin_permissions: { referral: { view_all: true } } },
+    })
+    renderPromotion()
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('tab', { name: 'Referrals' }))
+    expect(
+      screen.queryByRole('button', { name: 'Bind referral relation' })
+    ).not.toBeInTheDocument()
   })
 })
