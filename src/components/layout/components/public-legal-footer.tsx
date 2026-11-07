@@ -19,38 +19,39 @@ For commercial licensing, please contact support@quantumnous.com
 import { Mail } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-const CUSTOMER_SERVICE_URL = 'https://csm-cn.cbapi.ai/index.php'
+import { Button } from '@/components/ui/button'
+import { openCustomerSupport } from '@/lib/customer-support'
 
 const LEGAL_LINKS = [
   {
     key: 'ai-service-usage',
     translation: 'footer.aiUsageGuidelines',
-    href: '/pfd/AI服務使用規範_V1.0.pdf',
+    href: '/pfd/APIporter_AI服務使用規範_V1.0.pdf',
   },
   {
     key: 'recharge-service',
     translation: 'footer.rechargeAgreement',
-    href: '/pfd/充值服務協議_V1.pdf',
+    href: '/pfd/APIporter充值服務協議_V1.pdf',
   },
   {
     key: 'third-party-model',
     translation: 'footer.thirdPartyModelNotice',
-    href: '/pfd/第三方模型服務說明_V1.0.pdf',
+    href: '/pfd/APIporter第三方模型服務說明_V1.0.pdf',
   },
   {
     key: 'data-security',
     translation: 'footer.security',
-    href: '/pfd/數據安全承諾_V1.0.pdf',
+    href: '/pfd/APIporter數據安全承諾_V1.0.pdf',
   },
   {
     key: 'privacy',
     translation: 'footer.privacy',
-    href: '/pfd/隱私政策_V1.0.pdf',
+    href: '/pfd/APIporter隱私政策_V1.0.pdf',
   },
   {
     key: 'user-agreement',
     translation: 'footer.agreement',
-    href: '/pfd/用戶協議_V1.0.pdf',
+    href: '/pfd/APIporter用戶協議_V1.0.pdf',
   },
 ] as const
 
@@ -69,21 +70,21 @@ export function PublicLegalFooter() {
               alt=''
               aria-hidden='true'
             />
-            <div>
-              <p className='text-foreground m-0 text-[14px] leading-[1.6] font-bold'>
+            <div className='flex flex-col'>
+              <p className='text-foreground m-0 flex h-5 items-center text-[14px] leading-[20px] font-bold'>
                 ApiPorter
               </p>
-              <a
-                href={CUSTOMER_SERVICE_URL}
-                target='_blank'
-                rel='noopener noreferrer'
+              <Button
+                type='button'
+                variant='ghost'
+                onClick={openCustomerSupport}
                 aria-label={t('footer.contactAria')}
                 data-footer-label='contact'
-                className='text-muted-foreground hover:text-foreground inline-flex min-h-11 w-fit items-center gap-2 transition-colors duration-200'
+                className='text-muted-foreground hover:text-foreground h-[18px] min-h-[18px] w-fit justify-start gap-2 rounded-sm p-0 text-[12px] leading-[18px] font-normal hover:bg-transparent'
               >
                 <Mail className='size-3.5' aria-hidden='true' />
                 <span>{t('footer.contact')}</span>
-              </a>
+              </Button>
             </div>
           </div>
           <nav

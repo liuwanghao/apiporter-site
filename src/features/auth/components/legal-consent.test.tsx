@@ -113,7 +113,7 @@ describe('legal consent', () => {
     )
     assert.deepEqual(
       links.map((link) => link.getAttribute('href')),
-      ['/pfd/用戶協議_V1.0.pdf', '/pfd/隱私政策_V1.0.pdf']
+      ['/pfd/APIporter用戶協議_V1.0.pdf', '/pfd/APIporter隱私政策_V1.0.pdf']
     )
     assert.ok(links.every(({ target }) => target === '_blank'))
     assert.ok(
@@ -148,7 +148,7 @@ describe('legal consent', () => {
       [...container.querySelectorAll('a')].map((link) =>
         link.getAttribute('href')
       ),
-      ['/pfd/用戶協議_V1.0.pdf', '/pfd/隱私政策_V1.0.pdf']
+      ['/pfd/APIporter用戶協議_V1.0.pdf', '/pfd/APIporter隱私政策_V1.0.pdf']
     )
     assert.match(
       container.textContent,

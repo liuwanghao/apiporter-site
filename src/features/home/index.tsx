@@ -23,6 +23,7 @@ import siteFontUrl from '@/assets/fonts/maple-mono/maple-mono-cn-regular.woff2'
 import { PublicLayout } from '@/components/layout'
 import { useTheme } from '@/context/theme-provider'
 import { toLandingLanguage } from '@/i18n/geo-language'
+import { openCustomerSupport } from '@/lib/customer-support'
 
 export function Home() {
   const { resolvedTheme } = useTheme()
@@ -48,6 +49,20 @@ export function Home() {
   useEffect(() => {
     syncLandingPreferences()
   }, [syncLandingPreferences])
+
+  useEffect(() => {
+    const handleSupportRequest = (event: MessageEvent) => {
+      if (
+        event.origin === window.location.origin &&
+        event.source === landingFrameRef.current?.contentWindow &&
+        event.data?.type === 'relay-support-open'
+      ) {
+        void openCustomerSupport()
+      }
+    }
+    window.addEventListener('message', handleSupportRequest)
+    return () => window.removeEventListener('message', handleSupportRequest)
+  }, [])
 
   return (
     <PublicLayout

@@ -65,7 +65,7 @@ export function LegalConsent({
           {t('I have read and agree to the')}{' '}
         </Label>
         <a
-          href='/pfd/用戶協議_V1.0.pdf'
+          href='/pfd/APIporter用戶協議_V1.0.pdf'
           target='_blank'
           rel='noopener noreferrer'
           className='text-primary focus-visible:ring-ring rounded-sm hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'
@@ -74,7 +74,7 @@ export function LegalConsent({
         </a>{' '}
         {t('and')}{' '}
         <a
-          href='/pfd/隱私政策_V1.0.pdf'
+          href='/pfd/APIporter隱私政策_V1.0.pdf'
           target='_blank'
           rel='noopener noreferrer'
           className='text-primary focus-visible:ring-ring rounded-sm hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none'

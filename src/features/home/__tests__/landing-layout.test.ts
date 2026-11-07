@@ -46,12 +46,12 @@ const routeEffectStyles = await readFile(
   'utf8'
 )
 const agreementFiles = [
-  'AI服務使用規範_V1.0.pdf',
-  '充值服務協議_V1.pdf',
-  '第三方模型服務說明_V1.0.pdf',
-  '數據安全承諾_V1.0.pdf',
-  '隱私政策_V1.0.pdf',
-  '用戶協議_V1.0.pdf',
+  'APIporter_AI服務使用規範_V1.0.pdf',
+  'APIporter充值服務協議_V1.pdf',
+  'APIporter第三方模型服務說明_V1.0.pdf',
+  'APIporter數據安全承諾_V1.0.pdf',
+  'APIporter隱私政策_V1.0.pdf',
+  'APIporter用戶協議_V1.0.pdf',
 ]
 
 const footerTranslations = {
@@ -141,6 +141,44 @@ describe('landing page layout', () => {
         resolve(import.meta.dirname, `../../../../public/pfd/${filename}`)
       )
       assert.equal(pdf.subarray(0, 5).toString(), '%PDF-')
+    }
+  })
+
+  test('centers the two compact brand rows beside the logo', () => {
+    assert.match(
+      landingPage,
+      /\.footer-brand-copy\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column;/
+    )
+    assert.match(
+      landingPage,
+      /\.footer-company\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*min-height:\s*20px;/
+    )
+    assert.match(landingPage, /\.footer-contact\s*\{[^}]*min-height:\s*18px;/)
+  })
+
+  test('opens the parent support widget when the footer contact is clicked', async () => {
+    const window = new Window({
+      url: 'https://example.com/relay-landing.html',
+      settings: {
+        enableJavaScriptEvaluation: true,
+        disableJavaScriptFileLoading: true,
+        disableCSSFileLoading: true,
+      },
+    })
+    try {
+      window.document.write(landingPage)
+      const message = new Promise<string>((resolve) =>
+        window.addEventListener('message', (event) => {
+          const data = (event as unknown as MessageEvent<{ type: string }>).data
+          if (data?.type === 'relay-support-open') resolve(data.type)
+        })
+      )
+      window.document
+        .querySelector('[data-footer-label="contact"]')
+        ?.dispatchEvent(new window.MouseEvent('click'))
+      assert.equal(await message, 'relay-support-open')
+    } finally {
+      await window.happyDOM.close()
     }
   })
 
@@ -320,10 +358,7 @@ describe('landing page layout', () => {
         const contact = footer.querySelector('[data-footer-label="contact"]')
         assert.ok(contact)
         assert.equal(contact.textContent.trim(), labels.contactLabel)
-        assert.equal(
-          contact.getAttribute('href'),
-          'https://csm-cn.cbapi.ai/index.php'
-        )
+        assert.equal(contact.tagName, 'BUTTON')
         assert.equal(contact.getAttribute('aria-label'), labels.contactAria)
         assert.match(
           landingPage,
@@ -339,27 +374,27 @@ describe('landing page layout', () => {
           [
             {
               label: labels.aiUsage,
-              href: '/pfd/AI服務使用規範_V1.0.pdf',
+              href: '/pfd/APIporter_AI服務使用規範_V1.0.pdf',
             },
             {
               label: labels.recharge,
-              href: '/pfd/充值服務協議_V1.pdf',
+              href: '/pfd/APIporter充值服務協議_V1.pdf',
             },
             {
               label: labels.thirdParty,
-              href: '/pfd/第三方模型服務說明_V1.0.pdf',
+              href: '/pfd/APIporter第三方模型服務說明_V1.0.pdf',
             },
             {
               label: labels.security,
-              href: '/pfd/數據安全承諾_V1.0.pdf',
+              href: '/pfd/APIporter數據安全承諾_V1.0.pdf',
             },
             {
               label: labels.privacy,
-              href: '/pfd/隱私政策_V1.0.pdf',
+              href: '/pfd/APIporter隱私政策_V1.0.pdf',
             },
             {
               label: labels.agreement,
-              href: '/pfd/用戶協議_V1.0.pdf',
+              href: '/pfd/APIporter用戶協議_V1.0.pdf',
             },
           ]
         )

@@ -51,17 +51,15 @@ const docsPages = await Promise.all([
 
 describe('public legal footer', () => {
   test('uses the homepage customer-service destination and all six document links', () => {
-    assert.match(
-      footer,
-      /CUSTOMER_SERVICE_URL = 'https:\/\/csm-cn\.cbapi\.ai\/index\.php'/
-    )
+    assert.match(footer, /onClick=\{openCustomerSupport\}/)
+    assert.doesNotMatch(footer, /csm-cn\.cbapi\.ai/)
     for (const href of [
-      '/pfd/AI服務使用規範_V1.0.pdf',
-      '/pfd/充值服務協議_V1.pdf',
-      '/pfd/第三方模型服務說明_V1.0.pdf',
-      '/pfd/數據安全承諾_V1.0.pdf',
-      '/pfd/隱私政策_V1.0.pdf',
-      '/pfd/用戶協議_V1.0.pdf',
+      '/pfd/APIporter_AI服務使用規範_V1.0.pdf',
+      '/pfd/APIporter充值服務協議_V1.pdf',
+      '/pfd/APIporter第三方模型服務說明_V1.0.pdf',
+      '/pfd/APIporter數據安全承諾_V1.0.pdf',
+      '/pfd/APIporter隱私政策_V1.0.pdf',
+      '/pfd/APIporter用戶協議_V1.0.pdf',
     ]) {
       assert.match(footer, new RegExp(href.replaceAll('.', '\\.')))
     }
@@ -78,6 +76,12 @@ describe('public legal footer', () => {
     assert.match(footer, /footer\.contactAria/)
   })
 
+  test('matches the combined brand rows to the 38px logo and preserves the mail icon', () => {
+    assert.match(footer, /h-5 items-center text-\[14px\] leading-\[20px\]/)
+    assert.match(footer, /h-\[18px\] min-h-\[18px\]/)
+    assert.match(footer, /<Mail /)
+  })
+
   test('uses the homepage footer on documentation, pricing and about pages', () => {
     for (const page of docsPages) {
       assert.match(page, /import \{ PublicLegalFooter \}/)
@@ -88,7 +92,7 @@ describe('public legal footer', () => {
   test('keeps homepage pixel sizes when the site theme changes font density', () => {
     assert.match(footer, /\[--spacing:4px\]/)
     assert.match(footer, /text-\[12px\] leading-\[1\.6\]/)
-    assert.match(footer, /text-\[14px\] leading-\[1\.6\]/)
+    assert.match(footer, /text-\[14px\] leading-\[20px\]/)
     assert.match(footer, /text-\[11px\] leading-\[1\.8\]/)
     assert.doesNotMatch(footer, /\btext-(?:xs|sm)\b/)
   })
