@@ -41,8 +41,10 @@ bun install --frozen-lockfile
 log "typechecking frontend"
 bun run typecheck
 log "building frontend"
-bun run build
+SEO_INDEXABLE=true bun run build
 [[ -f dist/index.html ]] || die "frontend build did not create dist/index.html"
+log "checking public page indexing"
+bun scripts/check-public-seo.ts
 mv dist "$release/dist"
 printf '%s\n' "$commit" > "$release/COMMIT"
 cd "$APP_ROOT"

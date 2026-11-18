@@ -17,7 +17,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { PerformanceOverview } from '@/features/dashboard/components/models/performance-overview'
@@ -145,6 +146,134 @@ describe('server performance summaries', () => {
     }
   )
 
+  it('defaults to all models, shows the selected model metrics, and restores the weighted summary', async () => {
+    const user = userEvent.setup()
+    client.setQueryData(['perf-metrics-summary', 24], {
+      success: true,
+      data: {
+        summary,
+        models: [
+          {
+            model_name: 'fast-model',
+            success_rate: 100,
+            avg_latency_ms: 300,
+            avg_tps: 20,
+          },
+          {
+            model_name: 'slow-model',
+            success_rate: 73,
+            avg_latency_ms: 1750,
+            avg_tps: 12,
+          },
+        ],
+      },
+    })
+    const view = render(
+      <QueryClientProvider client={client}>
+        <PerformanceHealthPanel />
+      </QueryClientProvider>
+    )
+    const filter = screen.getByRole('combobox', { name: 'Select model' })
+    expect(filter).toHaveTextContent('All models')
+    expect(screen.getByText('1.01s')).toBeVisible()
+
+    await user.click(filter)
+    await user.click(await screen.findByRole('option', { name: 'slow-model' }))
+    expect(screen.getByText('1.75s')).toBeVisible()
+    expect(screen.getByText('12.0 t/s')).toBeVisible()
+    expect(screen.getAllByText('73.00%')).toHaveLength(2)
+    expect(screen.queryByText('99.01%')).not.toBeInTheDocument()
+    expect(
+      within(view.container).queryByText('fast-model')
+    ).not.toBeInTheDocument()
+
+    await user.click(filter)
+    expect(
+      await screen.findByRole('option', { name: 'fast-model' })
+    ).toBeVisible()
+    await user.click(screen.getByRole('option', { name: 'All models' }))
+    expect(filter).toHaveTextContent('All models')
+    expect(screen.getByText('99.01%')).toBeVisible()
+    expect(screen.getByText('1.01s')).toBeVisible()
+    expect(screen.getByText('5.00 t/s')).toBeVisible()
+    expect(within(view.container).getByText('fast-model')).toBeVisible()
+  })
+
+  it('offers models beyond the six traffic leaders and supports keyboard selection', async () => {
+    const user = userEvent.setup()
+    client.setQueryData(['perf-metrics-summary', 24], {
+      success: true,
+      data: {
+        summary,
+        models: [
+          'alpha',
+          'bravo',
+          'charlie',
+          'delta',
+          'echo',
+          'foxtrot',
+          'zulu',
+        ].map((model_name) => ({
+          model_name,
+          success_rate: 80,
+          avg_latency_ms: 750,
+          avg_tps: 3,
+        })),
+      },
+    })
+    const view = render(
+      <QueryClientProvider client={client}>
+        <PerformanceHealthPanel />
+      </QueryClientProvider>
+    )
+    const filter = screen.getByRole('combobox', { name: 'Select model' })
+    expect(screen.queryByText('zulu')).not.toBeInTheDocument()
+    filter.focus()
+    await user.keyboard('{ArrowDown}')
+    expect(filter).toHaveAttribute('aria-expanded', 'true')
+    expect(await screen.findByRole('option', { name: 'zulu' })).toBeVisible()
+    await user.keyboard('{End}{Enter}')
+    await waitFor(() => expect(filter).toHaveTextContent('zulu'))
+    expect(screen.getByText('750ms')).toBeVisible()
+    expect(within(view.container).queryByText('alpha')).not.toBeInTheDocument()
+  })
+
+  it('returns to all models when refreshed data no longer contains the selected model', async () => {
+    const user = userEvent.setup()
+    client.setQueryData(['perf-metrics-summary', 24], {
+      success: true,
+      data: {
+        summary,
+        models: [
+          {
+            model_name: 'retired',
+            success_rate: 0,
+            avg_latency_ms: 500,
+            avg_tps: 0,
+          },
+        ],
+      },
+    })
+    render(
+      <QueryClientProvider client={client}>
+        <PerformanceHealthPanel />
+      </QueryClientProvider>
+    )
+    const filter = screen.getByRole('combobox', { name: 'Select model' })
+    await user.click(filter)
+    await user.click(await screen.findByRole('option', { name: 'retired' }))
+    expect(screen.getByText('500ms')).toBeVisible()
+    await act(async () => {
+      client.setQueryData(['perf-metrics-summary', 24], {
+        success: true,
+        data: { summary: null, models: [] },
+      })
+    })
+    await waitFor(() => expect(filter).toHaveTextContent('All models'))
+    expect(screen.getAllByText('—')).toHaveLength(3)
+    expect(screen.queryByText('500ms')).not.toBeInTheDocument()
+  })
+
   it('shows the server summary and series incident count for model details instead of averaging groups', () => {
     renderModelDetails()
     expect(screen.getByText('99.01%')).toBeVisible()
@@ -202,6 +331,9 @@ describe('server performance summaries', () => {
         <PerformanceHealthPanel />
       </QueryClientProvider>
     )
+    expect(
+      screen.getByRole('combobox', { name: 'Select model' })
+    ).toBeDisabled()
     expect(screen.getAllByText('—')).toHaveLength(3)
     expect(screen.queryByText('0.00%')).not.toBeInTheDocument()
   })

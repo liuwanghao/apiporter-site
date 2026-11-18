@@ -34,6 +34,31 @@ sudo env BRANCH=ui/console-refresh apiporter-site-deploy
 
 Keep production values in `/etc/apiporter/site.env`; do not commit them.
 
+## Search indexing
+
+Production deployment builds with `SEO_INDEXABLE=true`, then runs
+`bun scripts/check-public-seo.ts` before activating the release. The check rejects
+preview builds and public pages carrying `noindex`, and verifies that the app
+shell and error page remain excluded from indexing.
+
+For a local production build and the same validation:
+
+```bash
+SEO_INDEXABLE=true bun run build
+bun scripts/check-public-seo.ts
+```
+
+Ordinary `bun run build` keeps the preview default. Isolated test environments
+also retain their `X-Robots-Tag: noindex, nofollow` response header; do not reuse
+that Nginx configuration for the public production hostname.
+
+After deployment, check the public homepage, pricing and documentation URLs:
+their HTML must allow indexing and their HTTP responses must not contain an
+`X-Robots-Tag: noindex` header. If a CDN caches HTML, purge the affected pages.
+In Google Search Console, use URL Inspection's live test, request indexing for
+the affected public URLs, and start validation of the exclusion report. Login
+and account pages are intentionally excluded and should not be submitted.
+
 The Electron workflow builds the backend from the `main` branch of
 `https://github.com/liuwanghao/apiporter-backend.git`.
 

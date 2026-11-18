@@ -18,10 +18,17 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { useQuery } from '@tanstack/react-query'
 import { Gauge, HeartPulse, Timer } from 'lucide-react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { IconBadge, type IconBadgeTone } from '@/components/ui/icon-badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getPerfMetricsSummary } from '@/features/performance-metrics/api'
 import {
@@ -39,6 +46,7 @@ const TOP_MODEL_LIMIT = 6
 
 export function PerformanceHealthPanel() {
   const { t } = useTranslation()
+  const [selectedModelName, setSelectedModelName] = useState('')
   const metricsQuery = useQuery({
     queryKey: ['perf-metrics-summary', PERFORMANCE_WINDOW_HOURS],
     queryFn: async () =>
@@ -54,15 +62,29 @@ export function PerformanceHealthPanel() {
     [metricsQuery.data]
   )
 
-  const summary = metricsQuery.data?.data.summary
-
-  const topModels = useMemo(() => models.slice(0, TOP_MODEL_LIMIT), [models])
+  const selectedModel = models.find(
+    (model) => model.model_name === selectedModelName
+  )
+  const summary = selectedModel ?? metricsQuery.data?.data.summary
+  const modelOptions = useMemo(
+    () => [
+      { value: '', label: t('All models') },
+      ...models.map((model) => ({
+        value: model.model_name,
+        label: model.model_name,
+      })),
+    ],
+    [models, t]
+  )
+  const topModels = selectedModel
+    ? [selectedModel]
+    : models.slice(0, TOP_MODEL_LIMIT)
   const loading = metricsQuery.isLoading
   const hasData = models.length > 0
 
   return (
     <section className='border-border/80 bg-card overflow-hidden rounded-lg border p-5 shadow-xs'>
-      <div className='border-border/60 flex items-center justify-between border-b pb-3.5'>
+      <div className='border-border/60 flex flex-col gap-3 border-b pb-3.5 sm:flex-row sm:items-center sm:justify-between'>
         <div className='flex items-center gap-2.5'>
           <div className='flex size-8 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'>
             <HeartPulse className='size-4' aria-hidden='true' />
@@ -76,6 +98,29 @@ export function PerformanceHealthPanel() {
             </p>
           </div>
         </div>
+        <Select
+          items={modelOptions}
+          value={selectedModel?.model_name ?? ''}
+          onValueChange={(value) => setSelectedModelName(value ?? '')}
+          disabled={loading || !hasData}
+        >
+          <SelectTrigger
+            className='w-full min-w-0 sm:w-60'
+            aria-label={t('Select model')}
+            title={selectedModel?.model_name ?? t('All models')}
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align='end' alignItemWithTrigger={false}>
+            {modelOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                <span className='truncate' title={option.label}>
+                  {option.label}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className='space-y-4 pt-4'>
@@ -116,7 +161,7 @@ export function PerformanceHealthPanel() {
           hasData && (
             <div>
               <span className='text-muted-foreground mb-2 block text-xs font-semibold tracking-wider uppercase'>
-                {t('Top models by traffic')}
+                {selectedModel ? t('Model') : t('Top models by traffic')}
               </span>
               <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
                 {topModels.map((model) => (
