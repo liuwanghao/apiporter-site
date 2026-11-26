@@ -79,6 +79,7 @@ const defaultBillingSettings: BillingSettings = {
   PayMethods: '[{"name":"支付宝","type":"alipay","icon":"SiAlipay"}]',
   'payment_setting.amount_options': '',
   'payment_setting.amount_discount': '',
+  TopUpGiftTiers: '{"20":1,"50":3,"100":7,"200":18}',
   'payment_setting.compliance_confirmed': false,
   'payment_setting.compliance_terms_version': '',
   'payment_setting.compliance_confirmed_at': 0,

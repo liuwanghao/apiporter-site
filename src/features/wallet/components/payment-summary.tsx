@@ -23,6 +23,7 @@ import { formatCurrencyFixed } from '../lib'
 interface PaymentSummaryProps {
   topupAmount: number
   displayRate?: number
+  giftAmount?: number
 }
 
 export function PaymentSummary(props: PaymentSummaryProps) {
@@ -43,6 +44,16 @@ export function PaymentSummary(props: PaymentSummaryProps) {
           CNY
         </p>
       </div>
+      {!!props.giftAmount && (
+        <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
+          <p className='text-muted-foreground text-xs font-medium'>
+            {t('wallet.gift.amount')}
+          </p>
+          <p className='text-primary mt-2 text-sm font-semibold tabular-nums sm:text-base'>
+            {formatCurrencyFixed(props.giftAmount)} {t('CNY')}
+          </p>
+        </div>
+      )}
     </section>
   )
 }

@@ -197,7 +197,16 @@ export function useTopupInfo() {
 
       setTopupInfo(processedData)
 
-      if (processedData.amount_options.length > 0) {
+      if (processedData.cny_topup) {
+        const { amount_options: options, min_cents: minimum } =
+          processedData.cny_topup
+        setPresetAmounts(
+          options
+            .map((amount) => Math.round(amount * 100))
+            .filter((amount) => amount >= minimum)
+            .map((value) => ({ value }))
+        )
+      } else if (processedData.amount_options.length > 0) {
         const customPresets = mergePresetAmounts(
           processedData.amount_options,
           processedData.discount || {}

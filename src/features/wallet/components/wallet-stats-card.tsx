@@ -57,6 +57,7 @@ export function WalletStatsCard(props: WalletStatsCardProps) {
     label: string
     value: string
     description: string
+    showBalanceBreakdown?: boolean
     icon: typeof WalletCards
     tone: IconBadgeTone
   }[] = [
@@ -64,6 +65,7 @@ export function WalletStatsCard(props: WalletStatsCardProps) {
       label: t('Current Balance'),
       value: formatQuota(props.user?.quota ?? 0),
       description: t('Remaining quota'),
+      showBalanceBreakdown: props.user?.gift_quota !== undefined,
       icon: WalletCards,
       tone: 'success',
     },
@@ -102,9 +104,28 @@ export function WalletStatsCard(props: WalletStatsCardProps) {
             <div className='text-foreground font-mono text-2xl font-bold tracking-tight break-words tabular-nums sm:text-3xl'>
               {item.value}
             </div>
-            <div className='text-muted-foreground mt-1.5 text-sm'>
-              {item.description}
-            </div>
+            {item.showBalanceBreakdown ? (
+              <dl className='text-muted-foreground mt-1.5 space-y-1 text-sm'>
+                <div className='flex flex-wrap justify-between gap-x-2'>
+                  <dt>{t('wallet.gift.regularBalance')}</dt>
+                  <dd className='font-mono tabular-nums'>
+                    {formatQuota(
+                      (props.user?.quota ?? 0) - (props.user?.gift_quota ?? 0)
+                    )}
+                  </dd>
+                </div>
+                <div className='flex flex-wrap justify-between gap-x-2'>
+                  <dt>{t('wallet.gift.balance')}</dt>
+                  <dd className='font-mono tabular-nums'>
+                    {formatQuota(props.user?.gift_quota ?? 0)}
+                  </dd>
+                </div>
+              </dl>
+            ) : (
+              <div className='text-muted-foreground mt-1.5 text-sm'>
+                {item.description}
+              </div>
+            )}
           </div>
         </div>
       ))}

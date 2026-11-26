@@ -11,6 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig(({ envMode }) => {
   const env = loadEnv({ mode: envMode, prefixes: ['VITE_'] })
   const serverUrl =
+    process.env.APIPORTER_DEV_API_PROXY_TARGET ||
     process.env.VITE_API_BASE_URL ||
     env.rawPublicVars.VITE_API_BASE_URL ||
     process.env.VITE_REACT_APP_SERVER_URL ||

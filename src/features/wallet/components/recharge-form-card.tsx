@@ -31,7 +31,11 @@ import { TitledCard } from '@/components/ui/titled-card'
 import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
-import { getDiscountLabel, getMinTopupAmount } from '../lib'
+import {
+  formatCurrencyFixed,
+  getDiscountLabel,
+  getMinTopupAmount,
+} from '../lib'
 import type { PresetAmount, TopupInfo, CreemProduct } from '../types'
 import { CreemProductsSection } from './creem-products-section'
 import { PaymentSummary } from './payment-summary'
@@ -123,13 +127,19 @@ export function RechargeFormCard({
     onTopupAmountChange(nextAmount)
   }
 
+  const cnyTopup = topupInfo?.cny_topup
   const hasConfigurableTopup =
+    cnyTopup ||
     topupInfo?.enable_online_topup ||
     topupInfo?.enable_stripe_topup ||
     topupInfo?.enable_waffo_topup ||
     topupInfo?.enable_waffo_pancake_topup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
   const minTopup = getMinTopupAmount(topupInfo)
+  const giftAmount =
+    cnyTopup && rechargeAmount >= minTopup
+      ? topupInfo?.amount_gifts?.[rechargeAmount / 100]
+      : undefined
   const presetDisplayValues = presetAmounts.map(
     (preset) => preset.value * displayRate
   )
@@ -225,7 +235,12 @@ export function RechargeFormCard({
                         preset.discount ||
                         topupInfo?.discount?.[preset.value] ||
                         1.0
-                      const displayValue = preset.value * displayRate
+                      const displayValue = Number(
+                        (preset.value * displayRate).toFixed(2)
+                      )
+                      const presetGift = cnyTopup
+                        ? topupInfo?.amount_gifts?.[preset.value / 100]
+                        : undefined
                       const hasDiscount = discount < 1
                       return (
                         <Button
@@ -240,7 +255,14 @@ export function RechargeFormCard({
                           onClick={() => onSelectPreset(preset)}
                           aria-pressed={selectedPreset === preset.value}
                         >
-                          <div className='flex w-full items-center justify-between'>
+                          <div
+                            className={cn(
+                              'flex w-full',
+                              presetGift
+                                ? 'flex-col items-start gap-0.5'
+                                : 'items-center justify-between'
+                            )}
+                          >
                             <div className='text-lg font-bold tabular-nums'>
                               <span
                                 data-preset-amount-currency
@@ -254,6 +276,13 @@ export function RechargeFormCard({
                               <div className='text-xs font-medium text-green-600'>
                                 {getDiscountLabel(discount, t)}
                               </div>
+                            )}
+                            {!!presetGift && (
+                              <span className='text-primary text-xs font-medium'>
+                                {t('wallet.gift.preset', {
+                                  amount: formatCurrencyFixed(presetGift),
+                                })}
+                              </span>
                             )}
                           </div>
                         </Button>
@@ -338,6 +367,7 @@ export function RechargeFormCard({
               <PaymentSummary
                 topupAmount={topupAmount}
                 displayRate={displayRate}
+                giftAmount={giftAmount}
               />
 
               <SupportedPaymentChannels />

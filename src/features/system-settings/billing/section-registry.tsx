@@ -26,6 +26,8 @@ import { PaymentSettingsSection } from '../integrations/payment-settings-section
 import { RatioSettingsCard } from '../models/ratio-settings-card'
 import type { BillingSettings } from '../types'
 import { createSectionRegistry } from '../utils/section-registry'
+import { readRechargeGiftTiers } from './recharge-gift-config'
+import { RechargeGiftSettingsSection } from './recharge-gift-settings-section'
 
 const getModelDefaults = (settings: BillingSettings) => ({
   ModelPrice: settings.ModelPrice,
@@ -186,6 +188,15 @@ const BILLING_SECTIONS = [
           confirmedAt: settings['payment_setting.compliance_confirmed_at'] ?? 0,
           confirmedBy: settings['payment_setting.compliance_confirmed_by'] ?? 0,
         }}
+      />
+    ),
+  },
+  {
+    id: 'recharge-gift',
+    titleKey: 'billing.rechargeGift.title',
+    build: (settings: BillingSettings) => (
+      <RechargeGiftSettingsSection
+        defaultValues={readRechargeGiftTiers(settings.TopUpGiftTiers)}
       />
     ),
   },

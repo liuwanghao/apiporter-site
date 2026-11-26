@@ -57,10 +57,15 @@ let root: ReturnType<typeof createRoot> | undefined
 const selected: number[] = []
 const changed: number[] = []
 let payments = 0
-function RechargeHarness(
-  props: { rate?: number; minimum?: number; loading?: boolean } = {}
-) {
-  const [amount, setAmount] = React.useState(20)
+type RechargeHarnessProps = {
+  rate?: number
+  minimum?: number
+  loading?: boolean
+  cny?: boolean
+}
+
+function RechargeHarness(props: RechargeHarnessProps = {}) {
+  const [amount, setAmount] = React.useState(props.cny ? 2000 : 20)
   return (
     <RechargeFormCard
       loading={props.loading}
@@ -72,8 +77,20 @@ function RechargeHarness(
         stripe_min_topup: 1,
         amount_options: [20, 100],
         discount: {},
+        cny_topup: props.cny
+          ? {
+              payment_method: 'alipay',
+              min_cents: 500,
+              amount_options: [5, 20],
+            }
+          : undefined,
+        amount_gifts: props.cny ? { 20: 1 } : undefined,
       }}
-      presetAmounts={[{ value: 20 }, { value: 100, discount: 0.9 }]}
+      presetAmounts={
+        props.cny
+          ? [{ value: 500 }, { value: 2000 }]
+          : [{ value: 20 }, { value: 100, discount: 0.9 }]
+      }
       selectedPreset={null}
       onSelectPreset={(preset) => {
         selected.push(preset.value)
@@ -93,13 +110,11 @@ function RechargeHarness(
       onRedemptionCodeChange={() => {}}
       onRedeem={() => {}}
       redeeming={false}
-      rechargeDisplayRate={props.rate ?? 7.3}
+      rechargeDisplayRate={props.cny ? 0.01 : (props.rate ?? 7.3)}
     />
   )
 }
-async function mount(
-  props: { rate?: number; minimum?: number; loading?: boolean } = {}
-) {
+async function mount(props: RechargeHarnessProps = {}) {
   const host = document.createElement('div')
   document.body.append(host)
   const mountedRoot = createRoot(host)
@@ -161,6 +176,25 @@ test('domestic recharge shows CNY presets, input and summary without HKD or USD'
   await act(async () => preset.click())
   assert.deepEqual(selected, [100])
   assert.equal(amountInput().value, '730')
+})
+
+test('exact CNY checkout shows the gift for ¥20 and no gift for ¥20.01', async () => {
+  await mount({ cny: true })
+  const summary = document.querySelector('[data-payment-summary]')
+
+  assert.equal(amountInput().value, '20')
+  assert.equal(amountInput().min, '5')
+  assert.match(summary?.textContent ?? '', /20\.00 CNY/)
+  assert.match(summary?.textContent ?? '', /wallet\.gift\.amount1\.00 CNY/)
+  assert.match(
+    document.querySelector('[data-preset-amounts]')?.textContent ?? '',
+    /20wallet\.gift\.preset/
+  )
+
+  await enterAmount('20.01')
+  assert.equal(changed.at(-1), 2001)
+  assert.doesNotMatch(summary?.textContent ?? '', /wallet\.gift\.amount/)
+  assert.equal(payButton().disabled, false)
 })
 
 test('CNY entry converts back to the integer recharge quantity without truncating money', async () => {

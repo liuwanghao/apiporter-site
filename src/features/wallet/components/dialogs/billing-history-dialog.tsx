@@ -54,6 +54,7 @@ import {
   getPaymentMethodName,
   formatTimestamp,
 } from '../../lib/billing'
+import { formatCurrencyFixed } from '../../lib/format'
 
 interface BillingHistoryDialogProps {
   open: boolean
@@ -248,11 +249,22 @@ export function BillingHistoryDialog({
                             {t('Amount')}
                           </Label>
                           <div className='text-sm font-semibold'>
-                            {formatCurrencyFromUSD(record.amount, {
-                              digitsLarge: 2,
-                              digitsSmall: 2,
-                              abbreviate: false,
-                            })}
+                            {record.amount_cents
+                              ? `¥${formatCurrencyFixed(record.amount_cents / 100)}`
+                              : formatCurrencyFromUSD(record.amount, {
+                                  digitsLarge: 2,
+                                  digitsSmall: 2,
+                                  abbreviate: false,
+                                })}
+                            {!!record.gift_amount && (
+                              <div className='text-muted-foreground text-xs font-normal'>
+                                {t('wallet.gift.preset', {
+                                  amount: formatCurrencyFixed(
+                                    record.gift_amount
+                                  ),
+                                })}
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className='space-y-1'>

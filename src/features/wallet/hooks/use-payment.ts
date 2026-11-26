@@ -64,7 +64,7 @@ const defaultPaymentAmountCalculators: PaymentAmountCalculators = {
 }
 
 export async function requestPaymentAmount(
-  topupAmount: number,
+  request: AmountRequest,
   paymentType: string,
   calculators: PaymentAmountCalculators = defaultPaymentAmountCalculators
 ): Promise<number> {
@@ -79,7 +79,7 @@ export async function requestPaymentAmount(
     calculator = calculators.waffoPancake
   }
 
-  const response = await calculator({ amount: topupAmount })
+  const response = await calculator(request)
   if (!isApiSuccess(response) || !response.data) {
     return 0
   }
@@ -94,11 +94,11 @@ export function usePayment() {
 
   // Calculate payment amount
   const calculatePaymentAmount = useCallback(
-    async (topupAmount: number, paymentType: string) => {
+    async (topupAmount: number, paymentType: string, inCents = false) => {
       try {
         setCalculating(true)
         const calculatedAmount = await requestPaymentAmount(
-          topupAmount,
+          inCents ? { amount_cents: topupAmount } : { amount: topupAmount },
           paymentType
         )
         setAmount(calculatedAmount)
@@ -115,7 +115,7 @@ export function usePayment() {
 
   // Process payment
   const processPayment = useCallback(
-    async (topupAmount: number, paymentType: string) => {
+    async (topupAmount: number, paymentType: string, inCents = false) => {
       try {
         setProcessing(true)
 
@@ -128,7 +128,7 @@ export function usePayment() {
               payment_method: 'stripe',
             })
           : await requestPayment({
-              amount,
+              ...(inCents ? { amount_cents: amount } : { amount }),
               payment_method: paymentType,
             })
 

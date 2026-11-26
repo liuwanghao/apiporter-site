@@ -61,6 +61,7 @@ import {
   getPaymentMethodName,
   getStatusConfig,
 } from '../lib/billing'
+import { formatCurrencyFixed } from '../lib/format'
 
 export function RechargeHistoryCard() {
   const { t } = useTranslation()
@@ -157,11 +158,20 @@ export function RechargeHistoryCard() {
                 {getPaymentMethodName(record.payment_method, t)}
               </TableCell>
               <TableCell className='py-3 text-right font-semibold'>
-                {formatCurrencyFromUSD(record.amount, {
-                  digitsLarge: 2,
-                  digitsSmall: 2,
-                  abbreviate: false,
-                })}
+                {record.amount_cents
+                  ? `¥${formatCurrencyFixed(record.amount_cents / 100)}`
+                  : formatCurrencyFromUSD(record.amount, {
+                      digitsLarge: 2,
+                      digitsSmall: 2,
+                      abbreviate: false,
+                    })}
+                {!!record.gift_amount && (
+                  <div className='text-muted-foreground text-xs font-normal'>
+                    {t('wallet.gift.preset', {
+                      amount: formatCurrencyFixed(record.gift_amount),
+                    })}
+                  </div>
+                )}
               </TableCell>
               <TableCell className='py-3 text-right font-semibold'>
                 {formatNumber(record.money)}

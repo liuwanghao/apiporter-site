@@ -69,19 +69,23 @@ export function Wallet(props: WalletProps) {
 
   const { currency } = useSystemConfig()
   const { topupInfo, presetAmounts, loading: topupLoading } = useTopupInfo()
+  const cnyTopup = topupInfo?.cny_topup
   const defaultPaymentSelection = useMemo(
     () => resolveDefaultPayment(topupInfo),
     [topupInfo]
   )
-  const onlinePaymentMinimum = Math.max(
-    getMinTopupAmount(topupInfo),
-    defaultPaymentSelection?.method.min_topup || 0
-  )
+  const onlinePaymentMinimum =
+    cnyTopup?.min_cents ??
+    Math.max(
+      getMinTopupAmount(topupInfo),
+      defaultPaymentSelection?.method.min_topup || 0
+    )
 
-  // Display recharge credit in CNY while preserving the API's USD/token quantity.
-  const rechargeDisplayRate =
+  // Domestic checkout uses cents. Legacy gateways use USD or quota units.
+  const legacyDisplayRate =
     (currency?.usdExchangeRate || 1) /
     (currency?.quotaDisplayType === 'TOKENS' ? currency.quotaPerUnit : 1)
+  const rechargeDisplayRate = cnyTopup ? 0.01 : legacyDisplayRate
   const { calculating, processing, calculatePaymentAmount, processPayment } =
     usePayment()
   const {
@@ -133,9 +137,9 @@ export function Wallet(props: WalletProps) {
 
       // Calculate initial payment amount with default payment type
       const defaultPaymentType = getDefaultPaymentType(topupInfo)
-      calculatePaymentAmount(minTopup, defaultPaymentType)
+      calculatePaymentAmount(minTopup, defaultPaymentType, !!cnyTopup)
     }
-  }, [topupInfo, calculatePaymentAmount])
+  }, [topupInfo, calculatePaymentAmount, cnyTopup])
 
   // The single online-payment action always uses the first available gateway.
   const getCurrentPaymentType = useCallback(() => {
@@ -148,14 +152,16 @@ export function Wallet(props: WalletProps) {
   const handleSelectPreset = (preset: PresetAmount) => {
     setTopupAmount(preset.value)
     setSelectedPreset(preset.value)
-    calculatePaymentAmount(preset.value, getCurrentPaymentType())
+    calculatePaymentAmount(preset.value, getCurrentPaymentType(), !!cnyTopup)
   }
 
   // Handle topup amount change
   const handleTopupAmountChange = (amount: number) => {
     setTopupAmount(amount)
     setSelectedPreset(null)
-    calculatePaymentAmount(amount, getCurrentPaymentType())
+    if (amount >= onlinePaymentMinimum) {
+      calculatePaymentAmount(amount, getCurrentPaymentType(), !!cnyTopup)
+    }
   }
 
   const handleOnlinePayment = async () => {
@@ -168,7 +174,8 @@ export function Wallet(props: WalletProps) {
         topupAmount,
         defaultPaymentSelection.waffoMethodIndex,
         {
-          regular: processPayment,
+          regular: (amount, method) =>
+            processPayment(amount, method, !!cnyTopup),
           waffo: processWaffoPayment,
           waffoPancake: processWaffoPancakePayment,
         }

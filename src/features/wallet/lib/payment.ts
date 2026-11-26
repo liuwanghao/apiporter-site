@@ -160,6 +160,15 @@ export function resolveDefaultPayment(
     return null
   }
 
+  if (topupInfo.cny_topup) {
+    const type = topupInfo.cny_topup.payment_method
+    const method = topupInfo.pay_methods?.find((item) => item.type === type)
+    return {
+      method: method ?? { name: 'Alipay', type },
+      waffoMethodIndex: null,
+    }
+  }
+
   const configuredMethod = topupInfo.pay_methods?.[0]
   if (configuredMethod) {
     return { method: configuredMethod, waffoMethodIndex: null }
@@ -202,6 +211,10 @@ export function getDefaultPaymentType(topupInfo: TopupInfo | null): string {
     return DEFAULT_PAYMENT_TYPE
   }
 
+  if (topupInfo.cny_topup) {
+    return topupInfo.cny_topup.payment_method
+  }
+
   // Return first available payment method or default
   if (topupInfo.pay_methods?.length > 0) {
     return topupInfo.pay_methods[0].type
@@ -228,6 +241,10 @@ export function getDefaultPaymentType(topupInfo: TopupInfo | null): string {
 export function getMinTopupAmount(topupInfo: TopupInfo | null): number {
   if (!topupInfo) {
     return DEFAULT_MIN_TOPUP
+  }
+
+  if (topupInfo.cny_topup) {
+    return topupInfo.cny_topup.min_cents
   }
 
   const selectedMethod = resolveDefaultPayment(topupInfo)?.method

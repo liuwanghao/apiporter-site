@@ -82,19 +82,28 @@ function findButton(label: string): HTMLButtonElement {
   assert.ok(button, `Missing ${label} button`)
   return button
 }
-function PaymentHarness(props: { type: string }) {
+function PaymentHarness(props: { type: string; cents?: number }) {
   const payment = usePayment()
+  const inCents = props.cents !== undefined
   return (
     <>
       <button
         type='button'
-        onClick={() => void payment.calculatePaymentAmount(20, props.type)}
+        onClick={() =>
+          void payment.calculatePaymentAmount(
+            props.cents ?? 20,
+            props.type,
+            inCents
+          )
+        }
       >
         Quote
       </button>
       <button
         type='button'
-        onClick={() => void payment.processPayment(20.9, props.type)}
+        onClick={() =>
+          void payment.processPayment(props.cents ?? 20.9, props.type, inCents)
+        }
       >
         Pay
       </button>
@@ -136,6 +145,42 @@ for (const [type, amountEndpoint, payEndpoint, currency] of [
   ['alipay_official', '/api/user/alipay/amount', '/api/user/alipay/pay', 'CNY'],
   ['alipay', '/api/user/amount', '/api/user/pay', 'CNY'],
 ]) {
+  test(`${type} quote and checkout submit the exact CNY cents`, async () => {
+    api.defaults.adapter = async (config) => {
+      requests.push({ url: config.url || '', body: JSON.parse(config.data) })
+      return {
+        config,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        data: (config.url || '').endsWith('/amount')
+          ? { success: true, data: '20.01' }
+          : {
+              message: 'success',
+              url: 'https://openapi.alipay.com/gateway.do',
+              data: { sign: 'signed-by-server' },
+            },
+      }
+    }
+    domWindow.HTMLFormElement.prototype.submit = function () {
+      submissions.push({
+        action: this.action,
+        acceptCharset: this.acceptCharset,
+        params: {},
+      })
+    }
+
+    await mount(<PaymentHarness type={type} cents={2001} />)
+    await act(async () => findButton('Quote').click())
+    await act(async () => findButton('Pay').click())
+
+    assert.deepEqual(requests, [
+      { url: amountEndpoint, body: { amount_cents: 2001 } },
+      { url: payEndpoint, body: { amount_cents: 2001, payment_method: type } },
+    ])
+    assert.equal(submissions.length, 1)
+  })
+
   test(`${type} quote and checkout use their own endpoints and signed form`, async () => {
     const action =
       type === 'alipay_official'

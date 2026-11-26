@@ -136,6 +136,14 @@ export interface TopupInfo {
   stripe_min_topup: number
   /** Preset amount options */
   amount_options: number[]
+  /** Domestic checkout amounts in whole CNY and the minimum in cents */
+  cny_topup?: {
+    payment_method: string
+    min_cents: number
+    amount_options: number[]
+  }
+  /** Gift amount in CNY keyed by the exact paid amount in CNY */
+  amount_gifts?: Record<number, number>
   /** Discount rates by amount */
   discount: Record<number, number>
   /** Optional topup link for purchasing codes */
@@ -183,9 +191,7 @@ export interface RedemptionRequest {
 /**
  * Payment request parameters
  */
-export interface PaymentRequest {
-  /** Topup amount */
-  amount: number
+export type PaymentRequest = AmountRequest & {
   /** Payment method identifier */
   payment_method: string
 }
@@ -211,10 +217,9 @@ export interface WaffoPancakePaymentRequest {
 /**
  * Amount calculation request
  */
-export interface AmountRequest {
-  /** Topup amount to calculate */
-  amount: number
-}
+export type AmountRequest =
+  | { amount: number; amount_cents?: never }
+  | { amount?: never; amount_cents: number }
 
 /**
  * Affiliate quota transfer request
@@ -234,6 +239,8 @@ export interface UserWalletData {
   username: string
   /** Current quota balance */
   quota: number
+  /** Gift quota included in the total balance */
+  gift_quota?: number
   /** Total used quota */
   used_quota: number
   /** Total request count */
@@ -263,6 +270,10 @@ export interface TopupRecord {
   user_id: number
   /** Topup amount (quota) */
   amount: number
+  /** Amount paid in CNY cents by domestic checkout */
+  amount_cents?: number
+  /** Gift credit in CNY recorded on the order */
+  gift_amount?: number
   /** Payment amount (actual money paid) */
   money: number
   /** Trade/order number */
