@@ -18,7 +18,7 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash2 } from 'lucide-react'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -32,13 +32,18 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-import { SettingsForm } from '../components/settings-form-layout'
+import {
+  SettingsControlGroup,
+  SettingsForm,
+  SettingsSwitchField,
+} from '../components/settings-form-layout'
 import { SettingsPageFormActions } from '../components/settings-page-context'
 import { SettingsSection } from '../components/settings-section'
 import { useUpdateOption } from '../hooks/use-update-option'
 import {
   MAX_GIFT_TIERS,
   rechargeGiftTiersSchema,
+  writeRechargeGiftTiers,
   type RechargeGiftTierValues,
 } from './recharge-gift-config'
 
@@ -50,6 +55,11 @@ export function RechargeGiftSettingsSection(
   props: RechargeGiftSettingsSectionProps
 ) {
   const { t } = useTranslation()
+  const tierFields = [
+    { name: 'min', label: t('billing.rechargeGift.minRecharge') },
+    { name: 'max', label: t('billing.rechargeGift.maxRecharge') },
+    { name: 'gift', label: t('billing.rechargeGift.giftCny') },
+  ] as const
   const updateOption = useUpdateOption()
   const form = useForm<RechargeGiftTierValues>({
     resolver: zodResolver(rechargeGiftTiersSchema),
@@ -59,6 +69,10 @@ export function RechargeGiftSettingsSection(
     control: form.control,
     name: 'tiers',
   })
+  const percentageEnabled = useWatch({
+    control: form.control,
+    name: 'percentageEnabled',
+  })
   const { isDirty, isSubmitting } = form.formState
   const disabled = isSubmitting || updateOption.isPending
 
@@ -66,11 +80,7 @@ export function RechargeGiftSettingsSection(
     try {
       await updateOption.mutateAsync({
         key: 'TopUpGiftTiers',
-        value: JSON.stringify(
-          Object.fromEntries(
-            values.tiers.map((tier) => [tier.amount, Number(tier.gift)])
-          )
-        ),
+        value: writeRechargeGiftTiers(values),
       })
       form.reset(values)
     } catch {
@@ -97,49 +107,33 @@ export function RechargeGiftSettingsSection(
           {fields.map((tier, index) => (
             <div
               key={tier.id}
-              className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-start gap-3 sm:max-w-lg'
+              className='grid grid-cols-2 items-start gap-3 sm:max-w-2xl sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]'
             >
-              <FormField
-                control={form.control}
-                name={`tiers.${index}.amount`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t('billing.rechargeGift.rechargeCny')}
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        inputMode='numeric'
-                        disabled={disabled}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`tiers.${index}.gift`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('billing.rechargeGift.giftCny')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        inputMode='decimal'
-                        disabled={disabled}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {tierFields.map(({ name, label }) => (
+                <FormField
+                  key={name}
+                  control={form.control}
+                  name={`tiers.${index}.${name}`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          inputMode='decimal'
+                          disabled={disabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
               <Button
                 type='button'
                 variant='outline'
                 size='icon'
-                className='mt-5.5'
+                className='mt-5.5 justify-self-end'
                 aria-label={t('billing.rechargeGift.remove', {
                   index: index + 1,
                 })}
@@ -157,11 +151,69 @@ export function RechargeGiftSettingsSection(
             size='sm'
             className='justify-self-start'
             disabled={disabled || fields.length >= MAX_GIFT_TIERS}
-            onClick={() => append({ amount: '', gift: '' })}
+            onClick={() => append({ min: '', max: '', gift: '' })}
           >
             <Plus data-icon='inline-start' aria-hidden='true' />
             {t('billing.rechargeGift.add')}
           </Button>
+          <SettingsControlGroup className='sm:max-w-2xl'>
+            <FormField
+              control={form.control}
+              name='percentageEnabled'
+              render={({ field }) => (
+                <SettingsSwitchField
+                  controlId='recharge-gift-percentage-enabled'
+                  label={t('billing.rechargeGift.enablePercentage')}
+                  description={t('billing.rechargeGift.percentageDescription')}
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={disabled}
+                />
+              )}
+            />
+            {percentageEnabled && (
+              <div className='grid gap-3 sm:grid-cols-2'>
+                <FormField
+                  control={form.control}
+                  name='percentage.above'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t('billing.rechargeGift.percentageAbove')} ({t('CNY')})
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          inputMode='decimal'
+                          disabled={disabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='percentage.rate'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t('billing.rechargeGift.percentageRate')}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          inputMode='decimal'
+                          disabled={disabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+          </SettingsControlGroup>
         </SettingsForm>
       </Form>
     </SettingsSection>

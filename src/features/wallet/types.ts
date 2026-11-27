@@ -144,6 +144,10 @@ export interface TopupInfo {
   }
   /** Gift amount in CNY keyed by the exact paid amount in CNY */
   amount_gifts?: Record<number, number>
+  /** Inclusive recharge gift ranges in CNY */
+  gift_ranges?: { min: number; max: number; gift: number }[]
+  /** Gift rate for eligible amounts strictly above the threshold */
+  gift_percentage?: { above: number; rate: number }
   /** Discount rates by amount */
   discount: Record<number, number>
   /** Optional topup link for purchasing codes */

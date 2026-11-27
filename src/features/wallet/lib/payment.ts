@@ -276,6 +276,22 @@ export function getMinTopupAmount(topupInfo: TopupInfo | null): number {
 }
 
 /**
+ * Calculate a gift on the whole recharge amount, rounded half up to cents.
+ */
+export function calculatePercentageGift(
+  amount: number,
+  percentage: TopupInfo['gift_percentage']
+): number | undefined {
+  if (!percentage || amount <= percentage.above || amount > 100_000_000) {
+    return undefined
+  }
+
+  const cents = Math.round(amount * 100)
+  const basisPoints = Math.round(percentage.rate * 100)
+  return Math.floor((cents * basisPoints + 5_000) / 10_000) / 100
+}
+
+/**
  * Generate preset amounts based on minimum topup
  */
 export function generatePresetAmounts(minAmount: number): PresetAmount[] {

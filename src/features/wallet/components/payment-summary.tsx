@@ -28,6 +28,7 @@ interface PaymentSummaryProps {
 
 export function PaymentSummary(props: PaymentSummaryProps) {
   const { t } = useTranslation()
+  const paidAmount = props.topupAmount * (props.displayRate ?? 1)
 
   return (
     <section
@@ -40,19 +41,28 @@ export function PaymentSummary(props: PaymentSummaryProps) {
           {t('Recharge Amount')}
         </p>
         <p className='mt-2 text-sm font-semibold tabular-nums sm:text-base'>
-          {formatCurrencyFixed(props.topupAmount * (props.displayRate ?? 1))}{' '}
-          CNY
+          {formatCurrencyFixed(paidAmount)} {t('CNY')}
         </p>
       </div>
       {!!props.giftAmount && (
-        <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
-          <p className='text-muted-foreground text-xs font-medium'>
-            {t('wallet.gift.amount')}
-          </p>
-          <p className='text-primary mt-2 text-sm font-semibold tabular-nums sm:text-base'>
-            {formatCurrencyFixed(props.giftAmount)} {t('CNY')}
-          </p>
-        </div>
+        <>
+          <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
+            <p className='text-muted-foreground text-xs font-medium'>
+              {t('wallet.gift.amount')}
+            </p>
+            <p className='text-primary mt-2 text-sm font-semibold tabular-nums sm:text-base'>
+              {formatCurrencyFixed(props.giftAmount)} {t('CNY')}
+            </p>
+          </div>
+          <div className='bg-muted/45 min-w-0 rounded-xl p-3 sm:p-4'>
+            <p className='text-muted-foreground text-xs font-medium'>
+              {t('wallet.gift.estimatedCredit')}
+            </p>
+            <p className='mt-2 text-sm font-semibold tabular-nums sm:text-base'>
+              {formatCurrencyFixed(paidAmount + props.giftAmount)} {t('CNY')}
+            </p>
+          </div>
+        </>
       )}
     </section>
   )

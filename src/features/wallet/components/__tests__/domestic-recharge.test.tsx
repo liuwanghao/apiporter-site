@@ -21,6 +21,8 @@ import assert from 'node:assert/strict'
 import { Window } from 'happy-dom'
 import { afterAll, afterEach, test } from 'vitest'
 
+import type { TopupInfo } from '../../types'
+
 const domWindow = new Window({ url: 'https://app.example.com/wallet' })
 for (const [key, value] of Object.entries({
   window: domWindow,
@@ -62,6 +64,8 @@ type RechargeHarnessProps = {
   minimum?: number
   loading?: boolean
   cny?: boolean
+  giftRanges?: TopupInfo['gift_ranges']
+  giftPercentage?: TopupInfo['gift_percentage']
 }
 
 function RechargeHarness(props: RechargeHarnessProps = {}) {
@@ -85,6 +89,8 @@ function RechargeHarness(props: RechargeHarnessProps = {}) {
             }
           : undefined,
         amount_gifts: props.cny ? { 20: 1 } : undefined,
+        gift_ranges: props.giftRanges,
+        gift_percentage: props.giftPercentage,
       }}
       presetAmounts={
         props.cny
@@ -194,6 +200,43 @@ test('exact CNY checkout shows the gift for ¥20 and no gift for ¥20.01', async
   await enterAmount('20.01')
   assert.equal(changed.at(-1), 2001)
   assert.doesNotMatch(summary?.textContent ?? '', /wallet\.gift\.amount/)
+  assert.equal(payButton().disabled, false)
+})
+
+test('CNY checkout shows the range gift at both inclusive bounds', async () => {
+  await mount({ cny: true, giftRanges: [{ min: 20, max: 25.75, gift: 2.25 }] })
+  const summary = document.querySelector('[data-payment-summary]')
+
+  assert.match(summary?.textContent ?? '', /wallet\.gift\.amount2\.25 CNY/)
+  assert.match(
+    document.querySelector('[data-preset-amounts]')?.textContent ?? '',
+    /20wallet\.gift\.preset/
+  )
+
+  await enterAmount('25.75')
+  assert.match(summary?.textContent ?? '', /wallet\.gift\.amount2\.25 CNY/)
+
+  await enterAmount('25.76')
+  assert.doesNotMatch(summary?.textContent ?? '', /wallet\.gift\.amount/)
+
+  await enterAmount('19.99')
+  assert.doesNotMatch(summary?.textContent ?? '', /wallet\.gift\.amount/)
+})
+
+test('entering an amount above the threshold previews the rounded percentage gift and total', async () => {
+  await mount({ cny: true, giftPercentage: { above: 500, rate: 10 } })
+  const summary = document.querySelector('[data-payment-summary]')
+
+  await enterAmount('500')
+  assert.doesNotMatch(summary?.textContent ?? '', /wallet\.gift\.amount/)
+
+  await enterAmount('1000.05')
+  assert.equal(changed.at(-1), 100005)
+  assert.match(summary?.textContent ?? '', /wallet\.gift\.amount100\.01 CNY/)
+  assert.match(
+    summary?.textContent ?? '',
+    /wallet\.gift\.estimatedCredit1,100\.06 CNY/
+  )
   assert.equal(payButton().disabled, false)
 })
 

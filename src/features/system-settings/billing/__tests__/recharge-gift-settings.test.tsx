@@ -62,6 +62,74 @@ function renderSettings(savedOption: string) {
 }
 
 describe('recharge gift settings', () => {
+  test('enables and saves a percentage gift together with existing tiers', async () => {
+    const save = vi.fn<AxiosAdapter>(async (config) => ({
+      data: { success: true },
+      status: 200,
+      statusText: 'OK',
+      headers: {},
+      config,
+    }))
+    api.defaults.adapter = save
+    const user = renderSettings('{"20":1}')
+    const toggle = screen.getByRole('switch', {
+      name: 'billing.rechargeGift.enablePercentage',
+    })
+    expect(toggle).not.toBeChecked()
+    expect(
+      screen.queryByRole('textbox', {
+        name: 'billing.rechargeGift.percentageRate',
+      })
+    ).not.toBeInTheDocument()
+
+    toggle.focus()
+    await user.keyboard(' ')
+    expect(toggle).toBeChecked()
+    expect(
+      await screen.findByRole('textbox', {
+        name: 'billing.rechargeGift.percentageAbove (CNY)',
+      })
+    ).toHaveValue('500')
+    expect(
+      screen.getByRole('textbox', {
+        name: 'billing.rechargeGift.percentageRate',
+      })
+    ).toHaveValue('10')
+
+    const saveButton = screen.getByRole('button', { name: 'Save Changes' })
+    await user.click(saveButton)
+    await waitFor(() => expect(saveButton).toBeDisabled())
+    expect(save).toHaveBeenCalledOnce()
+    expect(JSON.parse(save.mock.calls[0][0].data)).toEqual({
+      key: 'TopUpGiftTiers',
+      value:
+        '{"tiers":[{"min":20,"max":20,"gift":1}],"percentage":{"above":500,"rate":10}}',
+    })
+  })
+
+  test('rejects an invalid rate and retains the rule fields for correction', async () => {
+    const user = renderSettings(
+      '{"tiers":[],"percentage":{"above":500.25,"rate":10.75}}'
+    )
+    expect(
+      screen.getByRole('switch', {
+        name: 'billing.rechargeGift.enablePercentage',
+      })
+    ).toBeChecked()
+    const rate = screen.getByRole('textbox', {
+      name: 'billing.rechargeGift.percentageRate',
+    })
+    expect(rate).toHaveValue('10.75')
+    await user.clear(rate)
+    await user.type(rate, '100.01')
+    await user.click(screen.getByRole('button', { name: 'Save Changes' }))
+
+    expect(rate).toHaveAttribute('aria-invalid', 'true')
+    expect(
+      await screen.findByText('billing.rechargeGift.invalidPercentageRate')
+    ).toBeVisible()
+  })
+
   test('aligns the add-tier button to the start of its form row', () => {
     renderSettings('{"20":1}')
 
@@ -70,7 +138,7 @@ describe('recharge gift settings', () => {
     ).toHaveClass('justify-self-start')
   })
 
-  test('saves an edited tier and a newly added tier in a single option update', async () => {
+  test('saves a legacy exact tier and a newly added range in a single option update', async () => {
     const save = vi.fn<AxiosAdapter>(async (config) => ({
       data: { success: true },
       status: 200,
@@ -93,9 +161,15 @@ describe('recharge gift settings', () => {
     )
     await user.type(
       screen.getAllByRole('textbox', {
-        name: 'billing.rechargeGift.rechargeCny',
+        name: 'billing.rechargeGift.minRecharge',
       })[1],
       '50'
+    )
+    await user.type(
+      screen.getAllByRole('textbox', {
+        name: 'billing.rechargeGift.maxRecharge',
+      })[1],
+      '99.99'
     )
     await user.type(
       screen.getAllByRole('textbox', {
@@ -109,19 +183,26 @@ describe('recharge gift settings', () => {
     expect(save).toHaveBeenCalledTimes(1)
     expect(JSON.parse(save.mock.calls[0][0].data)).toEqual({
       key: 'TopUpGiftTiers',
-      value: '{"20":1.25,"50":3}',
+      value:
+        '[{"min":20,"max":20,"gift":1.25},{"min":50,"max":99.99,"gift":3}]',
     })
   })
 
-  test('marks a duplicate recharge amount and prevents saving it', async () => {
+  test('marks inclusive ranges with a shared endpoint as overlapping', async () => {
     const user = renderSettings('{"20":1}')
     await user.click(
       screen.getByRole('button', { name: 'billing.rechargeGift.add' })
     )
     const amount = screen.getAllByRole('textbox', {
-      name: 'billing.rechargeGift.rechargeCny',
+      name: 'billing.rechargeGift.minRecharge',
     })[1]
     await user.type(amount, '20')
+    await user.type(
+      screen.getAllByRole('textbox', {
+        name: 'billing.rechargeGift.maxRecharge',
+      })[1],
+      '25'
+    )
     await user.type(
       screen.getAllByRole('textbox', {
         name: 'billing.rechargeGift.giftCny',
@@ -131,9 +212,39 @@ describe('recharge gift settings', () => {
     await user.click(screen.getByRole('button', { name: 'Save Changes' }))
 
     expect(
-      await screen.findByText('billing.rechargeGift.duplicate')
+      await screen.findByText('billing.rechargeGift.overlap')
     ).toBeVisible()
     expect(amount).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  test('marks a maximum below the minimum as invalid', async () => {
+    const user = renderSettings('[{"min":10.25,"max":20.99,"gift":1}]')
+    const maximum = screen.getByRole('textbox', {
+      name: 'billing.rechargeGift.maxRecharge',
+    })
+    expect(maximum).toHaveValue('20.99')
+    await user.clear(maximum)
+    await user.type(maximum, '10.24')
+    await user.click(screen.getByRole('button', { name: 'Save Changes' }))
+
+    expect(
+      await screen.findByText('billing.rechargeGift.invalidRange')
+    ).toBeVisible()
+    expect(maximum).toHaveAttribute('aria-invalid', 'true')
+  })
+
+  test('loads decimal strings accepted by the stored option', () => {
+    renderSettings('[{"min":"20.00","max":"49.99","gift":"1.250"}]')
+
+    expect(
+      screen.getByLabelText('billing.rechargeGift.minRecharge')
+    ).toHaveValue('20')
+    expect(
+      screen.getByLabelText('billing.rechargeGift.maxRecharge')
+    ).toHaveValue('49.99')
+    expect(screen.getByLabelText('billing.rechargeGift.giftCny')).toHaveValue(
+      '1.25'
+    )
   })
 
   test('removing the only tier leaves the gift schedule empty', async () => {

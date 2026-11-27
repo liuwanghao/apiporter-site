@@ -86,13 +86,37 @@ export function CommonLogsStats() {
     )
   }
 
+  const quotaValue = (quota: number) =>
+    sensitiveVisible ? formatLogQuota(quota) : '••••'
+
   return (
     <div className='flex flex-wrap items-center gap-2'>
       <StatBadge
         label={t('Usage')}
-        value={sensitiveVisible ? formatLogQuota(stats?.quota || 0) : '••••'}
+        value={quotaValue(stats?.quota ?? 0)}
         accent='bg-sky-500/70'
       />
+      {stats?.wallet_principal_quota != null && (
+        <StatBadge
+          label={t('usageLogs.stats.principal')}
+          value={quotaValue(stats.wallet_principal_quota)}
+          accent='bg-indigo-500/70'
+        />
+      )}
+      {stats?.wallet_gift_quota != null && (
+        <StatBadge
+          label={t('usageLogs.stats.gift')}
+          value={quotaValue(stats.wallet_gift_quota)}
+          accent='bg-emerald-500/70'
+        />
+      )}
+      {!!stats?.unclassified_quota && (
+        <StatBadge
+          label={t('usageLogs.stats.unclassified')}
+          value={quotaValue(stats.unclassified_quota)}
+          accent='bg-slate-400/70'
+        />
+      )}
       <StatBadge
         label={t('RPM')}
         value={stats?.rpm || 0}

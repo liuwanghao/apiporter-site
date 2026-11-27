@@ -283,6 +283,9 @@ export interface LogOtherData {
  */
 export interface LogStatistics {
   quota: number
+  wallet_principal_quota?: number
+  wallet_gift_quota?: number
+  unclassified_quota?: number
   rpm: number
   tpm: number
 }

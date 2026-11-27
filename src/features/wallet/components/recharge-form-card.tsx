@@ -32,6 +32,7 @@ import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
 import {
+  calculatePercentageGift,
   formatCurrencyFixed,
   getDiscountLabel,
   getMinTopupAmount,
@@ -136,10 +137,18 @@ export function RechargeFormCard({
     topupInfo?.enable_waffo_pancake_topup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
   const minTopup = getMinTopupAmount(topupInfo)
-  const giftAmount =
-    cnyTopup && rechargeAmount >= minTopup
-      ? topupInfo?.amount_gifts?.[rechargeAmount / 100]
-      : undefined
+  const giftForAmount = (cents: number) => {
+    if (!cnyTopup || cents < minTopup) return undefined
+
+    const amount = cents / 100
+    const ranges = topupInfo?.gift_ranges
+    const gift = ranges
+      ? ranges.find(({ min, max }) => amount >= min && amount <= max)?.gift
+      : topupInfo?.amount_gifts?.[amount]
+
+    return gift ?? calculatePercentageGift(amount, topupInfo?.gift_percentage)
+  }
+  const giftAmount = giftForAmount(rechargeAmount)
   const presetDisplayValues = presetAmounts.map(
     (preset) => preset.value * displayRate
   )
@@ -209,7 +218,8 @@ export function RechargeFormCard({
       action={
         presetDisplayRange ? (
           <span className='text-muted-foreground text-sm font-medium tabular-nums'>
-            ¥{formatNumber(presetDisplayRange.min)}–¥
+            {t('wallet.presetAmounts')} ¥{formatNumber(presetDisplayRange.min)}
+            –¥
             {formatNumber(presetDisplayRange.max)} {t('CNY')}
           </span>
         ) : null
@@ -238,9 +248,7 @@ export function RechargeFormCard({
                       const displayValue = Number(
                         (preset.value * displayRate).toFixed(2)
                       )
-                      const presetGift = cnyTopup
-                        ? topupInfo?.amount_gifts?.[preset.value / 100]
-                        : undefined
+                      const presetGift = giftForAmount(preset.value)
                       const hasDiscount = discount < 1
                       return (
                         <Button
