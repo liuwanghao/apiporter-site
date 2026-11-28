@@ -25,9 +25,9 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { z } from 'zod'
 
+import { Captcha } from '@/components/captcha'
 import { Dialog } from '@/components/dialog'
 import { PasswordInput } from '@/components/password-input'
-import { Turnstile } from '@/components/turnstile'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -44,7 +44,7 @@ import { LegalConsent } from '@/features/auth/components/legal-consent'
 import { OAuthProviders } from '@/features/auth/components/oauth-providers'
 import { loginFormSchema } from '@/features/auth/constants'
 import { useAuthRedirect } from '@/features/auth/hooks/use-auth-redirect'
-import { useTurnstile } from '@/features/auth/hooks/use-turnstile'
+import { useCaptcha } from '@/features/auth/hooks/use-captcha'
 import { beginPasskeyLogin, finishPasskeyLogin } from '@/features/auth/passkey'
 import {
   requestPasskeyAssertion,
@@ -94,13 +94,8 @@ export function UserAuthForm({
     (status?.password_login_encryption_enabled ??
       status?.data?.password_login_encryption_enabled ??
       false) === true
-  const {
-    isTurnstileEnabled,
-    turnstileSiteKey,
-    turnstileToken,
-    setTurnstileToken,
-    validateTurnstile,
-  } = useTurnstile()
+  const { captchaProps, captchaKey, isCaptchaEnabled, validateCaptcha } =
+    useCaptcha()
   const { handleLoginResult } = useAuthRedirect()
 
   const passkeyButtonDisabled =
@@ -151,14 +146,14 @@ export function UserAuthForm({
       return
     }
 
-    if (!validateTurnstile()) return
-
     setIsLoading(true)
     try {
+      const proof = await validateCaptcha()
+      if (proof === null) return
       const res = await login({
         username: data.username,
         password: data.password,
-        turnstile: turnstileToken,
+        ...proof,
         passwordEncryptionEnabled: passwordLoginEncryptionEnabled,
       })
 
@@ -394,13 +389,9 @@ export function UserAuthForm({
               {t('Sign in')}
             </Button>
 
-            {/* Turnstile */}
-            {isTurnstileEnabled && (
+            {isCaptchaEnabled && (
               <div className='mt-2 flex justify-center'>
-                <Turnstile
-                  siteKey={turnstileSiteKey}
-                  onVerify={setTurnstileToken}
-                />
+                <Captcha key={captchaKey} {...captchaProps} />
               </div>
             )}
           </>

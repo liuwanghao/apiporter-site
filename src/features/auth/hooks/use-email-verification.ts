@@ -27,10 +27,10 @@ import { createServerError } from '@/lib/server-error-message'
 
 import { sendEmailVerification } from '../api'
 import { EMAIL_VERIFICATION_COUNTDOWN } from '../constants'
+import type { CaptchaProof } from '../types'
 
 interface UseEmailVerificationOptions {
-  turnstileToken?: string
-  validateTurnstile?: () => boolean
+  getCaptchaProof?: () => Promise<CaptchaProof | null>
 }
 
 /**
@@ -53,14 +53,13 @@ export function useEmailVerification(options?: UseEmailVerificationOptions) {
       return false
     }
 
-    // Validate turnstile if validation function is provided
-    if (options?.validateTurnstile && !options.validateTurnstile()) {
-      return false
-    }
-
     setIsSending(true)
     try {
-      const res = await sendEmailVerification(email, options?.turnstileToken)
+      const proof = options?.getCaptchaProof
+        ? await options.getCaptchaProof()
+        : {}
+      if (proof === null) return false
+      const res = await sendEmailVerification(email, proof)
       if (res?.success) {
         startCountdown()
         toast.success(i18next.t('Verification email sent'))

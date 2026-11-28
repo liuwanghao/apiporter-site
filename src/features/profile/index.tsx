@@ -24,6 +24,7 @@ import {
   CardStaggerContainer,
   CardStaggerItem,
 } from '@/components/page-transition'
+import { getCaptchaConfig } from '@/features/auth/hooks/use-captcha'
 import { useStatus } from '@/hooks/use-status'
 import { useAuthStore } from '@/stores/auth-store'
 
@@ -43,10 +44,7 @@ export function Profile() {
 
   const checkinEnabled = status?.checkin_enabled === true
   const checkinCaptchaEnabled = status?.checkin_captcha_enabled === true
-  const turnstileEnabled = !!(
-    status?.turnstile_check && status?.turnstile_site_key
-  )
-  const turnstileSiteKey = status?.turnstile_site_key || ''
+  const captchaConfig = getCaptchaConfig(status)
   const canConfigureSidebar = permissions?.sidebar_settings !== false
   // Older cached status payloads lack these fields; the site default is on.
   const quotaRemindEnabled = status?.quota_remind_enabled !== false
@@ -85,8 +83,13 @@ export function Profile() {
                   <CheckinCalendarCard
                     checkinEnabled={checkinEnabled}
                     captchaEnabled={checkinCaptchaEnabled}
-                    turnstileEnabled={turnstileEnabled}
-                    turnstileSiteKey={turnstileSiteKey}
+                    turnstileEnabled={captchaConfig.provider === 'turnstile'}
+                    turnstileSiteKey={captchaConfig.turnstileSiteKey}
+                    aliyunCaptcha={
+                      captchaConfig.provider === 'aliyun'
+                        ? captchaConfig
+                        : undefined
+                    }
                   />
                 ) : undefined
               }

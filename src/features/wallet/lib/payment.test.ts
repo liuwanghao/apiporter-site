@@ -20,6 +20,7 @@ import { describe, expect, test } from 'vitest'
 
 import { PAYMENT_TYPES } from '../constants'
 import {
+  calculatePercentageGift,
   dispatchSelectedPayment,
   isStripePayment,
   isWaffoPayment,
@@ -34,6 +35,15 @@ describe('payment type classification', () => {
     expect(isWaffoPancakePayment(PAYMENT_TYPES.WAFFO_PANCAKE)).toBe(true)
     expect(isWaffoPancakePayment(PAYMENT_TYPES.WAFFO)).toBe(false)
     expect(isStripePayment(PAYMENT_TYPES.STRIPE)).toBe(true)
+  })
+})
+
+describe('percentage recharge gifts', () => {
+  test('includes the configured threshold amount', () => {
+    expect(calculatePercentageGift(1000, { above: 1000, rate: 10 })).toBe(100)
+    expect(calculatePercentageGift(999.99, { above: 1000, rate: 10 })).toBe(
+      undefined
+    )
   })
 })
 

@@ -161,6 +161,7 @@ export type SiteSettings = {
 }
 
 export type AuthSettings = {
+  CaptchaProvider: '' | 'none' | 'turnstile' | 'aliyun'
   PasswordLoginEnabled: boolean
   PasswordRegisterEnabled: boolean
   EmailVerificationEnabled: boolean
@@ -199,6 +200,11 @@ export type AuthSettings = {
   TurnstileCheckEnabled: boolean
   TurnstileSiteKey: string
   TurnstileSecretKey: string
+  AliyunCaptchaRegion: string
+  AliyunCaptchaPrefix: string
+  AliyunCaptchaSceneId: string
+  AliyunCaptchaAccessKeyId: string
+  AliyunCaptchaAccessKeySecret: string
   'passkey.enabled': boolean
   'passkey.rp_display_name': string
   'passkey.rp_id': string

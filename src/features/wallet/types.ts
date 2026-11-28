@@ -146,7 +146,7 @@ export interface TopupInfo {
   amount_gifts?: Record<number, number>
   /** Inclusive recharge gift ranges in CNY */
   gift_ranges?: { min: number; max: number; gift: number }[]
-  /** Gift rate for eligible amounts strictly above the threshold */
+  /** Gift rate for eligible amounts at or above the threshold */
   gift_percentage?: { above: number; rate: number }
   /** Discount rates by amount */
   discount: Record<number, number>

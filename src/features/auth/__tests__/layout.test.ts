@@ -80,12 +80,12 @@ describe('authentication page layout', () => {
     )
   })
 
-  test('centers Turnstile on both sign-in and forgot-password forms', () => {
-    const centeredTurnstile =
-      /<div className='mt-2 flex justify-center'>\s*<Turnstile/
+  test('centers the CAPTCHA on both sign-in and forgot-password forms', () => {
+    const centeredCaptcha =
+      /<div className='mt-2 flex justify-center'>\s*<Captcha\b/
 
-    assert.match(signInForm, centeredTurnstile)
-    assert.match(forgotPasswordForm, centeredTurnstile)
+    assert.match(signInForm, centeredCaptcha)
+    assert.match(forgotPasswordForm, centeredCaptcha)
   })
 
   test('keeps legal consent readable in the mobile form width', () => {

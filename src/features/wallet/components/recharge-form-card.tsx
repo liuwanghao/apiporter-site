@@ -137,6 +137,7 @@ export function RechargeFormCard({
     topupInfo?.enable_waffo_pancake_topup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
   const minTopup = getMinTopupAmount(topupInfo)
+  const percentageGift = cnyTopup ? topupInfo?.gift_percentage : undefined
   const giftForAmount = (cents: number) => {
     if (!cnyTopup || cents < minTopup) return undefined
 
@@ -146,7 +147,7 @@ export function RechargeFormCard({
       ? ranges.find(({ min, max }) => amount >= min && amount <= max)?.gift
       : topupInfo?.amount_gifts?.[amount]
 
-    return gift ?? calculatePercentageGift(amount, topupInfo?.gift_percentage)
+    return gift ?? calculatePercentageGift(amount, percentageGift)
   }
   const giftAmount = giftForAmount(rechargeAmount)
   const presetDisplayValues = presetAmounts.map(
@@ -370,6 +371,17 @@ export function RechargeFormCard({
                     </span>
                   )}
                 </p>
+                {percentageGift && (
+                  <Alert className='border-primary/30 bg-primary/5 py-2'>
+                    <AlertDescription className='text-primary text-sm'>
+                      {t('wallet.gift.percentageRule', {
+                        amount: formatNumber(percentageGift.above),
+                        currency: t('CNY'),
+                        rate: formatNumber(percentageGift.rate),
+                      })}
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
 
               <PaymentSummary

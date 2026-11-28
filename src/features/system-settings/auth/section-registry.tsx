@@ -108,9 +108,17 @@ const AUTH_SECTIONS = [
     build: (settings: AuthSettings) => (
       <BotProtectionSection
         defaultValues={{
-          TurnstileCheckEnabled: settings.TurnstileCheckEnabled,
+          CaptchaProvider:
+            settings.CaptchaProvider ||
+            (settings.TurnstileCheckEnabled ? 'turnstile' : 'none'),
           TurnstileSiteKey: settings.TurnstileSiteKey,
           TurnstileSecretKey: settings.TurnstileSecretKey,
+          AliyunCaptchaRegion:
+            settings.AliyunCaptchaRegion === 'sgp' ? 'sgp' : 'cn',
+          AliyunCaptchaPrefix: settings.AliyunCaptchaPrefix,
+          AliyunCaptchaSceneId: settings.AliyunCaptchaSceneId,
+          AliyunCaptchaAccessKeyId: settings.AliyunCaptchaAccessKeyId,
+          AliyunCaptchaAccessKeySecret: settings.AliyunCaptchaAccessKeySecret,
         }}
       />
     ),

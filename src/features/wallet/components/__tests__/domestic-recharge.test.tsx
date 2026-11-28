@@ -223,12 +223,15 @@ test('CNY checkout shows the range gift at both inclusive bounds', async () => {
   assert.doesNotMatch(summary?.textContent ?? '', /wallet\.gift\.amount/)
 })
 
-test('entering an amount above the threshold previews the rounded percentage gift and total', async () => {
-  await mount({ cny: true, giftPercentage: { above: 500, rate: 10 } })
+test('previews the gift at the threshold and rounds the gift and total above it', async () => {
+  await mount({ cny: true, giftPercentage: { above: 1000, rate: 10 } })
   const summary = document.querySelector('[data-payment-summary]')
 
-  await enterAmount('500')
+  assert.match(document.body.textContent ?? '', /wallet\.gift\.percentageRule/)
+  await enterAmount('999.99')
   assert.doesNotMatch(summary?.textContent ?? '', /wallet\.gift\.amount/)
+  await enterAmount('1000')
+  assert.match(summary?.textContent ?? '', /wallet\.gift\.amount100\.00 CNY/)
 
   await enterAmount('1000.05')
   assert.equal(changed.at(-1), 100005)

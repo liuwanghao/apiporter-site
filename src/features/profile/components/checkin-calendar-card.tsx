@@ -25,10 +25,15 @@ import {
   ChevronUp,
   Sparkles,
 } from 'lucide-react'
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
+import {
+  Captcha,
+  type CaptchaConfig,
+  type CaptchaHandle,
+} from '@/components/captcha'
 import { Dialog } from '@/components/dialog'
 import { Turnstile } from '@/components/turnstile'
 import { Button } from '@/components/ui/button'
@@ -56,6 +61,7 @@ interface CheckinCalendarCardProps {
   captchaEnabled: boolean
   turnstileEnabled: boolean
   turnstileSiteKey: string
+  aliyunCaptcha?: CaptchaConfig
 }
 
 export function CheckinCalendarCard({
@@ -63,8 +69,10 @@ export function CheckinCalendarCard({
   captchaEnabled,
   turnstileEnabled,
   turnstileSiteKey,
+  aliyunCaptcha,
 }: CheckinCalendarCardProps) {
   const { t } = useTranslation()
+  const aliyunCaptchaRef = useRef<CaptchaHandle>(null)
   const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date()
     return new Date(now.getFullYear(), now.getMonth(), 1)
@@ -74,9 +82,7 @@ export function CheckinCalendarCard({
   const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0)
   const [captchaModalVisible, setCaptchaModalVisible] = useState(false)
   const [captchaRequiredByServer, setCaptchaRequiredByServer] = useState(false)
-  const [pendingTurnstileToken, setPendingTurnstileToken] = useState<
-    string | undefined
-  >()
+  const [pendingTurnstileToken, setPendingTurnstileToken] = useState<string>()
   const [initialLoaded, setInitialLoaded] = useState(false)
   const [collapsed, setCollapsed] = useState<boolean>(false)
 
@@ -160,11 +166,14 @@ export function CheckinCalendarCard({
   const doCheckin = useCallback(
     async (
       captcha?: SliderCaptchaSolution,
-      turnstileToken?: string
+      turnstileToken?: string,
+      aliyunToken?: string
     ): Promise<boolean | 'restart'> => {
       setCheckinLoading(true)
       try {
-        const res = await performCheckin(captcha, turnstileToken)
+        const res = aliyunToken
+          ? await performCheckin(captcha, undefined, aliyunToken)
+          : await performCheckin(captcha, turnstileToken)
         if (res.success && res.data) {
           toast.success(
             `${t('Check-in successful! Received')} ${formatQuotaWithCurrency(res.data.quota_awarded)}`
@@ -187,6 +196,11 @@ export function CheckinCalendarCard({
           restartTurnstile()
           handleServerError(res, t('Check-in failed'))
           return 'restart'
+        }
+        if (aliyunToken) {
+          if (captchaRejected) setCaptchaModalVisible(true)
+          handleServerError(res, t('Check-in failed'))
+          return false
         }
         // The slider dialog renders the failure inline and reloads its puzzle.
         if (captchaRejected) {
@@ -219,7 +233,22 @@ export function CheckinCalendarCard({
     [refetch, restartTurnstile, shouldTriggerTurnstile, t, turnstileSiteKey]
   )
 
-  const startCheckin = useCallback(() => {
+  const doAliyunCheckin = async (solution?: SliderCaptchaSolution) => {
+    if (solution) setCaptchaModalVisible(false)
+    setCheckinLoading(true)
+    try {
+      const token = await aliyunCaptchaRef.current?.execute()
+      if (!token) {
+        toast.info(t('Please complete the human verification first'))
+        return 'restart' as const
+      }
+      return await doCheckin(solution, undefined, token)
+    } finally {
+      setCheckinLoading(false)
+    }
+  }
+
+  const startCheckin = () => {
     setPendingTurnstileToken(undefined)
     if (turnstileEnabled) {
       if (!turnstileSiteKey) {
@@ -234,8 +263,12 @@ export function CheckinCalendarCard({
       setCaptchaModalVisible(true)
       return
     }
+    if (aliyunCaptcha) {
+      void doAliyunCheckin()
+      return
+    }
     void doCheckin()
-  }, [requiresCaptcha, doCheckin, t, turnstileEnabled, turnstileSiteKey])
+  }
 
   const handlePrevMonth = () => {
     setCurrentMonth(
@@ -316,6 +349,7 @@ export function CheckinCalendarCard({
 
   return (
     <TooltipProvider delay={100}>
+      {aliyunCaptcha && <Captcha ref={aliyunCaptchaRef} {...aliyunCaptcha} />}
       <Dialog
         open={captchaModalVisible}
         onOpenChange={setCaptchaModalVisible}
@@ -327,7 +361,11 @@ export function CheckinCalendarCard({
       >
         {captchaModalVisible ? (
           <CheckinSliderCaptcha
-            onVerify={(solution) => doCheckin(solution, pendingTurnstileToken)}
+            onVerify={(solution) =>
+              aliyunCaptcha
+                ? doAliyunCheckin(solution)
+                : doCheckin(solution, pendingTurnstileToken)
+            }
           />
         ) : null}
       </Dialog>

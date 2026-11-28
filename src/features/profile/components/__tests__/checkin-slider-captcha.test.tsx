@@ -43,6 +43,8 @@ const challenge = {
 afterEach(() => {
   vi.restoreAllMocks()
   delete window.turnstile
+  delete window.initAliyunCaptcha
+  delete window.AliyunCaptchaConfig
 })
 
 beforeEach(() => {
@@ -160,60 +162,90 @@ it('shows a retry action when the puzzle cannot load', async () => {
   )
 })
 
-it('opens verification before sending check-in and sends the chosen solution only on confirmation', async () => {
-  const user = userEvent.setup()
-  const client = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  })
-  vi.spyOn(api, 'get').mockImplementation(async (url) => ({
-    data: {
-      success: true,
-      data:
-        url === '/api/user/checkin/captcha'
-          ? challenge
-          : {
-              enabled: true,
-              captcha_enabled: true,
-              stats: {
-                checked_in_today: false,
-                total_checkins: 0,
-                total_quota: 0,
-                checkin_count: 0,
-                records: [],
+it.each([false, true])(
+  'sends the confirmed slider solution and the required Alibaba Cloud proof (Alibaba Cloud enabled: %s)',
+  async (aliyunEnabled) => {
+    const user = userEvent.setup()
+    const show = vi.fn()
+    const init = vi.fn<NonNullable<Window['initAliyunCaptcha']>>((options) => {
+      options.getInstance({ show })
+    })
+    if (aliyunEnabled) window.initAliyunCaptcha = init
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    })
+    vi.spyOn(api, 'get').mockImplementation(async (url) => ({
+      data: {
+        success: true,
+        data:
+          url === '/api/user/checkin/captcha'
+            ? challenge
+            : {
+                enabled: true,
+                captcha_enabled: true,
+                stats: {
+                  checked_in_today: false,
+                  total_checkins: 0,
+                  total_quota: 0,
+                  checkin_count: 0,
+                  records: [],
+                },
               },
-            },
-    },
-  }))
-  const post = vi.spyOn(api, 'post').mockResolvedValue({
-    data: { success: true, data: { quota_awarded: 1000 } },
-  })
-  render(
-    <QueryClientProvider client={client}>
-      <CheckinCalendarCard
-        checkinEnabled
-        captchaEnabled
-        turnstileEnabled={false}
-        turnstileSiteKey=''
-      />
-    </QueryClientProvider>
-  )
-  await user.click(await screen.findByRole('button', { name: 'Check in now' }))
-  const slider = await screen.findByRole('slider')
-  expect(post).not.toHaveBeenCalled()
-  slider.focus()
-  await user.keyboard('{ArrowRight}{Enter}')
-  await waitFor(() =>
-    expect(post).toHaveBeenCalledWith(
-      '/api/user/checkin',
-      { captcha_token: challenge.token, captcha_x: 1 },
-      { singleUseAuthorization: true }
+      },
+    }))
+    const post = vi.spyOn(api, 'post').mockResolvedValue({
+      data: { success: true, data: { quota_awarded: 1000 } },
+    })
+    render(
+      <QueryClientProvider client={client}>
+        <CheckinCalendarCard
+          checkinEnabled
+          captchaEnabled
+          turnstileEnabled={false}
+          turnstileSiteKey=''
+          aliyunCaptcha={
+            aliyunEnabled
+              ? {
+                  provider: 'aliyun',
+                  turnstileSiteKey: '',
+                  aliyunRegion: 'cn',
+                  aliyunPrefix: 'test-prefix',
+                  aliyunSceneId: 'test-scene',
+                }
+              : undefined
+          }
+        />
+      </QueryClientProvider>
     )
-  )
-  await waitFor(() =>
-    expect(screen.queryByRole('slider')).not.toBeInTheDocument()
-  )
-  client.clear()
-})
+    await user.click(
+      await screen.findByRole('button', { name: 'Check in now' })
+    )
+    const slider = await screen.findByRole('slider')
+    expect(post).not.toHaveBeenCalled()
+    slider.focus()
+    await user.keyboard('{ArrowRight}{Enter}')
+    const requestConfig = { singleUseAuthorization: true }
+    if (aliyunEnabled) {
+      await waitFor(() => expect(show).toHaveBeenCalledOnce())
+      expect(post).not.toHaveBeenCalled()
+      await act(async () => init.mock.calls[0][0].success('aliyun-proof'))
+      Object.assign(requestConfig, {
+        headers: { 'X-Captcha-Token': 'aliyun-proof' },
+      })
+    }
+    await waitFor(() =>
+      expect(post).toHaveBeenCalledWith(
+        '/api/user/checkin',
+        { captcha_token: challenge.token, captcha_x: 1 },
+        requestConfig
+      )
+    )
+    await waitFor(() =>
+      expect(screen.queryByRole('slider')).not.toBeInTheDocument()
+    )
+    client.clear()
+  }
+)
 
 it.each(['captcha_invalid', 'checkin_failed'])(
   'obtains a fresh Turnstile token after an unsuccessful attempt (%s)',

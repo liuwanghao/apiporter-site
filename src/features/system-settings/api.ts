@@ -44,6 +44,14 @@ export async function updateSystemOption(request: UpdateOptionRequest) {
   return res.data
 }
 
+export async function updateCaptchaOptions(options: Record<string, string>) {
+  const res = await api.put<UpdateOptionResponse>(
+    '/api/option/captcha',
+    options
+  )
+  return res.data
+}
+
 export async function updatePasskeyDomains(
   request: UpdatePasskeyDomainsRequest
 ) {

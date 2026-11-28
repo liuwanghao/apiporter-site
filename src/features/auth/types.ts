@@ -24,10 +24,14 @@ import type { LoginResult } from './secure-verification/types'
 // API Payloads
 // ============================================================================
 
-export interface LoginPayload {
+export interface CaptchaProof {
+  turnstile?: string
+  captcha_token?: string
+}
+
+export interface LoginPayload extends CaptchaProof {
   username: string
   password: string
-  turnstile?: string
   passwordEncryptionEnabled?: boolean
 }
 
@@ -36,14 +40,13 @@ export interface TwoFAPayload {
   flow_token: string
 }
 
-export interface RegisterPayload {
+export interface RegisterPayload extends CaptchaProof {
   username: string
   password: string
   email?: string
   verification_code?: string
   ref?: string
   aff_code?: string
-  turnstile?: string
 }
 
 export interface PasswordResetPayload {
@@ -118,6 +121,11 @@ export interface SystemStatus {
     WeChatAccountQRCodeImageURL?: string
     turnstile_check?: boolean
     turnstile_site_key?: string
+    captcha_enabled?: boolean
+    captcha_provider?: 'none' | 'turnstile' | 'aliyun'
+    aliyun_captcha_region?: string
+    aliyun_captcha_prefix?: string
+    aliyun_captcha_scene_id?: string
     checkin_enabled?: boolean
     checkin_captcha_enabled?: boolean
     email_verification?: boolean
@@ -167,6 +175,11 @@ export interface SystemStatus {
   WeChatAccountQRCodeImageURL?: string
   turnstile_check?: boolean
   turnstile_site_key?: string
+  captcha_enabled?: boolean
+  captcha_provider?: 'none' | 'turnstile' | 'aliyun'
+  aliyun_captcha_region?: string
+  aliyun_captcha_prefix?: string
+  aliyun_captcha_scene_id?: string
   checkin_enabled?: boolean
   checkin_captcha_enabled?: boolean
   email_verification?: boolean

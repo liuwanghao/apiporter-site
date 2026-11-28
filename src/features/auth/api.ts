@@ -41,6 +41,7 @@ import type {
   TwoFAPayload,
   RegisterPayload,
   ApiResponse,
+  CaptchaProof,
 } from './types'
 
 // ============================================================================
@@ -51,9 +52,22 @@ import type {
 // Login & Logout
 // ----------------------------------------------------------------------------
 
+function captchaRequestOptions(
+  proof: CaptchaProof = {},
+  params: Record<string, string> = {}
+) {
+  return {
+    params: { ...params, turnstile: proof.turnstile },
+    disableDuplicate: Boolean(proof.captcha_token),
+    headers: proof.captcha_token
+      ? { 'X-Captcha-Token': proof.captcha_token }
+      : undefined,
+    singleUseAuthorization: Boolean(proof.turnstile || proof.captcha_token),
+  }
+}
+
 // User login with username and password
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
-  const turnstile = payload.turnstile ?? ''
   try {
     let passwordFields:
       | { password: string }
@@ -68,12 +82,15 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
       passwordFields = { password: payload.password }
     }
     const res = await api.post<LoginResponse>(
-      `/api/user/login?turnstile=${turnstile}`,
+      '/api/user/login',
       {
         username: payload.username,
         ...passwordFields,
       },
-      { skipAuthRefresh: true }
+      {
+        ...captchaRequestOptions(payload),
+        skipAuthRefresh: true,
+      }
     )
     if (payload.passwordEncryptionEnabled && !res.data?.success) {
       clearPasswordEncryptionCache()
@@ -155,10 +172,13 @@ export async function logout(): Promise<ApiResponse> {
 // Send password reset email
 export async function sendPasswordResetEmail(
   email: string,
-  turnstile?: string
+  proof?: CaptchaProof | string
 ): Promise<ApiResponse> {
   const res = await api.get('/api/reset_password', {
-    params: { email, turnstile },
+    ...captchaRequestOptions(
+      typeof proof === 'string' ? { turnstile: proof } : proof,
+      { email }
+    ),
     skipBusinessError: true,
   })
   return res.data
@@ -255,8 +275,9 @@ export async function telegramLogin(
 
 // User registration
 export async function register(payload: RegisterPayload): Promise<ApiResponse> {
-  const res = await api.post(`/api/user/register`, payload, {
-    params: { turnstile: payload.turnstile ?? '' },
+  const { captcha_token, turnstile, ...body } = payload
+  const res = await api.post('/api/user/register', body, {
+    ...captchaRequestOptions({ captcha_token, turnstile }),
     skipBusinessError: true,
   })
   return res.data
@@ -265,10 +286,13 @@ export async function register(payload: RegisterPayload): Promise<ApiResponse> {
 // Send email verification code
 export async function sendEmailVerification(
   email: string,
-  turnstile?: string
+  proof?: CaptchaProof | string
 ): Promise<ApiResponse> {
   const res = await api.get('/api/verification', {
-    params: { email, turnstile },
+    ...captchaRequestOptions(
+      typeof proof === 'string' ? { turnstile: proof } : proof,
+      { email }
+    ),
     skipBusinessError: true,
   })
   return res.data

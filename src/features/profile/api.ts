@@ -314,7 +314,8 @@ export async function getCheckinCaptcha(): Promise<
  */
 export async function performCheckin(
   captcha?: SliderCaptchaSolution,
-  turnstileToken?: string
+  turnstileToken?: string,
+  aliyunToken?: string
 ): Promise<ApiResponse<CheckinResponse>> {
   const params = new URLSearchParams()
   if (turnstileToken) {
@@ -325,7 +326,8 @@ export async function performCheckin(
     ? { captcha_token: captcha.token, captcha_x: captcha.x }
     : undefined
   const res = await api.post(`/api/user/checkin${query}`, body, {
-    singleUseAuthorization: Boolean(captcha || turnstileToken),
+    ...(aliyunToken && { headers: { 'X-Captcha-Token': aliyunToken } }),
+    singleUseAuthorization: Boolean(captcha || turnstileToken || aliyunToken),
   })
   return res.data
 }

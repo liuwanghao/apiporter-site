@@ -282,7 +282,7 @@ export function calculatePercentageGift(
   amount: number,
   percentage: TopupInfo['gift_percentage']
 ): number | undefined {
-  if (!percentage || amount <= percentage.above || amount > 100_000_000) {
+  if (!percentage || amount < percentage.above || amount > 100_000_000) {
     return undefined
   }
 

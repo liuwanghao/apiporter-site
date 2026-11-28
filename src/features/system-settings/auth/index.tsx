@@ -25,6 +25,7 @@ import {
 } from './section-registry.tsx'
 
 const defaultAuthSettings: AuthSettings = {
+  CaptchaProvider: '',
   PasswordLoginEnabled: true,
   PasswordRegisterEnabled: true,
   EmailVerificationEnabled: false,
@@ -63,6 +64,11 @@ const defaultAuthSettings: AuthSettings = {
   TurnstileCheckEnabled: false,
   TurnstileSiteKey: '',
   TurnstileSecretKey: '',
+  AliyunCaptchaRegion: 'cn',
+  AliyunCaptchaPrefix: '',
+  AliyunCaptchaSceneId: '',
+  AliyunCaptchaAccessKeyId: '',
+  AliyunCaptchaAccessKeySecret: '',
   'passkey.enabled': false,
   'passkey.rp_display_name': '',
   'passkey.rp_id': '',
